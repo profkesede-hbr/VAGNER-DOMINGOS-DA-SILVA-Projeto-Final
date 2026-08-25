@@ -1,75 +1,102 @@
-# Arquitetura do Sistema FilaMed
+# Arquitetura do Sistema — Doc-eMed
 
 ## Objetivo
 
-O FilaMed é um sistema para gerenciamento de atendimento em clínicas e consultórios médicos.
+O **Doc-eMed** é um sistema backend de gestão clínica para terapeutas capilares, desenvolvido como projeto final de Java.
 
-O sistema permitirá que pacientes realizem seu cadastro, respondam a anamnese digital, entrem em uma fila de atendimento e acompanhem sua posição em tempo real através de um aplicativo Android.
+O sistema digitaliza a **Ficha de Avaliação Capilar** da SPA Brasil Cursos, permitindo o cadastro de pacientes, preenchimento digital completo da anamnese (144 questões clínicas) e gerenciamento do catálogo de perguntas.
 
-Médicos poderão visualizar a anamnese, chamar pacientes e registrar atendimentos.
+---
 
-Administradores poderão gerenciar usuários, perguntas da anamnese, médicos e estatísticas do sistema.
+## Tecnologias Utilizadas
 
-## Tecnologias
+### Backend
+- **Java 25** (Spring Boot 4.1.0)
+- **Spring Data JPA** (Hibernate 7)
+- **Spring Web MVC** (REST API)
+- **SpringDoc OpenAPI** (Swagger UI)
+- **Maven** (gerenciamento de dependências via Maven Wrapper)
 
-Backend
+### Banco de Dados
+- **MySQL 5.5.27** (local)
+- Configurado via `spring.jpa.hibernate.ddl-auto=update`
+- Atenção: campos `DATETIME` devem usar `columnDefinition = "DATETIME"` por limitação do MySQL 5.5
 
-- Java 21
-- Spring Boot
-- Spring Data JPA
-- Maven
+### Documentação
+- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+- **Markdown** (pasta `docs/`)
 
-Banco de Dados
+---
 
-- MySQL
-- Aiven Cloud
+## Estrutura de Pacotes
 
-Aplicativo
-
-- Android
-- Kotlin (definiremos depois)
-
-Controle de Versão
-
-- Git
-- GitHub
-
-Documentação
-
-- Markdown
-- Swagger
-## Arquitetura
-
-O backend será organizado utilizando arquitetura em camadas.
-
-Cada camada terá apenas uma responsabilidade.
-
-Android
+```
+br.com.docemed
 │
-▼
-Controller
+├── DoceMedApplication.java        ← Ponto de entrada da aplicação
 │
-▼
-Service
+├── config/
+│   └── DataLoader.java            ← Seed das 144 perguntas da ficha PDF
 │
-▼
-Repository
+├── controller/
+│   ├── PacienteController.java    ← CRUD de pacientes (/pacientes)
+│   ├── AnamneseController.java    ← Ficha clínica (/anamnese)
+│   └── PerguntaController.java    ← Catálogo de perguntas (/anamnese/perguntas)
 │
-▼
-MySQL
+├── service/
+│   ├── PacienteService.java
+│   └── AnamneseService.java
+│
+├── repository/
+│   ├── PacienteRepository.java
+│   ├── AnamneseRepository.java
+│   └── PerguntaAnamneseRepository.java
+│
+├── model/
+│   ├── Paciente.java              ← Entidade: dados cadastrais do cliente
+│   ├── Anamnese.java              ← Entidade: ficha clínica completa
+│   ├── PerguntaAnamnese.java      ← Entidade: catálogo de perguntas
+│   ├── TricoscopiaInfo.java       ← @Embeddable: exame tricoscópico
+│   ├── AlopeciaInfo.java          ← @Embeddable: alopecias não cicatriciais e cicatriciais
+│   ├── ExameLaboratorial.java     ← @Embeddable: 21 exames laboratoriais
+│   └── TipoIntestinalBristol.java ← Enum: Escala de Bristol (Tipo 1 a 7)
+│
+├── dto/
+│   ├── PacienteRequestDTO.java / PacienteResponseDTO.java
+│   ├── AnamneseRequestDTO.java    ← inclui DTOs aninhados: TricoscopiaDTO, AlopeciaDTO, ExamesDTO
+│   ├── AnamneseResponseDTO.java
+│   ├── PerguntaAnamneseRequestDTO.java
+│   └── PerguntaAnamneseResponseDTO.java
+│
+└── exception/
+    ├── RecursoNaoEncontradoException.java  ← Exceção customizada (404)
+    └── GlobalExceptionHandler.java         ← Tratamento global de erros
+```
 
-## Módulos
+---
 
-O sistema será dividido nos seguintes módulos:
+## Arquitetura em Camadas
 
-- Pacientes
-- Médicos
-- Especialidades
-- Consultas
-- Anamnese
-- Perguntas
-- Respostas
-- Fila
-- Usuários
-- Autenticação
-- Dashboard
+```
+[ Swagger UI / Frontend / App Mobile ]
+           ↕  JSON (HTTP)
+       [ Controller ]        ← Recebe requisições, valida entradas via DTO
+           ↕
+       [ Service ]           ← Contém regras de negócio
+           ↕
+      [ Repository ]         ← Acesso ao banco via Spring Data JPA
+           ↕
+        [ MySQL ]            ← Banco de dados relacional
+```
+
+---
+
+## Módulos Implementados
+
+| Módulo | Rota Base | Status |
+|---|---|---|
+| Cadastro de Pacientes | `/pacientes` | ✅ Implementado |
+| Ficha de Anamnese Clínica | `/anamnese` | ✅ Implementado |
+| Catálogo de Perguntas | `/anamnese/perguntas` | ✅ Implementado |
+| Autenticação / Login | — | 🔜 Próxima fase |
+| Relatórios / Dashboard | — | 🔜 Próxima fase |
