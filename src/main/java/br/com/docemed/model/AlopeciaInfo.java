@@ -75,7 +75,7 @@ public class AlopeciaInfo {
     @Column(name = "et_medicamentos")
     private Boolean etMedicamentos = false;        // Contraceptivos, amiodarona, anticoagulantes, etc.
 
-    @Column(name = "et_outros", length = 500)
+    @Column(name = "et_outros", columnDefinition = "TEXT")
     private String etOutros;                       // Campo aberto para outras causas
 
     // =========================================================================

@@ -29,34 +29,34 @@ public class Anamnese {
     @Column(name = "data_preenchimento", nullable = false, columnDefinition = "DATETIME")
     private LocalDateTime dataPreenchimento = LocalDateTime.now();
 
-    @Column(name = "queixa_principal", length = 1000)
+    @Column(name = "queixa_principal", columnDefinition = "TEXT")
     private String queixaPrincipal;
 
     // =========================================================
     // SEÇÃO 1 — TRICOLOGIA (INTRODUÇÃO)
     // =========================================================
-    @Column(name = "tipo_cabelo")
+    @Column(name = "tipo_cabelo", length = 50)
     private String tipoCabelo; // Liso, Ondulado, Cacheado, Crespo
 
-    @Column(name = "pigmentacao_residual")
+    @Column(name = "pigmentacao_residual", length = 50)
     private String pigmentacaoResidual; // Pigmentado, Difuso, Semi pigmentado
 
-    @Column(name = "caracteristica_couro_cabeludo")
+    @Column(name = "caracteristica_couro_cabeludo", length = 50)
     private String caracteristicaCouroCabeludo; // Normal, Seco, Oleoso, Misto
 
     // =========================================================
     // SEÇÃO 2 — ALIMENTAÇÃO
     // =========================================================
-    @Column(name = "ingere_frutas")
+    @Column(name = "ingere_frutas", length = 20)
     private String ingereFrutas; // Sim, Nao, Pouco
 
-    @Column(name = "ingere_legumes")
+    @Column(name = "ingere_legumes", length = 20)
     private String ingereLegumes; // Sim, Nao, Pouco
 
-    @Column(name = "ingere_verduras")
+    @Column(name = "ingere_verduras", length = 20)
     private String ingereVerduras; // Sim, Nao, Pouco
 
-    @Column(name = "copos_agua_diarios")
+    @Column(name = "copos_agua_diarios", length = 50)
     private String coposAguaDiarios;
 
     @Column(name = "consome_alimentos_gordurosos")
@@ -68,37 +68,43 @@ public class Anamnese {
     @Column(name = "consome_lactose")
     private Boolean consomeLactose = false;
 
-    @Column(name = "descricao_habitos_alimentares", length = 1000)
+    @Column(name = "descricao_habitos_alimentares", columnDefinition = "TEXT")
     private String descricaoHabitosAlimentares;
 
     // =========================================================
     // SEÇÃO 3 — HISTÓRICO DE SAÚDE (25 PERGUNTAS)
     // =========================================================
     private Boolean problemaCoracao = false;
+    @Column(length = 100)
     private String detalheProblemaCoracao;
 
     private Boolean diabetesDescompensada = false;
     private Boolean cancer = false;
 
     private Boolean possuiAlergia = false;
+    @Column(length = 100)
     private String detalheAlergia;
 
     private Boolean pressaoAltaDescompensada = false;
 
     private Boolean problemasNeurologicos = false;
+    @Column(length = 100)
     private String detalheNeurologico;
 
     private Boolean cirurgiaUltimos6Meses = false;
+    @Column(length = 100)
     private String detalheCirurgia;
 
     private Boolean estresse = false;
 
     private Boolean problemasTireoide = false;
+    @Column(length = 100)
     private String detalheTireoide;
 
     private Boolean covid19 = false;
 
     private Boolean problemaRenalHepatico = false;
+    @Column(length = 100)
     private String detalheRenalHepatico;
 
     private Boolean gestante = false;
@@ -109,6 +115,7 @@ public class Anamnese {
     private Boolean tabagismo = false;
 
     private Boolean possuiPinos = false;
+    @Column(length = 100)
     private String localPinos;
 
     private Boolean proteseDentaria = false;
@@ -116,6 +123,7 @@ public class Anamnese {
     private Boolean sindromePanico = false;
 
     private Boolean doencaAutoimune = false;
+    @Column(length = 100)
     private String detalheDoencaAutoimune;
 
     private Boolean dengue = false;
@@ -126,16 +134,21 @@ public class Anamnese {
     // SEÇÃO 4 — MEDICAMENTOS, GINECOLÓGICO & QUEIXA CAPILAR
     // =========================================================
     private Boolean usoMedicamentoContinuo = false;
+    @Column(length = 100)
     private String detalheMedicamentos;
 
     private Boolean usoAnticoncepcional = false;
+    @Column(length = 100)
     private String detalheAnticoncepcional;
 
     private Boolean ovarioPolicistico = false;
     private Boolean problemaGinecologico = false;
+    @Column(length = 100)
     private String detalheGinecologico;
 
+    @Column(length = 50)
     private String cicloMenstrual; // regular, irregular, fluxo normal, fluxo intenso
+    @Column(length = 100)
     private String problemaGastrointestinal; // gastrite, ulceras, queimação, má digestão
 
     // Pergunta 32 — Escala de Bristol
@@ -145,6 +158,7 @@ public class Anamnese {
     @Column(name = "tipo_intestinal_bristol")
     private TipoIntestinalBristol tipoIntestinalBristol;
 
+    @Column(length = 50)
     private String tempoQuedaCapilar;
     private Boolean quedaAposPeriodoMarcante = false;
     private Boolean nascimentoNovosFios = false;
@@ -155,13 +169,16 @@ public class Anamnese {
     // SEÇÃO 5 — ASPECTO DO CABELO & QUÍMICA (ÚLTIMOS 12 MESES)
     // =========================================================
     private Boolean quimicaUltimos12Meses = false;
+    @Column(columnDefinition = "TEXT")
     private String detalhesQuimica; // Permanente, Alisamento, Progressiva, Coloração, Luzes, etc.
+    @Column(columnDefinition = "TEXT")
     private String condicaoFio; // Tricoptilose, Triconodose, Normal, Íntegro, Frizz, Quebradiço, Poroso, etc.
 
     // =========================================================
     // SEÇÃO 6 — DADOS CLÍNICOS DO COURO CABELUDO
     // =========================================================
     private Boolean implanteCapilar = false;
+    @Column(length = 20)
     private String testeTracao; // Positivo, Negativo
     private Boolean quedaNaFamilia = false;
     private Boolean caspaSeca = false;
@@ -173,18 +190,24 @@ public class Anamnese {
     private Boolean pediculose = false;
     private Boolean tricotilomania = false;
     private Boolean dorCouroCabeludo = false;
+    @Column(length = 100)
     private String dorCouroCabeludoLocal;
     private Boolean foliculite = false;
+    @Column(length = 100)
     private String foliculiteLocal;
     private Boolean lesoesSinais = false;
+    @Column(length = 100)
     private String lesoesSinaisLocal;
     private Boolean verrugas = false;
+    @Column(length = 100)
     private String verrugasLocal;
     private Boolean falhaBarba = false;
     private Boolean ardencia = false;
     private Boolean presencaCicatrizes = false;
+    @Column(length = 100)
     private String presencaCicatrizesLocal;
     private Boolean vermelhidao = false;
+    @Column(length = 100)
     private String regioesRarefacao; // Difusa, Entradas, Coroa, Risca central, Nuca, Franja
 
     // =========================================================
@@ -199,6 +222,7 @@ public class Anamnese {
     private Boolean lavaCabeloTodosDias = false;
     private Integer diasLavagemSemana;
     private Boolean usaSecadorPrancha = false;
+    @Column(length = 50)
     private String frequenciaSecadorPrancha;
     private Boolean usaProtetorTermico = false;
     private Boolean usaCabeloPreso = false;
@@ -207,11 +231,9 @@ public class Anamnese {
     private Boolean usaGel = false;
     private Boolean usaBone = false;
     private Boolean usaCapacete = false;
+    @Column(columnDefinition = "TEXT")
     private String tratamentosCapilaresAnteriores;
 
-    // =========================================================
-    // SEÇÃO 8 — HISTÓRICO FAMILIAR & ALOPECIAS
-    // =========================================================
     // =========================================================
     // SEÇÃO 8 — HISTÓRICO FAMILIAR & ALOPECIAS
     // =========================================================
@@ -235,22 +257,22 @@ public class Anamnese {
     // =========================================================
 
     /** 1. Aspecto do cabelo e couro cabeludo observado pelo terapeuta */
-    @Column(name = "aspecto_cabelo_couro_cabeludo", length = 1000)
+    @Column(name = "aspecto_cabelo_couro_cabeludo", columnDefinition = "TEXT")
     private String aspectoCabeloCouroCabeludo;
 
     /** 2. Tratamento indicado + número de aplicações */
-    @Column(name = "tratamento_indicado", length = 1000)
+    @Column(name = "tratamento_indicado", columnDefinition = "TEXT")
     private String tratamentoIndicado;
 
     /** 3. Manutenção em casa indicada pelo terapeuta */
-    @Column(name = "manutencao_em_casa", length = 1000)
+    @Column(name = "manutencao_em_casa", columnDefinition = "TEXT")
     private String manutencaoEmCasa;
 
     /** Termo de Responsabilidade — assinado pelo paciente (data/hora do aceite digital) */
     @Column(name = "aceite_termo_responsabilidade")
     private Boolean aceiteTermoResponsabilidade = false;
 
-    @Column(length = 500)
+    @Column(columnDefinition = "TEXT")
     private String observacoesGerais;
 
 
