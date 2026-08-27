@@ -61,21 +61,20 @@ Desktop.ini
 *.log
 
 # ==========================
-# Arquivos temporários
+# Arquivos temporários e rascunhos de desenvolvimento
 # ==========================
 *.tmp
 *.bak
 *.swp
+doc_extraido_ifsp.txt
+doc_sistema_extraida.txt
+scratch/
 
 # ==========================
-# Variáveis de ambiente
+# Variáveis de ambiente e configs locais
 # ==========================
 .env
 .env.*
-
-# ==========================
-# Configurações locais
-# ==========================
 application-local.properties
 application-dev.properties
 
