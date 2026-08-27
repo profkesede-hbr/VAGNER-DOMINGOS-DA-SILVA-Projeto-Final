@@ -1,0 +1,63 @@
+================================================================================
+                    DOC-EMED — DADOS DE ACESSO AO BANCO DE DADOS
+================================================================================
+
+[INFORMAÇÕES GERAIS]
+Projeto: Doc-eMed (Sistema de Gestão Clínica e Anamnese Tricológica)
+SGBD: MariaDB 11.4 (Instância Exclusiva e Isolada)
+Finalidade: Ambiente de Desenvolvimento e Testes Locais (IFSP 2025.2)
+
+--------------------------------------------------------------------------------
+[CONEXÃO DA APLICAÇÃO (SPRING BOOT / CLIENTES SQL)]
+--------------------------------------------------------------------------------
+Host: 127.0.0.1 (localhost)
+Porta: 3307
+Banco de Dados: docemed
+
+Usuário da Aplicação: docemed_user
+Senha da Aplicação: docemed@2026
+
+JDBC URL:
+jdbc:mysql://127.0.0.1:3307/docemed?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=America/Sao_Paulo&allowPublicKeyRetrieval=true
+
+--------------------------------------------------------------------------------
+[ADMINISTRAÇÃO DA INSTÂNCIA (ROOT)]
+--------------------------------------------------------------------------------
+Usuário Root: root
+Senha Root: docemed_root_pass
+Porta: 3307
+
+--------------------------------------------------------------------------------
+[ARQUIVOS E DIRETÓRIOS NO DISCO]
+--------------------------------------------------------------------------------
+Diretório de Dados (DataDir):
+P:\04-INFRAESTRUTURA\Banco-de-Dados\MariaDB-DocEMed\data
+
+Arquivo de Configuração (my.ini):
+P:\04-INFRAESTRUTURA\Banco-de-Dados\MariaDB-DocEMed\data\my.ini
+
+Executável do Servidor:
+D:\MariaDB\11.4\bin\mysqld.exe
+
+Executável do Cliente CLI:
+D:\MariaDB\11.4\bin\mysql.exe
+
+--------------------------------------------------------------------------------
+[COMANDOS ÚTEIS (POWERSHELL)]
+--------------------------------------------------------------------------------
+1. Conectar via CLI como docemed_user:
+& "D:\MariaDB\11.4\bin\mysql.exe" -P 3307 -u docemed_user -p"docemed@2026" docemed
+
+2. Conectar via CLI como root:
+& "D:\MariaDB\11.4\bin\mysql.exe" -P 3307 -u root -p"docemed_root_pass"
+
+3. Iniciar o servidor MariaDB (caso seja reiniciado):
+& "D:\MariaDB\11.4\bin\mysqld.exe" "--defaults-file=P:\04-INFRAESTRUTURA\Banco-de-Dados\MariaDB-DocEMed\data\my.ini"
+
+--------------------------------------------------------------------------------
+[SERVIÇOS CONECTADOS]
+--------------------------------------------------------------------------------
+API Spring Boot: http://localhost:8080
+Swagger UI: http://localhost:8080/swagger-ui/index.html
+OpenAPI JSON: http://localhost:8080/v3/api-docs
+================================================================================
