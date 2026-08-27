@@ -62,8 +62,10 @@ http://localhost:8080/swagger-ui.html
 
 ## Documentação detalhada
 
+- [Documentacao_Sistema_IFSP_DoceMed.md](./Documentacao_Sistema_IFSP_DoceMed.md) — Documentação oficial do IFSP
 - [arquitetura.md](./arquitetura.md) — Estrutura de pacotes, tecnologias e fluxo em camadas
 - [requisitos.md](./requisitos.md) — Requisitos funcionais e não funcionais detalhados
 - [roadmap.md](./roadmap.md) — Histórico de entregas e próximas etapas
 - [diario.md](./diario.md) — Diário de desenvolvimento
 - [uso-de-ia.md](./uso-de-ia.md) — Registro do uso de IA no desenvolvimento
+- [relatorio_compatibilidade_e_unificacao.md](./relatorio_compatibilidade_e_unificacao.md) — Relatório de compatibilidade e unificação pós-PR

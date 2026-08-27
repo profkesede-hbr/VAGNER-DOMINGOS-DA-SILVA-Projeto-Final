@@ -12,19 +12,51 @@
 	<artifactId>doc-emed</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Doc-eMed</name>
-	<description>Sistema de Gestão de Filas e Anamnese Médica</description>
-	<url/>
+	<description>Doc-eMed — Sistema Inteligente de Gestão Clínica e Digitalização da Ficha de Avaliação Capilar</description>
+	<url>https://github.com/profkesede-hbr/VAGNER-DOMINGOS-DA-SILVA-Projeto-Final</url>
 	<licenses>
-		<license/>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
 	</licenses>
 	<developers>
-		<developer/>
+		<developer>
+			<id>vagner</id>
+			<name>Vagner Domingos da Silva</name>
+			<email>goldengoblinsentertainment@gmail.com</email>
+			<roles>
+				<role>Developer</role>
+				<role>Architect</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>jorgewilker</id>
+			<name>Jorge Wilker Mamede de Andrade</name>
+			<email>deliverycartuchoss@gmail.com</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>luisjavier</id>
+			<name>Luis Javier Leon Cardenas</name>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>bianca</id>
+			<name>Bianca Bruna Batista da Silva</name>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
 	</developers>
 	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
+		<connection>scm:git:git://github.com/profkesede-hbr/VAGNER-DOMINGOS-DA-SILVA-Projeto-Final.git</connection>
+		<developerConnection>scm:git:ssh://github.com:profkesede-hbr/VAGNER-DOMINGOS-DA-SILVA-Projeto-Final.git</developerConnection>
+		<url>https://github.com/profkesede-hbr/VAGNER-DOMINGOS-DA-SILVA-Projeto-Final</url>
 	</scm>
 	<properties>
 		<java.version>21</java.version>
