@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>br.com.docemed</groupId>
 	<artifactId>doc-emed</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.1</version>
 	<name>Doc-eMed</name>
 	<description>Doc-eMed — Sistema Inteligente de Gestão Clínica e Digitalização da Ficha de Avaliação Capilar</description>
 	<url>https://github.com/profkesede-hbr/VAGNER-DOMINGOS-DA-SILVA-Projeto-Final</url>
@@ -41,13 +41,6 @@
 		<developer>
 			<id>luisjavier</id>
 			<name>Luis Javier Leon Cardenas</name>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
-		<developer>
-			<id>bianca</id>
-			<name>Bianca Bruna Batista da Silva</name>
 			<roles>
 				<role>Developer</role>
 			</roles>
