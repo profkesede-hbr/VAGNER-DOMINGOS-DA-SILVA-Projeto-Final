@@ -31,15 +31,18 @@ Plataforma Web Full Stack desenvolvida em **Java 21 LTS** com **Spring Boot 4.1.
 - [🧭 Módulos e Rotas da Aplicação](#-módulos-e-rotas-da-aplicação)
 - [🎧 Módulo Completo de Recepção & Acolhimento Presencial](#-módulo-completo-de-recepção--acolhimento-presencial)
 - [💬 Chat Privado 1-para-1 em Tempo Real (Médicos ↔ Recepção)](#-chat-privado-1-para-1-em-tempo-real-médicos--recepção)
-- [📸 Demonstração Visual das Interfaces (Screenshots Detalhados)](#-demonstração-visual-das-interfaces-screenshots-detalhados)
+- [📸 Galeria Visual das Interfaces (Screenshots Oficiais)](#-galeria-visual-das-interfaces-screenshots-oficiais)
   - [1. Landing Page Oficial](#1--landing-page-oficial)
-  - [2. Módulo de Recepção — Gestão de Fila de Espera](#2--módulo-de-recepção--gestão-de-fila-de-espera)
-  - [3. Módulo de Recepção & Médico — Chat Privado em Tempo Real](#3--módulo-de-recepção--médico--chat-privado-em-tempo-real)
-  - [4. Dashboard Clínico do Médico](#4--dashboard-clínico-do-médico)
-  - [5. Telão da Recepção (TV) — Chamada Ambulatorial em Tela Cheia](#5--telão-da-recepção-tv--chamada-ambulatorial-em-tela-cheia)
-  - [6. Portal do Paciente com Fila Integrada](#6--portal-do-paciente-com-fila-integrada)
-  - [7. Área Médica — Autenticação Restrita](#7--área-médica--autenticação-restrita)
-  - [8. Cadastro Completo de Paciente Real (Prontuário Oficial)](#8--cadastro-completo-de-paciente-real-prontuário-oficial)
+  - [2. Módulo de Recepção — Fila de Espera no Consultório](#2--módulo-de-recepção--fila-de-espera-no-consultório)
+  - [3. Módulo de Recepção — Chat Privado com Médicos](#3--módulo-de-recepção--chat-privado-com-médicos)
+  - [4. Portal do Médico — Modal de Chat com Recepção](#4--portal-do-médico--modal-de-chat-com-recepção)
+  - [5. Dashboard Clínico do Médico](#5--dashboard-clínico-do-médico)
+  - [6. Telão da Recepção (TV) — Chamada em Tela Cheia](#6--telão-da-recepção-tv--chamada-em-tela-cheia)
+  - [7. Portal do Paciente com Fila Integrada](#7--portal-do-paciente-com-fila-integrada)
+  - [8. Área Médica — Autenticação Segura](#8--área-médica--autenticação-segura)
+  - [9. Cadastro de Paciente Real — Prontuário Oficial](#9--cadastro-de-paciente-real--prontuário-oficial)
+  - [10. Portal do Paciente — Cadastro Rápido (Modo Teste)](#10--portal-do-paciente--cadastro-rápido-modo-teste)
+  - [11. Portal do Paciente — Login (Modo Teste)](#11--portal-do-paciente--login-modo-teste)
 - [🔐 Credenciais de Acesso & Perfis Oficiais](#-credenciais-de-acesso--perfis-oficiais)
 - [📋 Estrutura da Ficha de Avaliação Capilar (144 Perguntas)](#-estrutura-da-ficha-de-avaliação-capilar-144-perguntas)
 - [🏗️ Arquitetura Técnica & Tecnologias](#️-arquitetura-técnica--tecnologias)
@@ -117,14 +120,14 @@ Desenvolvido para atender pacientes que comparecem diretamente à clínica físi
 Sistema de comunicação interna seguro, ágil e confidencial entre recepcionistas e médicos:
 - **Conversas Individuais e Privadas:** Selecione qualquer médico ou atendente conectado para iniciar uma conversa direta.
 - **Status Online em Tempo Real:** Indicador visual (verde = online / cinza = visto recentemente) atualizado via heartbeat automático.
-- **Sincronização Dupla (SSE + Fallback 2,5s):** Entrega instantânea de mensagens com barramento de eventos SSE e keepalive a cada 15s, além de sincronização contínua de polling a cada 2,5s para garantir zero perda de mensagens mesmo em caso de oscilação de rede.
+- **Sincronização Dupla (SSE + Fallback 2,5s):** Entrega instantânea de mensagens com barramento de eventos SSE e keepalive a cada 15s, além de sincronização contínua de polling a cada 2,5s para garantir zero perda de mensagens.
 - **Alertas Sonoros & Badges:** Notificação com sinal sonoro hospitalar agradável e contador de mensagens não lidas no topo da página.
 
 ---
 
-## 📸 Demonstração Visual das Interfaces (Screenshots Detalhados)
+## 📸 Galeria Visual das Interfaces (Screenshots Oficiais)
 
-Abaixo são demonstradas as principais telas da aplicação:
+Abaixo são demonstradas todas as telas da aplicação, devidamente identificadas:
 
 ---
 
@@ -141,7 +144,7 @@ Abaixo são demonstradas as principais telas da aplicação:
 
 ---
 
-### 2. 🎧 Módulo de Recepção — Gestão de Fila de Espera
+### 2. 🎧 Módulo de Recepção — Fila de Espera no Consultório
 > **Arquivo:** `docs/images/08-recepcao-portal-fila.png`
 
 <div align="center">
@@ -154,20 +157,32 @@ Abaixo são demonstradas as principais telas da aplicação:
 
 ---
 
-### 3. 💬 Módulo de Recepção & Médico — Chat Privado em Tempo Real
+### 3. 💬 Módulo de Recepção — Chat Privado com Médicos
 > **Arquivo:** `docs/images/09-recepcao-chat-tempo-real.png`
 
 <div align="center">
-  <img src="./docs/images/09-recepcao-chat-tempo-real.png" alt="Chat Privado em Tempo Real Recepção e Médico" width="95%">
+  <img src="./docs/images/09-recepcao-chat-tempo-real.png" alt="Chat Privado na Recepção" width="95%">
 </div>
 
-* **Lista Lateral de Contatos:** Exibe médicos e recepcionistas com foto, status online e consultório.
+* **Lista Lateral de Contatos:** Exibe médicos e recepcionistas com status online e consultório.
 * **Janela de Mensagens Privadas:** Histórico cronológico bidirecional com balões diferenciados (laranja para recepção, azul para médico).
-* **Campo de Envio Ágil:** Envio com Enter ou clique no botão de aviãozinho com foco automático.
+* **Campo de Envio Ágil:** Envio com Enter ou clique no botão de envio com foco automático.
 
 ---
 
-### 4. 🩺 Dashboard Clínico do Médico
+### 4. 🩺 Portal do Médico — Modal de Chat com Recepção
+> **Arquivo:** `docs/images/10-medico-chat-modal.png`
+
+<div align="center">
+  <img src="./docs/images/10-medico-chat-modal.png" alt="Modal de Chat no Portal do Médico" width="85%">
+</div>
+
+* **Modal Integrado:** Aberto diretamente do painel do médico sem sair da tela de atendimento.
+* **Sincronização em Tempo Real:** Conversação direta com a recepção em tempo real com auto-seleção do contato.
+
+---
+
+### 5. 🩺 Dashboard Clínico do Médico
 > **Arquivo:** `docs/images/06-medico-dashboard-clinico.png`
 
 <div align="center">
@@ -180,7 +195,7 @@ Abaixo são demonstradas as principais telas da aplicação:
 
 ---
 
-### 5. 📺 Telão da Recepção (TV) — Chamada Ambulatorial em Tela Cheia
+### 6. 📺 Telão da Recepção (TV) — Chamada em Tela Cheia
 > **Arquivo:** `docs/images/07-telao-recepcao-tv.png`
 
 <div align="center">
@@ -193,30 +208,59 @@ Abaixo são demonstradas as principais telas da aplicação:
 
 ---
 
-### 6. 📱 Portal do Paciente com Fila Integrada
+### 7. 📱 Portal do Paciente com Fila Integrada
 > **Arquivo:** `docs/images/01-paciente-portal-fila-integrada.png`
 
 <div align="center">
   <img src="./docs/images/01-paciente-portal-fila-integrada.png" alt="Portal do Paciente com Fila Integrada" width="95%">
 </div>
 
+* **Telão da Recepção Embutido:** O paciente acompanha sua posição na fila e a chamada do consultório diretamente pelo celular.
+* **Passo 1 & 2:** Anamnese prévia e agendamento interativo com médico especialista.
+
 ---
 
-### 7. 🔒 Área Médica — Autenticação Restrita
+### 8. 🔒 Área Médica — Autenticação Segura
 > **Arquivo:** `docs/images/02-medico-login-restrito.png`
 
 <div align="center">
   <img src="./docs/images/02-medico-login-restrito.png" alt="Área Médica - Login Seguro" width="65%">
 </div>
 
+* **Acesso Restrito:** Autenticação exclusiva para o corpo clínico e gestores autorizados.
+
 ---
 
-### 8. 📝 Cadastro Completo de Paciente Real (Prontuário Oficial)
+### 9. 📝 Cadastro de Paciente Real — Prontuário Oficial
 > **Arquivo:** `docs/images/05-paciente-cadastro-real-completo.png`
 
 <div align="center">
   <img src="./docs/images/05-paciente-cadastro-real-completo.png" alt="Cadastro Completo de Paciente Real" width="65%">
 </div>
+
+* **Formulário Completo de 4 Etapas:** Dados Pessoais, Contato & Emergência, Endereço Residencial e Credenciais de Acesso.
+
+---
+
+### 10. 🧪 Portal do Paciente — Cadastro Rápido (Modo Teste)
+> **Arquivo:** `docs/images/03-paciente-cadastro-teste.png`
+
+<div align="center">
+  <img src="./docs/images/03-paciente-cadastro-teste.png" alt="Cadastro de Paciente Teste" width="65%">
+</div>
+
+* **Onboarding Rápido:** Cadastro em etapa única para testes e demonstrações rápidas.
+
+---
+
+### 11. 🔑 Portal do Paciente — Login (Modo Teste)
+> **Arquivo:** `docs/images/04-paciente-login-teste.png`
+
+<div align="center">
+  <img src="./docs/images/04-paciente-login-teste.png" alt="Login do Paciente Teste" width="65%">
+</div>
+
+* **Retorno Ágil:** Permite ao paciente de teste entrar no portal para acompanhar suas chamadas.
 
 ---
 
