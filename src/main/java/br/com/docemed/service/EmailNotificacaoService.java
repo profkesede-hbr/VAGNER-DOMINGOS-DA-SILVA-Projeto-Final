@@ -27,7 +27,7 @@ public class EmailNotificacaoService {
             histórico de tratamentos capilares e agendamentos de qualquer dispositivo.
             
             🔐 SEUS DADOS DE ACESSO PROVISÓRIOS:
-               • Link de Acesso: https://publicly-chem-nursery-chapter.trycloudflare.com/paciente/login
+               • Link de Acesso: https://instructions-went-scene-magazine.trycloudflare.com/paciente/login
                • Usuário / Login: %s (Seu CPF)
                • Senha Provisória: %s
             
@@ -60,7 +60,7 @@ public class EmailNotificacaoService {
             Conforme solicitado na recepção da clínica, sua senha de acesso foi redefinida com sucesso.
             
             🔐 SUAS NOVAS CREDENCIAIS:
-               • Link de Acesso: https://publicly-chem-nursery-chapter.trycloudflare.com/paciente/login
+               • Link de Acesso: https://instructions-went-scene-magazine.trycloudflare.com/paciente/login
                • Usuário / Login: %s
                • Nova Senha: %s
             

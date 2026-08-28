@@ -17,7 +17,17 @@ if (-not (Test-Path $CloudflaredExe)) {
     Write-Host ">>> Cloudflare Tunnel pronto em $CloudflaredExe" -ForegroundColor Green
 }
 
-Write-Host ">>> Iniciando Túnel Público para http://localhost:8080..." -ForegroundColor Cyan
+$TargetUrl = "http://192.168.240.10:8080"
+try {
+    $tcp = Test-NetConnection -ComputerName "192.168.240.10" -Port 8080 -WarningAction SilentlyContinue
+    if (-not $tcp.TcpTestSucceeded) {
+        $TargetUrl = "http://localhost:8080"
+    }
+} catch {
+    $TargetUrl = "http://localhost:8080"
+}
+
+Write-Host ">>> Iniciando Túnel Público para $TargetUrl..." -ForegroundColor Cyan
 Write-Host ">>> O link público HTTPS gerado pela Cloudflare aparecerá abaixo:" -ForegroundColor Yellow
 
-& $CloudflaredExe tunnel --url http://localhost:8080
+& $CloudflaredExe tunnel --url $TargetUrl

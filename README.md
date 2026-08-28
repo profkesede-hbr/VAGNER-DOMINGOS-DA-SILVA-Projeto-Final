@@ -19,7 +19,7 @@ Plataforma Web Full Stack desenvolvida em **Java 21 LTS** com **Spring Boot 4.1.
 ---
 
 ### 🌐 Link Público Oficial de Apresentação (Online 24/7 na VM)
-👉 **[https://publicly-chem-nursery-chapter.trycloudflare.com](https://publicly-chem-nursery-chapter.trycloudflare.com)**
+👉 **[https://instructions-went-scene-magazine.trycloudflare.com](https://instructions-went-scene-magazine.trycloudflare.com)**
 
 </div>
 
@@ -97,7 +97,7 @@ Desenvolvido para atender pacientes que comparecem diretamente à clínica físi
 
 2. **🚶 Gestão Inteligente da Fila Presencial & Telão TV:**
    - Visualização em tempo real de todos os pacientes aguardando atendimento.
-   - **Botão "Rechamar":** Dispara evento SSE `PACIENTE_CHAMADO` com alerta sonoro e visual imediato no Telão da Recepção ([`/painel-chamada`](https://publicly-chem-nursery-chapter.trycloudflare.com/painel-chamada)) para pacientes que perderam a chamada ou que precisam retornar ao consultório.
+   - **Botão "Rechamar":** Dispara evento SSE `PACIENTE_CHAMADO` com alerta sonoro e visual imediato no Telão da Recepção ([`/painel-chamada`](https://instructions-went-scene-magazine.trycloudflare.com/painel-chamada)) para pacientes que perderam a chamada ou que precisam retornar ao consultório.
    - Remoção, cancelamento ordenado e acompanhamento de status (`AGUARDANDO`, `CHAMADO`, `EM_ATENDIMENTO`, `FINALIZADO`, `AUSENTE`).
 
 3. **👥 Gestão de Pacientes & Redefinição de Senhas (Reset):**
@@ -270,12 +270,12 @@ Para testes, homologação e bancas examinadoras, o sistema disponibiliza as con
 
 | Perfil | Usuário / Login | Senha | Rota de Acesso | Atribuições |
 | :--- | :--- | :--- | :--- | :--- |
-| **Recepção / Balcão** | `recep` | `recep123` | [`/recepcao/login`](https://publicly-chem-nursery-chapter.trycloudflare.com/recepcao/login) | Cadastro presencial via CPF, e-mails de boas-vindas, reset de senhas, inclusão/rechamada na fila, agenda do dia, consulta de receitas e chat |
-| **Médico (Admin)** | `admin` | `admin123` | [`/medico/login`](https://publicly-chem-nursery-chapter.trycloudflare.com/medico/login) | Prontuário, prescrição digital, gestão de fila com chamadas sonoras, catálogo de 144 perguntas e chat privado |
-| **Médico (Corpo Clínico)** | `medico` | `medico123` | [`/medico/login`](https://publicly-chem-nursery-chapter.trycloudflare.com/medico/login) | Atendimento ambulatorial, triagem de agendamentos, emissão de receitas e chat privado |
-| **Paciente Presencial** | *(CPF do paciente)* | *(Senha provisória)* | [`/paciente/login`](https://publicly-chem-nursery-chapter.trycloudflare.com/paciente/login) | Login gerado automaticamente no balcão pela recepção com envio por e-mail |
-| **Paciente Real** | *(Criado pelo usuário)*| *(Definida pelo usuário)*| [`/paciente/login`](https://publicly-chem-nursery-chapter.trycloudflare.com/paciente/login) | Acesso ao portal completo de 144 perguntas e histórico de prescrições |
-| **Paciente de Teste** | `teste` *(ou via cadastro express)* | `123456` | [`/paciente/login`](https://publicly-chem-nursery-chapter.trycloudflare.com/paciente/login) | Modo de demonstração rápida |
+| **Recepção / Balcão** | `recep` | `recep123` | [`/recepcao/login`](https://instructions-went-scene-magazine.trycloudflare.com/recepcao/login) | Cadastro presencial via CPF, e-mails de boas-vindas, reset de senhas, inclusão/rechamada na fila, agenda do dia, consulta de receitas e chat |
+| **Médico (Admin)** | `admin` | `admin123` | [`/medico/login`](https://instructions-went-scene-magazine.trycloudflare.com/medico/login) | Prontuário, prescrição digital, gestão de fila com chamadas sonoras, catálogo de 144 perguntas e chat privado |
+| **Médico (Corpo Clínico)** | `medico` | `medico123` | [`/medico/login`](https://instructions-went-scene-magazine.trycloudflare.com/medico/login) | Atendimento ambulatorial, triagem de agendamentos, emissão de receitas e chat privado |
+| **Paciente Presencial** | *(CPF do paciente)* | *(Senha provisória)* | [`/paciente/login`](https://instructions-went-scene-magazine.trycloudflare.com/paciente/login) | Login gerado automaticamente no balcão pela recepção com envio por e-mail |
+| **Paciente Real** | *(Criado pelo usuário)*| *(Definida pelo usuário)*| [`/paciente/login`](https://instructions-went-scene-magazine.trycloudflare.com/paciente/login) | Acesso ao portal completo de 144 perguntas e histórico de prescrições |
+| **Paciente de Teste** | `teste` *(ou via cadastro express)* | `123456` | [`/paciente/login`](https://instructions-went-scene-magazine.trycloudflare.com/paciente/login) | Modo de demonstração rápida |
 
 ---
 
@@ -352,7 +352,7 @@ O projeto adota Clean Architecture em camadas com comunicação reativa:
 
 ## 📚 Endpoints da API REST (Swagger OpenAPI)
 
-A documentação interativa completa está disponível em [`/swagger-ui.html`](https://publicly-chem-nursery-chapter.trycloudflare.com/swagger-ui.html).
+A documentação interativa completa está disponível em [`/swagger-ui.html`](https://instructions-went-scene-magazine.trycloudflare.com/swagger-ui.html).
 
 ### 🔑 Autenticação & Cadastro (`/api/auth`)
 * `POST /api/auth/cadastro-teste`: Cria paciente express e usuário de teste.
