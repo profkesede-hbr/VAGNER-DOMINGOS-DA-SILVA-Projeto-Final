@@ -74,7 +74,9 @@ class DocEMedRealtime {
             'REAGENDAMENTO_ACEITO',
             'PACIENTE_CHAMADO',
             'FILA_ATUALIZADA',
-            'STATUS_FILA_ALTERADO'
+            'STATUS_FILA_ALTERADO',
+            'NOVA_MENSAGEM_CHAT',
+            'NOVO_RECEITUARIO_DISPONIVEL'
         ];
 
         events.forEach(evt => {
