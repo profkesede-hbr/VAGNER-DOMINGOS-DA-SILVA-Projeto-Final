@@ -1,21 +1,12 @@
 # ==============================================================================
-# Doc-eMed — Script de Inicialização do Túnel Público Gratuito (Cloudflare)
-# Cria um link público HTTPS acessível de qualquer dispositivo no mundo sem custos!
+# Doc-eMed — Script de Inicialização do Túnel Público com Link Fixo (Ngrok)
+# Domínio Fixo Permanente: https://slighting-zippy-machinist.ngrok-free.dev
 # ==============================================================================
 
 $ToolsDir = "P:\01-PROJETOS\VAGNER-DOMINGOS-DA-SILVA-Projeto-Final\tools"
-$CloudflaredExe = "$ToolsDir\cloudflared.exe"
-
-if (-not (Test-Path $ToolsDir)) {
-    New-Item -ItemType Directory -Path $ToolsDir -Force | Out-Null
-}
-
-if (-not (Test-Path $CloudflaredExe)) {
-    Write-Host ">>> Baixando Cloudflare Tunnel portátil (gratuito e seguro)..." -ForegroundColor Cyan
-    $Url = "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe"
-    Invoke-WebRequest -Uri $Url -OutFile $CloudflaredExe -UseBasicParsing
-    Write-Host ">>> Cloudflare Tunnel pronto em $CloudflaredExe" -ForegroundColor Green
-}
+$NgrokExe = "$ToolsDir\ngrok.exe"
+$NgrokConfig = "$ToolsDir\ngrok.yml"
+$Domain = "slighting-zippy-machinist.ngrok-free.dev"
 
 $TargetUrl = "http://192.168.240.10:8080"
 try {
@@ -27,7 +18,11 @@ try {
     $TargetUrl = "http://localhost:8080"
 }
 
-Write-Host ">>> Iniciando Túnel Público para $TargetUrl..." -ForegroundColor Cyan
-Write-Host ">>> O link público HTTPS gerado pela Cloudflare aparecerá abaixo:" -ForegroundColor Yellow
+Write-Host "================================================================" -ForegroundColor Cyan
+Write-Host ">>> Doc-eMed — Iniciando Túnel Ngrok Fixo" -ForegroundColor Cyan
+Write-Host ">>> Alvo da API : $TargetUrl" -ForegroundColor Yellow
+Write-Host ">>> Link FIXO   : https://$Domain" -ForegroundColor Green
+Write-Host ">>> Swagger UI  : https://$Domain/swagger-ui/index.html" -ForegroundColor Green
+Write-Host "================================================================" -ForegroundColor Cyan
 
-& $CloudflaredExe tunnel --url $TargetUrl
+& $NgrokExe http --config $NgrokConfig --url="https://$Domain" $TargetUrl
