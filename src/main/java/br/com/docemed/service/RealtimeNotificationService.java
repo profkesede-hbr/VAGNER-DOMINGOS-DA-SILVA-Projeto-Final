@@ -92,4 +92,9 @@ public class RealtimeNotificationService {
     public void broadcast(String eventName, Object data) {
         emitGlobalEvent(eventName, data);
     }
+
+    @org.springframework.scheduling.annotation.Scheduled(fixedRate = 15000)
+    public void sendKeepAlive() {
+        emitGlobalEvent("PING", Map.of("timestamp", System.currentTimeMillis()));
+    }
 }

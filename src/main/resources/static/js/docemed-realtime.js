@@ -56,6 +56,10 @@ class DocEMedRealtime {
     }
 
     connect() {
+        if (this.eventSource) {
+            try { this.eventSource.close(); } catch(e) {}
+        }
+
         const url = this.pacienteId 
             ? `/api/fila/realtime/paciente/${this.pacienteId}/stream`
             : `/api/fila/realtime/stream`;
@@ -65,6 +69,10 @@ class DocEMedRealtime {
 
         this.eventSource.addEventListener('CONNECT', (e) => {
             console.log('[Doc-eMed Realtime] Conexão ativa:', e.data);
+        });
+
+        this.eventSource.addEventListener('PING', (e) => {
+            // Keepalive ping do servidor
         });
 
         const events = [
@@ -81,20 +89,26 @@ class DocEMedRealtime {
 
         events.forEach(evt => {
             this.eventSource.addEventListener(evt, (e) => {
-                const data = JSON.parse(e.data);
-                console.log(`[Doc-eMed Evento] ${evt}:`, data);
-                
-                if (evt === 'PACIENTE_CHAMADO') {
-                    this.playChime();
-                }
+                try {
+                    const data = JSON.parse(e.data);
+                    console.log(`[Doc-eMed Evento] ${evt}:`, data);
+                    
+                    if (evt === 'PACIENTE_CHAMADO' || evt === 'NOVA_MENSAGEM_CHAT') {
+                        this.playChime();
+                    }
 
-                this.showToast(evt, data);
-                this.onEvent(evt, data);
+                    this.showToast(evt, data);
+                    this.onEvent(evt, data);
+                } catch(err) {
+                    console.error('Erro ao processar evento SSE:', evt, err);
+                }
             });
         });
 
         this.eventSource.onerror = () => {
-            console.warn('[Doc-eMed Realtime] Conexão perdida. Tentando reconectar automaticamente...');
+            console.warn('[Doc-eMed Realtime] Conexão SSE instável ou interrompida. Reconectando em 3s...');
+            try { this.eventSource.close(); } catch(e) {}
+            setTimeout(() => this.connect(), 3000);
         };
     }
 

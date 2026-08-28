@@ -6,6 +6,7 @@
     <title>Doc-eMed — Painel da Recepção & Atendimento</title>
     <link rel="stylesheet" th:href="@{/css/docemed.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script th:src="@{/js/docemed-realtime.js}"></script>
     <style>
         .tab-btn {
             background: transparent;
@@ -1202,31 +1203,30 @@
         }
 
         // =========================================================================
-        // SERVER-SENT EVENTS (SSE) & TEMPO REAL
+        // SERVER-SENT EVENTS (SSE) & SINCRONIZAÇÃO EM TEMPO REAL
         // =========================================================================
+        let realtimeClient = null;
         function iniciarSSE() {
-            const eventSource = new EventSource('/api/fila/realtime/stream');
-            eventSource.onmessage = function (event) {
-                try {
-                    const data = JSON.parse(event.data);
-                    if (data.evento === 'FILA_ATUALIZADA' || data.evento === 'PACIENTE_CHAMADO') {
-                        carregarFila();
-                    } else if (data.evento === 'NOVA_MENSAGEM_CHAT') {
-                        const msg = data.payload;
-                        if (chatAtivoDestinatario && 
-                            (msg.remetenteLogin.toLowerCase() === chatAtivoDestinatario.toLowerCase() || 
-                             msg.destinatarioLogin.toLowerCase() === chatAtivoDestinatario.toLowerCase())) {
-                            carregarMensagensConversa(chatAtivoDestinatario);
-                        } else if (msg.destinatarioLogin.toLowerCase() === currentUser.login.toLowerCase()) {
-                            const badge = document.getElementById('chatUnreadBadge');
-                            badge.style.display = 'inline-block';
-                            badge.textContent = (parseInt(badge.textContent || '0') + 1);
-                        }
-                    }
-                } catch (e) {
-                    console.error('Erro no processamento SSE:', e);
+            realtimeClient = new DocEMedRealtime({
+                onEvent: handleRealtimeEvent
+            });
+        }
+
+        function handleRealtimeEvent(evt, data) {
+            if (evt === 'FILA_ATUALIZADA' || evt === 'PACIENTE_CHAMADO' || evt === 'STATUS_FILA_ALTERADO') {
+                carregarFila();
+            } else if (evt === 'NOVA_MENSAGEM_CHAT') {
+                const msg = data;
+                if (chatAtivoDestinatario && 
+                    (msg.remetenteLogin.toLowerCase() === chatAtivoDestinatario.toLowerCase() || 
+                     msg.destinatarioLogin.toLowerCase() === chatAtivoDestinatario.toLowerCase())) {
+                    carregarMensagensConversa(chatAtivoDestinatario);
+                } else if (msg.destinatarioLogin.toLowerCase() === currentUser.login.toLowerCase()) {
+                    const badge = document.getElementById('chatUnreadBadge');
+                    badge.style.display = 'inline-block';
+                    badge.textContent = (parseInt(badge.textContent || '0') + 1);
                 }
-            };
+            }
         }
 
         function logoutRecepcao() {
@@ -1239,8 +1239,16 @@
         carregarFila();
         carregarPacientes();
         iniciarSSE();
+
+        // Polling de sincronização ativa do chat a cada 2.5s quando a aba estiver ativa
         setInterval(() => {
-            fetch(`/api/chat/heartbeat?login=${currentUser.login}`, { method: 'POST' });
+            if (activeTab === 'chat' && chatAtivoDestinatario) {
+                carregarMensagensConversa(chatAtivoDestinatario);
+            }
+        }, 2500);
+
+        setInterval(() => {
+            fetch(`/api/chat/heartbeat?login=${currentUser.login}`, { method: 'POST' }).catch(() => {});
         }, 30000);
     </script>
 

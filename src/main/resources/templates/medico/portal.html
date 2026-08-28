@@ -1007,6 +1007,14 @@
             sessionStorage.removeItem('docemed_medico');
             window.location.href = '/';
         }
+
+        // Polling de sincronização ativa do chat a cada 2.5s quando o modal de chat estiver aberto
+        setInterval(() => {
+            const modalChat = document.getElementById('modalChatMedico');
+            if (modalChat && modalChat.classList.contains('active') && chatAtivoMedicoDestinatario) {
+                carregarMensagensMedico(chatAtivoMedicoDestinatario);
+            }
+        }, 2500);
     </script>
 
 </body>
