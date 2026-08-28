@@ -1,6 +1,6 @@
 # ==============================================================================
-# Doc-eMed — Script de Inicialização do Túnel Público com Link Fixo (Ngrok)
-# Domínio Fixo Permanente: https://slighting-zippy-machinist.ngrok-free.dev
+# Doc-eMed — Script de Inicializacao do Tunel Publico com Link Fixo (Ngrok)
+# Dominio Fixo Permanente: https://slighting-zippy-machinist.ngrok-free.dev
 # ==============================================================================
 
 $ToolsDir = "P:\01-PROJETOS\VAGNER-DOMINGOS-DA-SILVA-Projeto-Final\tools"
@@ -19,10 +19,10 @@ try {
 }
 
 Write-Host "================================================================" -ForegroundColor Cyan
-Write-Host ">>> Doc-eMed — Iniciando Túnel Ngrok Fixo" -ForegroundColor Cyan
+Write-Host ">>> Doc-eMed - Iniciando Tunel Ngrok Fixo" -ForegroundColor Cyan
 Write-Host ">>> Alvo da API : $TargetUrl" -ForegroundColor Yellow
 Write-Host ">>> Link FIXO   : https://$Domain" -ForegroundColor Green
 Write-Host ">>> Swagger UI  : https://$Domain/swagger-ui/index.html" -ForegroundColor Green
 Write-Host "================================================================" -ForegroundColor Cyan
 
-& $NgrokExe http --config $NgrokConfig --url="https://$Domain" $TargetUrl
+& $NgrokExe http --config $NgrokConfig --url $Domain $TargetUrl
