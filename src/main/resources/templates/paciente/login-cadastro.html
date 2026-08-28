@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doc-eMed — Acesso do Paciente (Modo de Testes)</title>
+    <link rel="stylesheet" th:href="@{/css/docemed.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container" style="max-width: 540px; padding-top: 40px; padding-bottom: 60px;">
+        
+        <!-- HEADER VOLTAR -->
+        <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+            <a href="/" class="btn btn-outline btn-sm">
+                <i class="fa-solid fa-arrow-left"></i> Voltar ao Início
+            </a>
+            <span class="badge badge-pending">
+                <i class="fa-solid fa-flask"></i> Modo de Teste
+            </span>
+        </div>
+
+        <div class="glass-card" style="padding: 36px;">
+            <!-- CABEÇALHO DO CARD -->
+            <div style="text-align: center; margin-bottom: 28px;">
+                <div class="nav-logo-icon" style="margin: 0 auto 16px auto; width: 48px; height: 48px; font-size: 1.6rem;">
+                    <i class="fa-solid fa-user-circle"></i>
+                </div>
+                <h2 style="font-size: 1.6rem; margin-bottom: 6px;">Portal do Paciente</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    Cadastre um paciente de teste ou faça login para preencher sua anamnese e agendar atendimento.
+                </p>
+            </div>
+
+            <!-- TABS DE NAVEGAÇÃO -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(15, 23, 42, 0.7); padding: 6px; border-radius: var(--radius-md); margin-bottom: 28px; border: 1px solid var(--border-glass);">
+                <button type="button" id="tabCadastroBtn" class="btn btn-primary btn-sm" onclick="showTab('cadastro')">
+                    <i class="fa-solid fa-user-plus"></i> Cadastrar Paciente
+                </button>
+                <button type="button" id="tabLoginBtn" class="btn btn-outline btn-sm" onclick="showTab('login')">
+                    <i class="fa-solid fa-right-to-bracket"></i> Já Tenho Acesso
+                </button>
+            </div>
+
+            <!-- FORMULÁRIO 1: CADASTRO PACIENTE TESTE -->
+            <form id="formCadastro" onsubmit="handleCadastro(event)">
+                <div class="form-group">
+                    <label class="form-label">Nome Completo *</label>
+                    <input type="text" id="cadNome" class="form-control" placeholder="Ex: Maria Oliveira Silva" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Telefone / Celular WhatsApp *</label>
+                    <input type="text" id="cadTelefone" class="form-control" placeholder="(11) 98765-4321" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label class="form-label">Usuário de Login *</label>
+                        <input type="text" id="cadLogin" class="form-control" placeholder="ex: maria.teste" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Senha de Acesso *</label>
+                        <input type="password" id="cadSenha" class="form-control" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label class="form-label">Sexo</label>
+                        <select id="cadSexo" class="form-control">
+                            <option value="Feminino">Feminino</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cidade</label>
+                        <input type="text" id="cadCidade" class="form-control" value="São Paulo">
+                    </div>
+                </div>
+
+                <button type="submit" id="btnSalvarCadastro" class="btn btn-secondary" style="width: 100%; padding: 14px; margin-top: 10px;">
+                    <i class="fa-solid fa-check"></i> Finalizar Cadastro & Entrar
+                </button>
+            </form>
+
+            <!-- FORMULÁRIO 2: LOGIN PACIENTE -->
+            <form id="formLogin" onsubmit="handleLogin(event)" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">Login do Paciente</label>
+                    <input type="text" id="logLogin" class="form-control" placeholder="Digite seu usuário" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <input type="password" id="logSenha" class="form-control" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" id="btnEntrarLogin" class="btn btn-primary" style="width: 100%; padding: 14px; margin-top: 10px;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Entrar no Portal
+                </button>
+            </form>
+
+            <!-- ALERTA DE MENSAGEM -->
+            <div id="statusMsg" style="display: none; margin-top: 20px; padding: 12px; border-radius: var(--radius-sm); font-size: 0.9rem; text-align: center;"></div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tab) {
+            const formCad = document.getElementById('formCadastro');
+            const formLog = document.getElementById('formLogin');
+            const btnCad = document.getElementById('tabCadastroBtn');
+            const btnLog = document.getElementById('tabLoginBtn');
+            const msg = document.getElementById('statusMsg');
+            msg.style.display = 'none';
+
+            if (tab === 'cadastro') {
+                formCad.style.display = 'block';
+                formLog.style.display = 'none';
+                btnCad.className = 'btn btn-primary btn-sm';
+                btnLog.className = 'btn btn-outline btn-sm';
+            } else {
+                formCad.style.display = 'none';
+                formLog.style.display = 'block';
+                btnCad.className = 'btn btn-outline btn-sm';
+                btnLog.className = 'btn btn-primary btn-sm';
+            }
+        }
+
+        async function handleCadastro(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSalvarCadastro');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cadastrando...';
+
+            const payload = {
+                nome: document.getElementById('cadNome').value.trim(),
+                telefoneWhatsapp: document.getElementById('cadTelefone').value.trim(),
+                login: document.getElementById('cadLogin').value.trim(),
+                senha: document.getElementById('cadSenha').value,
+                sexo: document.getElementById('cadSexo').value,
+                cidade: document.getElementById('cadCidade').value.trim()
+            };
+
+            try {
+                const res = await fetch('/api/auth/cadastro-teste', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    const err = await res.text();
+                    throw new Error(err || 'Falha no cadastro.');
+                }
+
+                const data = await res.json();
+                sessionStorage.setItem('docemed_user', JSON.stringify(data));
+                window.location.href = '/paciente/portal';
+            } catch (err) {
+                showMsg(err.message, 'danger');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Finalizar Cadastro & Entrar';
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnEntrarLogin');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Entrando...';
+
+            const payload = {
+                login: document.getElementById('logLogin').value.trim(),
+                senha: document.getElementById('logSenha').value
+            };
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    throw new Error('Usuário ou senha incorretos.');
+                }
+
+                const data = await res.json();
+                sessionStorage.setItem('docemed_user', JSON.stringify(data));
+                window.location.href = data.redirectUrl || '/paciente/portal';
+            } catch (err) {
+                showMsg(err.message, 'danger');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Entrar no Portal';
+            }
+        }
+
+        function showMsg(text, type) {
+            const el = document.getElementById('statusMsg');
+            el.style.display = 'block';
+            if (type === 'danger') {
+                el.style.background = 'rgba(239, 68, 68, 0.15)';
+                el.style.color = '#fca5a5';
+                el.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+            } else {
+                el.style.background = 'rgba(16, 185, 129, 0.15)';
+                el.style.color = '#6ee7b7';
+                el.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+            }
+            el.textContent = text;
+        }
+    </script>
+
+</body>
+</html>

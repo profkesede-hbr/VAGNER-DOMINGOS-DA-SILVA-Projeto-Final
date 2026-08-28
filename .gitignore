@@ -95,3 +95,9 @@ dados_acesso*.txt
 *.p12
 *.pem
 *.key
+
+# ==========================
+# Ferramentas Locais / Binários
+# ==========================
+tools/
+*.exe

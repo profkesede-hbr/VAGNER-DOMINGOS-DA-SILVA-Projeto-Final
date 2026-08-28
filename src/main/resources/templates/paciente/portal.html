@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doc-eMed — Portal do Paciente</title>
+    <link rel="stylesheet" th:href="@{/css/docemed.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script th:src="@{/js/docemed-realtime.js}"></script>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="container">
+        <nav class="navbar">
+            <a href="/" class="nav-brand">
+                <div class="nav-logo-icon">
+                    <i class="fa-solid fa-dna" style="color: #ffffff;"></i>
+                </div>
+                <div>
+                    <div class="brand-font" style="font-size: 1.3rem; font-weight: 800;">
+                        Doc<span style="color: var(--primary);">-eMed</span>
+                    </div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600;">
+                        Área Exclusiva do Paciente
+                    </div>
+                </div>
+            </a>
+            
+            <div style="display: flex; gap: 14px; align-items: center;">
+                <div style="text-align: right; margin-right: 8px;">
+                    <div id="pacienteNomeDisplay" style="font-weight: 700; font-size: 0.95rem;">Carregando...</div>
+                    <div style="font-size: 0.75rem; color: var(--secondary);">• Conectado em Tempo Real</div>
+                </div>
+                <button onclick="logout()" class="btn btn-outline btn-sm">
+                    <i class="fa-solid fa-right-from-bracket"></i> Sair
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container" style="padding-bottom: 60px;">
+
+        <!-- 📢 1. BANNER DE CHAMADA VISUAL EM TEMPO REAL (QUANDO CHAMADO PELO MÉDICO) -->
+        <div id="chamadaBanner" class="call-banner" style="display: none; margin-bottom: 32px;">
+            <div style="font-size: 2.2rem; margin-bottom: 8px;">🔔</div>
+            <h2 id="chamadaTextoPrincipal" style="font-size: 1.8rem; margin-bottom: 8px;" class="gradient-text">
+                VOCÊ FOI CHAMADO PARA ATENDIMENTO!
+            </h2>
+            <p id="chamadaDetalhes" style="font-size: 1.15rem; color: #ffffff; font-weight: 600;">
+                Por favor, dirija-se ao Consultório 01 com o médico responsável.
+            </p>
+        </div>
+
+        <!-- ⚠️ 2. POPUP / ALERTA DE REAGENDAMENTO MÉDICO -->
+        <div id="reagendamentoCard" class="glass-card" style="display: none; border-color: rgba(139, 92, 246, 0.4); background: rgba(88, 28, 135, 0.2); padding: 24px 32px; margin-bottom: 32px;">
+            <div style="display: flex; gap: 20px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                <div>
+                    <span class="badge badge-rescheduled" style="margin-bottom: 8px;">
+                        <i class="fa-solid fa-bell"></i> Alteração de Horário Sugerida pelo Médico
+                    </span>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 6px;">Proposta de Novo Horário de Atendimento</h3>
+                    <p id="reagendamentoMensagem" style="color: var(--text-main); font-size: 0.95rem; line-height: 1.5;"></p>
+                </div>
+                <button id="btnAceitarReagendamento" onclick="aceitarNovoHorario()" class="btn btn-secondary">
+                    <i class="fa-solid fa-circle-check"></i> Aceitar e Confirmar Novo Horário
+                </button>
+            </div>
+        </div>
+
+        <!-- STATUS ATUAL DO ATENDIMENTO -->
+        <div class="glass-card" style="padding: 24px 32px; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div>
+                <div style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Status do seu Agendamento</div>
+                <div id="statusConsultaTexto" style="font-size: 1.2rem; font-weight: 700; color: var(--text-main); margin-top: 4px;">
+                    Verificando agendamentos...
+                </div>
+            </div>
+            <div id="statusConsultaBadge">
+                <span class="badge badge-pending">Pendente</span>
+            </div>
+        </div>
+
+        <!-- GRID PRINCIPAL DE AÇÕES -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); gap: 32px;">
+            
+            <!-- CARD 1: FICHA DE ANAMNESE TRICOLÓGICA -->
+            <div class="glass-card" style="padding: 32px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div>
+                        <span class="badge badge-pending" style="margin-bottom: 6px;">Passo 1 (Obrigatório)</span>
+                        <h3 style="font-size: 1.3rem;">Ficha de Anamnese Capilar</h3>
+                    </div>
+                    <div id="anamneseStatusIcon" style="font-size: 1.6rem; color: var(--warning);">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                </div>
+
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
+                    O preenchimento prévio é essencial para o médico avaliar sua queixa clínica e histórico antes do atendimento.
+                </p>
+
+                <form id="formAnamnese" onsubmit="handleSalvarAnamnese(event)">
+                    <div class="form-group">
+                        <label class="form-label">Queixa Principal / Motivo da Consulta *</label>
+                        <textarea id="anaQueixa" class="form-control" placeholder="Descreva o que está acontecendo com seu cabelo (ex: queda excessiva, afinamento, coceira, oleosidade)..." required></textarea>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">Tipo de Cabelo</label>
+                            <select id="anaTipoCabelo" class="form-control">
+                                <option value="Liso">Liso</option>
+                                <option value="Ondulado" selected>Ondulado</option>
+                                <option value="Cacheado">Cacheado</option>
+                                <option value="Crespo">Crespo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Couro Cabeludo</label>
+                            <select id="anaCouro" class="form-control">
+                                <option value="Normal">Normal</option>
+                                <option value="Oleoso" selected>Oleoso</option>
+                                <option value="Seco">Seco</option>
+                                <option value="Misto">Misto</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">Química nos últimos 12 meses?</label>
+                            <select id="anaQuimica" class="form-control">
+                                <option value="false">Não</option>
+                                <option value="true">Sim (tintura, luzes, alisamento)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Passou por Estresse Intenso?</label>
+                            <select id="anaEstresse" class="form-control">
+                                <option value="true" selected>Sim</option>
+                                <option value="false">Não</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Hábitos Alimentares / Água Diária</label>
+                        <input type="text" id="anaAlimentacao" class="form-control" placeholder="Ex: Bebo 2L de água, alimentação equilibrada...">
+                    </div>
+
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #cbd5e1; font-size: 0.88rem;">
+                            <input type="checkbox" id="anaTermo" required checked style="width: 18px; height: 18px; accent-color: var(--primary);">
+                            Declaro que as informações preenchidas acima são verdadeiras.
+                        </label>
+                    </div>
+
+                    <button type="submit" id="btnSalvarAnamnese" class="btn btn-primary" style="width: 100%;">
+                        <i class="fa-solid fa-floppy-disk"></i> Salvar Ficha de Anamnese
+                    </button>
+                </form>
+            </div>
+
+            <!-- CARD 2: AGENDAMENTO DA CONSULTA -->
+            <div class="glass-card" style="padding: 32px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div>
+                        <span class="badge badge-pending" style="margin-bottom: 6px;">Passo 2</span>
+                        <h3 style="font-size: 1.3rem;">Agendar Atendimento</h3>
+                    </div>
+                    <div style="font-size: 1.6rem; color: var(--secondary);">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+                </div>
+
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
+                    Escolha a data e horário preferencial para sua consulta de avaliação capilar com o tricologista.
+                </p>
+
+                <form id="formAgendamento" onsubmit="handleSalvarAgendamento(event)">
+                    <div class="form-group">
+                        <label class="form-label">Data e Horário Desejado *</label>
+                        <input type="datetime-local" id="ageDataHora" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Profissional Responsável</label>
+                        <input type="text" class="form-control" value="Dr. Vagner Domingos — Tricologia Integrada" disabled>
+                    </div>
+
+                    <div id="avisoAnamnesePendente" style="display: none; padding: 12px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--radius-sm); color: #fca5a5; font-size: 0.88rem; margin-bottom: 16px;">
+                        <i class="fa-solid fa-circle-exclamation"></i> Por favor, salve a <strong>Ficha de Anamnese (Passo 1)</strong> antes de enviar o agendamento.
+                    </div>
+
+                    <button type="submit" id="btnSalvarAgendamento" class="btn btn-secondary" style="width: 100%;">
+                        <i class="fa-solid fa-paper-plane"></i> Solicitar Agendamento
+                    </button>
+                </form>
+
+                <!-- CARD DE RESUMO DO AGENDAMENTO ATUAL -->
+                <div id="resumoAgendamento" style="display: none; margin-top: 24px; padding: 20px; background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-glass); border-radius: var(--radius-md);">
+                    <div style="font-weight: 700; color: var(--primary); margin-bottom: 6px;">Sua Solicitação Atual:</div>
+                    <div id="resumoDataHora" style="font-size: 0.95rem; color: var(--text-main);"></div>
+                    <div id="resumoStatus" style="margin-top: 8px;"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        let currentUser = null;
+        let anamneseSalvaId = null;
+        let agendamentoAtualId = null;
+        let realtimeClient = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const rawUser = sessionStorage.getItem('docemed_user');
+            if (!rawUser) {
+                window.location.href = '/paciente/acesso';
+                return;
+            }
+
+            currentUser = JSON.parse(rawUser);
+            document.getElementById('pacienteNomeDisplay').textContent = currentUser.nome;
+
+            // Inicia data e hora padrão (Amanhã às 14:00)
+            const d = new Date();
+            d.setDate(d.getDate() + 1);
+            d.setHours(14, 0, 0, 0);
+            document.getElementById('ageDataHora').value = d.toISOString().slice(0, 16);
+
+            // Inicia SSE Realtime exclusivo para este paciente
+            realtimeClient = new DocEMedRealtime({
+                pacienteId: currentUser.pacienteId,
+                onEvent: handleRealtimeEvent
+            });
+
+            await carregarDadosIniciais();
+        });
+
+        async function carregarDadosIniciais() {
+            // 1. Carregar Anamnese existente
+            try {
+                const resAna = await fetch(`/anamnese/paciente/${currentUser.pacienteId}/recente`);
+                if (resAna.ok) {
+                    const ana = await resAna.json();
+                    anamneseSalvaId = ana.id;
+                    document.getElementById('anaQueixa').value = ana.queixaPrincipal || '';
+                    document.getElementById('anamneseStatusIcon').innerHTML = '<i class="fa-solid fa-circle-check" style="color: var(--secondary);"></i>';
+                    document.getElementById('btnSalvarAnamnese').innerHTML = '<i class="fa-solid fa-check"></i> Anamnese Já Enviada (Atualizar)';
+                }
+            } catch (e) {}
+
+            // 2. Carregar Agendamento existente
+            try {
+                const resAge = await fetch(`/api/agendamentos/paciente/${currentUser.pacienteId}/recente`);
+                if (resAge.ok) {
+                    const age = await resAge.json();
+                    agendamentoAtualId = age.id;
+                    atualizarVisualAgendamento(age);
+                } else {
+                    document.getElementById('statusConsultaTexto').textContent = 'Nenhuma consulta agendada ainda.';
+                }
+            } catch (e) {}
+
+            // 3. Carregar Status na Fila
+            try {
+                const resFila = await fetch(`/api/fila/paciente/${currentUser.pacienteId}/status`);
+                if (resFila.ok) {
+                    const fila = await resFila.json();
+                    atualizarVisualFila(fila);
+                }
+            } catch (e) {}
+        }
+
+        async function handleSalvarAnamnese(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSalvarAnamnese');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+
+            const payload = {
+                pacienteId: currentUser.pacienteId,
+                queixaPrincipal: document.getElementById('anaQueixa').value,
+                tipoCabelo: document.getElementById('anaTipoCabelo').value,
+                caracteristicaCouroCabeludo: document.getElementById('anaCouro').value,
+                quimicaUltimos12Meses: document.getElementById('anaQuimica').value === 'true',
+                estresse: document.getElementById('anaEstresse').value === 'true',
+                descricaoHabitosAlimentares: document.getElementById('anaAlimentacao').value,
+                aceiteTermoResponsabilidade: document.getElementById('anaTermo').checked
+            };
+
+            try {
+                const res = await fetch('/anamnese', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) throw new Error('Erro ao salvar anamnese.');
+                const data = await res.json();
+                anamneseSalvaId = data.id;
+
+                document.getElementById('anamneseStatusIcon').innerHTML = '<i class="fa-solid fa-circle-check" style="color: var(--secondary);"></i>';
+                document.getElementById('btnSalvarAnamnese').innerHTML = '<i class="fa-solid fa-check"></i> Ficha Salva com Sucesso!';
+                document.getElementById('avisoAnamnesePendente').style.display = 'none';
+
+                realtimeClient.createToastElement('Anamnese Salva', 'Sua ficha foi salva e está vinculada ao prontuário.', '📋');
+            } catch (err) {
+                alert(err.message);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Tentar Novamente';
+            }
+        }
+
+        async function handleSalvarAgendamento(e) {
+            e.preventDefault();
+
+            if (!anamneseSalvaId) {
+                document.getElementById('avisoAnamnesePendente').style.display = 'block';
+                return;
+            }
+
+            const btn = document.getElementById('btnSalvarAgendamento');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+
+            const payload = {
+                pacienteId: currentUser.pacienteId,
+                dataHora: document.getElementById('ageDataHora').value,
+                anamneseId: anamneseSalvaId
+            };
+
+            try {
+                const res = await fetch('/api/agendamentos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    const msg = await res.text();
+                    throw new Error(msg || 'Erro ao agendar.');
+                }
+
+                const data = await res.json();
+                agendamentoAtualId = data.id;
+                atualizarVisualAgendamento(data);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Solicitação Enviada!';
+            } catch (err) {
+                alert(err.message);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Solicitar Agendamento';
+            }
+        }
+
+        async function aceitarNovoHorario() {
+            if (!agendamentoAtualId) return;
+            const btn = document.getElementById('btnAceitarReagendamento');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Confirmando...';
+
+            try {
+                const res = await fetch(`/api/agendamentos/${agendamentoAtualId}/aceitar-reagendamento`, { method: 'POST' });
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('reagendamentoCard').style.display = 'none';
+                    atualizarVisualAgendamento(data);
+                    realtimeClient.createToastElement('Horário Confirmado', 'Você aceitou a remarcação da consulta!', '✅');
+                }
+            } catch (e) {
+                alert('Erro ao aceitar novo horário.');
+            }
+        }
+
+        function atualizarVisualAgendamento(age) {
+            const resumo = document.getElementById('resumoAgendamento');
+            resumo.style.display = 'block';
+            document.getElementById('resumoDataHora').textContent = `Data/Hora: ${age.dataHora.replace('T', ' às ')}`;
+            
+            const badge = document.getElementById('statusConsultaBadge');
+            const texto = document.getElementById('statusConsultaTexto');
+
+            if (age.status === 'PENDENTE') {
+                badge.innerHTML = '<span class="badge badge-pending">Aguardando Confirmação do Médico</span>';
+                texto.textContent = 'Sua solicitação de agendamento está em análise pela equipe médica.';
+            } else if (age.status === 'CONFIRMADO') {
+                badge.innerHTML = '<span class="badge badge-confirmed">Confirmada</span>';
+                texto.textContent = 'Sua consulta está confirmada! Aguarde a liberação da fila no dia.';
+            } else if (age.status === 'REAGENDADO_MEDICO') {
+                badge.innerHTML = '<span class="badge badge-rescheduled">Reagendamento Sugerido</span>';
+                texto.textContent = 'O médico sugeriu uma alteração de horário para sua consulta.';
+                
+                document.getElementById('reagendamentoCard').style.display = 'block';
+                document.getElementById('reagendamentoMensagem').textContent = `O médico sugeriu alterar para ${age.dataHora.replace('T', ' às ')}. Motivo: ${age.motivoAlteracao || 'Ajuste na agenda ambulatorial'}.`;
+            }
+        }
+
+        function atualizarVisualFila(fila) {
+            if (fila.status === 'CHAMADO') {
+                document.getElementById('chamadaBanner').style.display = 'block';
+                document.getElementById('chamadaDetalhes').textContent = `Por favor, dirija-se ao ${fila.sala} com ${fila.medicoNome}.`;
+            } else {
+                document.getElementById('chamadaBanner').style.display = 'none';
+            }
+        }
+
+        function handleRealtimeEvent(evt, data) {
+            if (evt === 'PACIENTE_CHAMADO') {
+                if (data.pacienteId === currentUser.pacienteId) {
+                    document.getElementById('chamadaBanner').style.display = 'block';
+                    document.getElementById('chamadaDetalhes').textContent = `Atenção: Dirija-se ao ${data.sala} com ${data.medicoNome}!`;
+                    document.getElementById('chamadaBanner').scrollIntoView({ behavior: 'smooth' });
+                }
+            } else if (evt === 'AGENDAMENTO_CONFIRMADO') {
+                if (data.pacienteId === currentUser.pacienteId) {
+                    carregarDadosIniciais();
+                }
+            } else if (evt === 'REAGENDAMENTO_SOLICITADO') {
+                if (data.pacienteId === currentUser.pacienteId) {
+                    document.getElementById('reagendamentoCard').style.display = 'block';
+                    document.getElementById('reagendamentoMensagem').textContent = data.mensagemHumanizada;
+                    carregarDadosIniciais();
+                }
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('docemed_user');
+            window.location.href = '/';
+        }
+    </script>
+
+</body>
+</html>

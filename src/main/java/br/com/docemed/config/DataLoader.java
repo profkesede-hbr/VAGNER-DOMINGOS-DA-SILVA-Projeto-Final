@@ -18,9 +18,32 @@ import java.util.List;
 public class DataLoader implements CommandLineRunner {
 
     private final PerguntaAnamneseRepository perguntaRepository;
+    private final br.com.docemed.repository.UsuarioRepository usuarioRepository;
 
     @Override
     public void run(String... args) {
+        // ─── USUÁRIOS DEFAULT (MÉDICO / ADMIN) ──────────────────────────────
+        if (!usuarioRepository.existsByLogin("admin")) {
+            usuarioRepository.save(br.com.docemed.model.Usuario.builder()
+                    .login("admin")
+                    .senha("admin123")
+                    .nome("Dr. Vagner Domingos — Tricologista Responsável")
+                    .perfil(br.com.docemed.model.PerfilUsuario.MEDICO)
+                    .telefoneWhatsapp("(11) 98888-7777")
+                    .ativo(true)
+                    .build());
+        }
+        if (!usuarioRepository.existsByLogin("medico")) {
+            usuarioRepository.save(br.com.docemed.model.Usuario.builder()
+                    .login("medico")
+                    .senha("medico123")
+                    .nome("Dra. Equipe Clínica Doc-eMed")
+                    .perfil(br.com.docemed.model.PerfilUsuario.MEDICO)
+                    .telefoneWhatsapp("(11) 99999-8888")
+                    .ativo(true)
+                    .build());
+        }
+
         if (perguntaRepository.count() < 130) {
             perguntaRepository.deleteAll();
 

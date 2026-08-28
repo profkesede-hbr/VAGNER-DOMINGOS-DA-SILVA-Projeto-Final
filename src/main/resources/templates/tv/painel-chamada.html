@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doc-eMed — Painel de Chamada (Sala de Espera)</title>
+    <link rel="stylesheet" th:href="@{/css/docemed.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script th:src="@{/js/docemed-realtime.js}"></script>
+    <style>
+        body {
+            background-color: #030712;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+        }
+        .tv-call-box {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.15) 0%, rgba(99, 102, 241, 0.2) 100%);
+            border: 3px solid #38bdf8;
+            border-radius: 28px;
+            padding: 48px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(14, 165, 233, 0.35);
+        }
+        .tv-patient-name {
+            font-size: 4.2rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 16px 0;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+        .tv-room {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+        .tv-doctor {
+            font-size: 1.6rem;
+            color: #94a3b8;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CABEÇALHO TV -->
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-glass); padding-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="nav-logo-icon" style="width: 52px; height: 52px; font-size: 1.8rem;">
+                <i class="fa-solid fa-dna" style="color: #ffffff;"></i>
+            </div>
+            <div>
+                <div class="brand-font" style="font-size: 2rem; font-weight: 800;">
+                    Doc<span style="color: var(--primary);">-eMed</span>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;">
+                    Painel de Atendimento Ambulatorial
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: right;">
+            <div id="tvRelogio" style="font-size: 2.2rem; font-weight: 700; font-family: 'Space Grotesk', sans-serif;">00:00:00</div>
+            <div id="tvData" style="font-size: 0.95rem; color: var(--text-dim);">--/--/----</div>
+        </div>
+    </div>
+
+    <!-- CAIXA DE CHAMADA PRINCIPAL (DESTAQUE) -->
+    <div class="tv-call-box" id="tvBoxChamada">
+        <div class="badge badge-called" style="font-size: 1.1rem; padding: 8px 24px;">
+            <i class="fa-solid fa-bullhorn"></i> PACIENTE CHAMADO
+        </div>
+        <div id="tvPacienteNome" class="tv-patient-name">Aguardando Chamada...</div>
+        <div id="tvSala" class="tv-room">Consultório 01</div>
+        <div id="tvMedico" class="tv-doctor">Dr(a). Especialista Tricologista</div>
+    </div>
+
+    <!-- PRÓXIMOS DA FILA -->
+    <div class="glass-card" style="padding: 24px 36px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
+                <i class="fa-solid fa-list-ol" style="color: var(--primary);"></i> Próximos Pacientes na Fila de Espera
+            </div>
+            <div style="font-size: 0.85rem; color: var(--secondary);">
+                <i class="fa-solid fa-circle" style="font-size: 0.55rem;"></i> Atualização Automática
+            </div>
+        </div>
+
+        <div id="tvListaFila" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+            <div style="color: var(--text-dim);">Fila vazia no momento.</div>
+        </div>
+    </div>
+
+    <script>
+        let realtimeClient = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            atualizarRelogio();
+            setInterval(atualizarRelogio, 1000);
+
+            realtimeClient = new DocEMedRealtime({
+                isTelao: true,
+                onEvent: handleRealtimeEvent
+            });
+
+            carregarFilaTV();
+        });
+
+        function atualizarRelogio() {
+            const agora = new Date();
+            document.getElementById('tvRelogio').textContent = agora.toLocaleTimeString('pt-BR');
+            document.getElementById('tvData').textContent = agora.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+        }
+
+        async function carregarFilaTV() {
+            try {
+                const res = await fetch('/api/fila/ativa');
+                const fila = await res.json();
+
+                const container = document.getElementById('tvListaFila');
+                if (fila.length === 0) {
+                    container.innerHTML = '<div style="color: var(--text-dim); padding: 12px;">Nenhum paciente aguardando no momento.</div>';
+                    return;
+                }
+
+                // Paciente chamado recente
+                const chamado = fila.find(f => f.status === 'CHAMADO');
+                if (chamado) {
+                    document.getElementById('tvPacienteNome').textContent = chamado.pacienteNome;
+                    document.getElementById('tvSala').textContent = chamado.sala;
+                    document.getElementById('tvMedico').textContent = chamado.medicoNome;
+                }
+
+                // Demais da fila
+                let html = '';
+                fila.filter(f => f.status === 'AGUARDANDO').forEach(item => {
+                    html += `
+                        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-glass); border-radius: 14px; padding: 16px; display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 1.4rem; font-weight: 800; color: var(--primary);">#${item.posicao}</div>
+                            <div>
+                                <div style="font-weight: 700; color: var(--text-main); font-size: 1.05rem;">${item.pacienteNome}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-dim);">${item.statusDescricao}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                if (html) container.innerHTML = html;
+            } catch (e) {}
+        }
+
+        function handleRealtimeEvent(evt, data) {
+            if (evt === 'PACIENTE_CHAMADO') {
+                document.getElementById('tvPacienteNome').textContent = data.pacienteNome;
+                document.getElementById('tvSala').textContent = data.sala;
+                document.getElementById('tvMedico').textContent = data.medicoNome;
+
+                const box = document.getElementById('tvBoxChamada');
+                box.style.transform = 'scale(1.03)';
+                box.style.transition = 'transform 0.4s ease';
+                setTimeout(() => box.style.transform = 'scale(1)', 400);
+
+                carregarFilaTV();
+            } else if (evt === 'FILA_ATUALIZADA' || evt === 'STATUS_FILA_ALTERADO') {
+                carregarFilaTV();
+            }
+        }
+    </script>
+
+</body>
+</html>

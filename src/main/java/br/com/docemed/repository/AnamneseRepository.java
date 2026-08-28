@@ -15,6 +15,7 @@ public interface AnamneseRepository extends JpaRepository<Anamnese, Long> {
 
     // Busca a anamnese mais recente de um paciente
     Optional<Anamnese> findTopByPacienteIdOrderByDataPreenchimentoDesc(Long pacienteId);
+    Optional<Anamnese> findFirstByPacienteIdOrderByDataPreenchimentoDesc(Long pacienteId);
 
     // Verifica se paciente já tem anamnese
     boolean existsByPacienteId(Long pacienteId);

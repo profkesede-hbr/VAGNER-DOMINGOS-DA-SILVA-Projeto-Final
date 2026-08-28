@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doc-eMed — Painel Clínico & Gestão de Filas</title>
+    <link rel="stylesheet" th:href="@{/css/docemed.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:src="@{/js/docemed-realtime.js}"></script>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="container">
+        <nav class="navbar">
+            <a href="/" class="nav-brand">
+                <div class="nav-logo-icon" style="background: linear-gradient(135deg, #0ea5e9, #2563eb);">
+                    <i class="fa-solid fa-stethoscope" style="color: #ffffff;"></i>
+                </div>
+                <div>
+                    <div class="brand-font" style="font-size: 1.3rem; font-weight: 800;">
+                        Doc<span style="color: var(--primary);">-eMed</span>
+                    </div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600;">
+                        Painel Clínico & Gestão Ambulatorial
+                    </div>
+                </div>
+            </a>
+            
+            <div style="display: flex; gap: 14px; align-items: center;">
+                <div style="text-align: right; margin-right: 8px;">
+                    <div id="medicoNomeDisplay" style="font-weight: 700; font-size: 0.95rem;">Carregando...</div>
+                    <div style="font-size: 0.75rem; color: var(--secondary);">• Central de Fila Conectada</div>
+                </div>
+                <a href="/painel-chamada" target="_blank" class="btn btn-outline btn-sm">
+                    <i class="fa-solid fa-tv"></i> Abrir Telão
+                </a>
+                <button onclick="logoutMedico()" class="btn btn-outline btn-sm">
+                    <i class="fa-solid fa-right-from-bracket"></i> Sair
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container" style="padding-bottom: 60px;">
+
+        <!-- 1. CARDS DE MÉTRICAS -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px;">
+            <div class="glass-card" style="padding: 24px;">
+                <div style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Total de Pacientes</div>
+                <div id="metricTotalPacientes" style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin-top: 6px;">0</div>
+                <div style="font-size: 0.8rem; color: var(--primary); margin-top: 4px;"><i class="fa-solid fa-users"></i> Base Cadastrada</div>
+            </div>
+
+            <div class="glass-card" style="padding: 24px;">
+                <div style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Agendamentos Hoje</div>
+                <div id="metricAgendamentosHoje" style="font-size: 2.2rem; font-weight: 800; color: #38bdf8; margin-top: 6px;">0</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;"><i class="fa-solid fa-calendar-day"></i> Consultas do dia</div>
+            </div>
+
+            <div class="glass-card" style="padding: 24px;">
+                <div style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Pacientes na Fila</div>
+                <div id="metricPacientesFila" style="font-size: 2.2rem; font-weight: 800; color: #fbbf24; margin-top: 6px;">0</div>
+                <div style="font-size: 0.8rem; color: var(--warning); margin-top: 4px;"><i class="fa-solid fa-hourglass-half"></i> Aguardando chamada</div>
+            </div>
+
+            <div class="glass-card" style="padding: 24px;">
+                <div style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Atendimentos Concluídos</div>
+                <div id="metricConcluidos" style="font-size: 2.2rem; font-weight: 800; color: #34d399; margin-top: 6px;">0</div>
+                <div style="font-size: 0.8rem; color: var(--secondary); margin-top: 4px;"><i class="fa-solid fa-circle-check"></i> Finalizados</div>
+            </div>
+        </div>
+
+        <!-- 2. GRÁFICOS ANALÍTICOS (CHART.JS) -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 24px; margin-bottom: 36px;">
+            <div class="glass-card" style="padding: 28px;">
+                <h3 style="font-size: 1.15rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-chart-bar" style="color: var(--primary);"></i> Prevalência de Alopecias Diagnosticadas
+                </h3>
+                <div style="height: 250px;">
+                    <canvas id="chartAlopecias"></canvas>
+                </div>
+            </div>
+
+            <div class="glass-card" style="padding: 28px;">
+                <h3 style="font-size: 1.15rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-chart-pie" style="color: var(--secondary);"></i> Tipos de Cabelo & Couro Cabeludo
+                </h3>
+                <div style="height: 250px;">
+                    <canvas id="chartCabelo"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. CONTROLE DA FILA DE ATENDIMENTO EM TEMPO REAL -->
+        <div class="glass-card" style="padding: 32px; margin-bottom: 36px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+                <div>
+                    <span class="badge badge-called" style="margin-bottom: 6px;">
+                        <i class="fa-solid fa-bolt"></i> Tempo Real
+                    </span>
+                    <h2 style="font-size: 1.4rem;">Fila de Espera Ativa</h2>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="carregarFila()" class="btn btn-outline btn-sm">
+                        <i class="fa-solid fa-arrows-rotate"></i> Atualizar Fila
+                    </button>
+                </div>
+            </div>
+
+            <!-- TABELA DA FILA -->
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.92rem;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--border-glass); color: var(--text-dim); text-transform: uppercase; font-size: 0.78rem;">
+                            <th style="padding: 12px 16px;">Posição</th>
+                            <th style="padding: 12px 16px;">Paciente</th>
+                            <th style="padding: 12px 16px;">Queixa / Anamnese</th>
+                            <th style="padding: 12px 16px;">Status</th>
+                            <th style="padding: 12px 16px;">Sala</th>
+                            <th style="padding: 12px 16px; text-align: right;">Ações Médicas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaFilaBody">
+                        <tr>
+                            <td colspan="6" style="padding: 24px; text-align: center; color: var(--text-muted);">
+                                Carregando fila de espera...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 4. SOLICITAÇÕES DE AGENDAMENTO -->
+        <div class="glass-card" style="padding: 32px; margin-bottom: 36px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+                <div>
+                    <span class="badge badge-pending" style="margin-bottom: 6px;">Triagem Clínica</span>
+                    <h2 style="font-size: 1.4rem;">Solicitações de Agendamento</h2>
+                </div>
+                <button onclick="carregarAgendamentos()" class="btn btn-outline btn-sm">
+                    <i class="fa-solid fa-arrows-rotate"></i> Atualizar Agendamentos
+                </button>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.92rem;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--border-glass); color: var(--text-dim); text-transform: uppercase; font-size: 0.78rem;">
+                            <th style="padding: 12px 16px;">ID</th>
+                            <th style="padding: 12px 16px;">Paciente</th>
+                            <th style="padding: 12px 16px;">Data & Horário</th>
+                            <th style="padding: 12px 16px;">Status</th>
+                            <th style="padding: 12px 16px;">Anamnese</th>
+                            <th style="padding: 12px 16px; text-align: right;">Ações de Agendamento</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaAgendamentosBody">
+                        <tr>
+                            <td colspan="6" style="padding: 24px; text-align: center; color: var(--text-muted);">
+                                Carregando solicitações...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 5. EDITOR DAS 144 PERGUNTAS DA ANAMNESE -->
+        <div class="glass-card" style="padding: 32px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                <div>
+                    <span class="badge badge-confirmed" style="margin-bottom: 6px;">Configuração do Catálogo</span>
+                    <h2 style="font-size: 1.4rem;">Editor de Perguntas da Anamnese (144 Itens)</h2>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="filtroPerguntas" onkeyup="filtrarPerguntas()" placeholder="Buscar pergunta..." class="form-control" style="width: 240px; padding: 6px 12px;">
+                </div>
+            </div>
+
+            <div style="max-height: 400px; overflow-y: auto; padding-right: 8px;">
+                <div id="listaPerguntasContainer">Carregando catálogo...</div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL: VISUALIZAR ANAMNESE COMPLETA -->
+    <div id="modalAnamnese" class="modal-overlay">
+        <div class="modal-content" style="max-width: 720px; max-height: 85vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 id="modalAnaTitulo" style="font-size: 1.3rem;">Ficha de Anamnese Tricológica</h3>
+                <button onclick="fecharModal('modalAnamnese')" class="btn btn-outline btn-sm"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="modalAnaConteudo" style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;"></div>
+        </div>
+    </div>
+
+    <!-- MODAL: REAGENDAMENTO MÉDICO -->
+    <div id="modalReagendar" class="modal-overlay">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 1.3rem;">Sugerir Nova Data/Horário</h3>
+                <button onclick="fecharModal('modalReagendar')" class="btn btn-outline btn-sm"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleConfirmarReagendamento(event)">
+                <input type="hidden" id="reagendarAgId">
+                <div class="form-group">
+                    <label class="form-label">Nova Data e Horário *</label>
+                    <input type="datetime-local" id="reagendarDataHora" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Motivo da Alteração para o Paciente *</label>
+                    <textarea id="reagendarMotivo" class="form-control" placeholder="Ex: Necessidade de ajuste na escala de procedimentos cirúrgicos do bloco..." required></textarea>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                    <button type="button" onclick="fecharModal('modalReagendar')" class="btn btn-outline">Cancelar</button>
+                    <button type="submit" class="btn btn-warning"><i class="fa-solid fa-paper-plane"></i> Enviar Proposta de Horário</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentMedico = null;
+        let realtimeClient = null;
+        let chartAlopeciasInstance = null;
+        let chartCabeloInstance = null;
+        let todasPerguntas = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const rawMedico = sessionStorage.getItem('docemed_medico');
+            if (!rawMedico) {
+                window.location.href = '/medico/login';
+                return;
+            }
+
+            currentMedico = JSON.parse(rawMedico);
+            document.getElementById('medicoNomeDisplay').textContent = currentMedico.nome;
+
+            // Inicia SSE Realtime Global
+            realtimeClient = new DocEMedRealtime({
+                isMedico: true,
+                onEvent: handleRealtimeEvent
+            });
+
+            await carregarMetricas();
+            await carregarFila();
+            await carregarAgendamentos();
+            await carregarPerguntas();
+        });
+
+        async function carregarMetricas() {
+            try {
+                const res = await fetch('/api/dashboard/metricas');
+                if (res.ok) {
+                    const m = await res.json();
+                    document.getElementById('metricTotalPacientes').textContent = m.totalPacientes;
+                    document.getElementById('metricAgendamentosHoje').textContent = m.agendamentosHoje;
+                    document.getElementById('metricPacientesFila').textContent = m.pacientesNaFila;
+                    document.getElementById('metricConcluidos').textContent = m.atendimentosConcluidos;
+
+                    renderizarGraficos(m);
+                }
+            } catch (e) {}
+        }
+
+        function renderizarGraficos(m) {
+            // Gráfico 1: Alopecias
+            const ctx1 = document.getElementById('chartAlopecias').getContext('2d');
+            if (chartAlopeciasInstance) chartAlopeciasInstance.destroy();
+            chartAlopeciasInstance = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(m.alopeciasFrequentes),
+                    datasets: [{
+                        label: 'Casos Identificados',
+                        data: Object.values(m.alopeciasFrequentes),
+                        backgroundColor: ['#0ea5e9', '#6366f1', '#10b981', '#f59e0b', '#ef4444'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8' } },
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+                    }
+                }
+            });
+
+            // Gráfico 2: Tipos de Cabelo
+            const ctx2 = document.getElementById('chartCabelo').getContext('2d');
+            if (chartCabeloInstance) chartCabeloInstance.destroy();
+            chartCabeloInstance = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(m.tiposCabeloDistribuicao),
+                    datasets: [{
+                        data: Object.values(m.tiposCabeloDistribuicao),
+                        backgroundColor: ['#38bdf8', '#818cf8', '#34d399', '#fbbf24']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#94a3b8', boxWidth: 12 } }
+                    }
+                }
+            });
+        }
+
+        async function carregarFila() {
+            try {
+                const res = await fetch('/api/fila/ativa');
+                const fila = await res.json();
+                const tbody = document.getElementById('tabelaFilaBody');
+                
+                if (fila.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="padding: 24px; text-align: center; color: var(--text-muted);"><i class="fa-solid fa-mug-hot"></i> Nenhum paciente na fila de espera no momento.</td></tr>';
+                    return;
+                }
+
+                let html = '';
+                fila.forEach(item => {
+                    const badgeClass = item.status === 'CHAMADO' ? 'badge-called' : (item.status === 'EM_ATENDIMENTO' ? 'badge-confirmed' : 'badge-pending');
+                    html += `
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                            <td style="padding: 16px; font-weight: 700; color: var(--primary);">#${item.posicao}</td>
+                            <td style="padding: 16px;">
+                                <div style="font-weight: 600; color: var(--text-main);">${item.pacienteNome}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-dim);">${item.pacienteTelefone || ''}</div>
+                            </td>
+                            <td style="padding: 16px;">
+                                <button onclick="verAnamnese(${item.pacienteId}, '${item.pacienteNome}')" class="btn btn-outline btn-sm" style="padding: 4px 10px; font-size: 0.8rem;">
+                                    <i class="fa-solid fa-clipboard-check" style="color: var(--secondary);"></i> Ver Anamnese
+                                </button>
+                            </td>
+                            <td style="padding: 16px;"><span class="badge ${badgeClass}">${item.statusDescricao}</span></td>
+                            <td style="padding: 16px; font-weight: 600; color: #cbd5e1;">${item.sala}</td>
+                            <td style="padding: 16px; text-align: right;">
+                                <button onclick="chamarPacienteFila(${item.id})" class="btn btn-primary btn-sm" style="margin-right: 4px;">
+                                    <i class="fa-solid fa-bullhorn"></i> Chamar
+                                </button>
+                                <button onclick="atualizarStatusFila(${item.id}, 'EM_ATENDIMENTO')" class="btn btn-secondary btn-sm" title="Iniciar Consulta" style="margin-right: 4px;">
+                                    <i class="fa-solid fa-play"></i>
+                                </button>
+                                <button onclick="atualizarStatusFila(${item.id}, 'FINALIZADO')" class="btn btn-outline btn-sm" title="Concluir">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                                <button onclick="atualizarStatusFila(${item.id}, 'AUSENTE')" class="btn btn-danger btn-sm" title="Paciente Ausente">
+                                    <i class="fa-solid fa-ban"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+            } catch (e) {}
+        }
+
+        async function carregarAgendamentos() {
+            try {
+                const res = await fetch('/api/agendamentos');
+                const lista = await res.json();
+                const tbody = document.getElementById('tabelaAgendamentosBody');
+
+                if (lista.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="padding: 24px; text-align: center; color: var(--text-muted);">Nenhuma solicitação de agendamento.</td></tr>';
+                    return;
+                }
+
+                // Buscar nomes de pacientes para enriquecer a tabela
+                let html = '';
+                for (const ag of lista) {
+                    const badgeClass = ag.status === 'CONFIRMADO' ? 'badge-confirmed' : (ag.status === 'REAGENDADO_MEDICO' ? 'badge-rescheduled' : 'badge-pending');
+                    html += `
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                            <td style="padding: 16px; font-weight: 600;">#${ag.id}</td>
+                            <td style="padding: 16px; font-weight: 700; color: var(--text-main);">Paciente ID ${ag.pacienteId}</td>
+                            <td style="padding: 16px; color: #38bdf8;">${ag.dataHora.replace('T', ' às ')}</td>
+                            <td style="padding: 16px;"><span class="badge ${badgeClass}">${ag.status}</span></td>
+                            <td style="padding: 16px;">
+                                <button onclick="verAnamnese(${ag.pacienteId}, 'Paciente #${ag.pacienteId}')" class="btn btn-outline btn-sm" style="padding: 4px 10px; font-size: 0.8rem;">
+                                    <i class="fa-solid fa-file-medical"></i> Abrir Ficha
+                                </button>
+                            </td>
+                            <td style="padding: 16px; text-align: right;">
+                                ${ag.status === 'PENDENTE' ? `
+                                    <button onclick="confirmarAgendamento(${ag.id})" class="btn btn-secondary btn-sm" style="margin-right: 4px;">
+                                        <i class="fa-solid fa-check"></i> Confirmar
+                                    </button>
+                                ` : ''}
+                                <button onclick="abrirModalReagendar(${ag.id}, '${ag.dataHora}')" class="btn btn-warning btn-sm" style="margin-right: 4px;">
+                                    <i class="fa-solid fa-calendar-xmark"></i> Reagendar
+                                </button>
+                                <button onclick="adicionarAFila(${ag.pacienteId}, ${ag.id})" class="btn btn-primary btn-sm" title="Colocar na Fila do Dia">
+                                    <i class="fa-solid fa-person-walking-arrow-right"></i> Pôr na Fila
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }
+                tbody.innerHTML = html;
+            } catch (e) {}
+        }
+
+        async function chamarPacienteFila(filaId) {
+            try {
+                const res = await fetch('/api/fila/chamar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filaId: filaId, sala: 'Consultório 01', medicoNome: currentMedico.nome })
+                });
+                if (res.ok) {
+                    carregarFila();
+                }
+            } catch (e) {}
+        }
+
+        async function atualizarStatusFila(filaId, status) {
+            try {
+                await fetch(`/api/fila/${filaId}/status?status=${status}`, { method: 'POST' });
+                carregarFila();
+                carregarMetricas();
+            } catch (e) {}
+        }
+
+        async function confirmarAgendamento(id) {
+            try {
+                await fetch(`/api/agendamentos/${id}/confirmar`, { method: 'POST' });
+                carregarAgendamentos();
+                realtimeClient.createToastElement('Confirmado', 'Consulta confirmada com sucesso.', '✅');
+            } catch (e) {}
+        }
+
+        async function adicionarAFila(pacienteId, agendamentoId) {
+            try {
+                await fetch('/api/fila/adicionar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pacienteId: pacienteId, agendamentoId: agendamentoId, sala: 'Consultório 01', medicoNome: currentMedico.nome })
+                });
+                carregarFila();
+                carregarMetricas();
+                realtimeClient.createToastElement('Paciente na Fila', 'Paciente adicionado à fila de espera.', '🚶');
+            } catch (e) {}
+        }
+
+        function abrirModalReagendar(id, dataAtual) {
+            document.getElementById('reagendarAgId').value = id;
+            document.getElementById('reagendarDataHora').value = dataAtual ? dataAtual.slice(0, 16) : '';
+            document.getElementById('modalReagendar').classList.add('active');
+        }
+
+        async function handleConfirmarReagendamento(e) {
+            e.preventDefault();
+            const id = document.getElementById('reagendarAgId').value;
+            const novaData = document.getElementById('reagendarDataHora').value;
+            const motivo = document.getElementById('reagendarMotivo').value;
+
+            try {
+                await fetch('/api/agendamentos/reagendar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ agendamentoId: id, novaDataHora: novaData, motivo: motivo })
+                });
+                fecharModal('modalReagendar');
+                carregarAgendamentos();
+                realtimeClient.createToastElement('Proposta Enviada', 'A proposta de reagendamento foi enviada para o paciente.', '📨');
+            } catch (e) {
+                alert('Erro ao reagendar.');
+            }
+        }
+
+        async function verAnamnese(pacienteId, nome) {
+            document.getElementById('modalAnaTitulo').textContent = `Ficha de Avaliação Capilar — ${nome}`;
+            const box = document.getElementById('modalAnaConteudo');
+            box.innerHTML = 'Carregando ficha digital...';
+            document.getElementById('modalAnamnese').classList.add('active');
+
+            try {
+                const res = await fetch(`/anamnese/paciente/${pacienteId}/recente`);
+                if (res.ok) {
+                    const a = await res.json();
+                    box.innerHTML = `
+                        <div style="background: rgba(15, 23, 42, 0.8); padding: 18px; border-radius: 12px; margin-bottom: 16px;">
+                            <div style="font-weight: 700; color: var(--primary);">1. Queixa Principal:</div>
+                            <div style="color: var(--text-main); margin-top: 4px;">${a.queixaPrincipal || 'Não especificada'}</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                            <div style="background: rgba(15, 23, 42, 0.8); padding: 14px; border-radius: 12px;">
+                                <div style="font-weight: 700; color: var(--secondary);">Tipo de Cabelo:</div>
+                                <div>${a.tipoCabelo || 'Normal'}</div>
+                            </div>
+                            <div style="background: rgba(15, 23, 42, 0.8); padding: 14px; border-radius: 12px;">
+                                <div style="font-weight: 700; color: var(--secondary);">Couro Cabeludo:</div>
+                                <div>${a.caracteristicaCouroCabeludo || 'Normal'}</div>
+                            </div>
+                        </div>
+                        <div style="background: rgba(15, 23, 42, 0.8); padding: 18px; border-radius: 12px; margin-bottom: 16px;">
+                            <div style="font-weight: 700; color: var(--warning);">2. Hábitos & Saúde:</div>
+                            <div style="margin-top: 4px;">Estresse Intenso: ${a.estresse ? 'Sim' : 'Não'} | Química 12 meses: ${a.quimicaUltimos12Meses ? 'Sim' : 'Não'}</div>
+                            <div style="margin-top: 4px;">Alimentação/Água: ${a.descricaoHabitosAlimentares || 'Não descrita'}</div>
+                        </div>
+                    `;
+                } else {
+                    box.innerHTML = '<div style="color: #f87171;">Nenhuma ficha de anamnese encontrada para este paciente.</div>';
+                }
+            } catch (e) {
+                box.innerHTML = 'Erro ao carregar anamnese.';
+            }
+        }
+
+        async function carregarPerguntas() {
+            try {
+                const res = await fetch('/anamnese/perguntas');
+                todasPerguntas = await res.json();
+                renderizarListaPerguntas(todasPerguntas);
+            } catch (e) {}
+        }
+
+        function renderizarListaPerguntas(lista) {
+            const container = document.getElementById('listaPerguntasContainer');
+            let html = '';
+            lista.forEach(p => {
+                html += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-glass); border-radius: 10px; margin-bottom: 8px;">
+                        <div>
+                            <span style="font-weight: 700; color: var(--primary); margin-right: 8px;">#${p.ordemExibicao || p.id}</span>
+                            <span>${p.enunciado}</span>
+                        </div>
+                        <span class="badge ${p.ativa ? 'badge-confirmed' : 'badge-cancelled'}">${p.ativa ? 'Ativa' : 'Inativa'}</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function filtrarPerguntas() {
+            const query = document.getElementById('filtroPerguntas').value.toLowerCase();
+            const filtradas = todasPerguntas.filter(p => p.enunciado.toLowerCase().includes(query));
+            renderizarListaPerguntas(filtradas);
+        }
+
+        function fecharModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function handleRealtimeEvent(evt, data) {
+            if (evt === 'NOVO_AGENDAMENTO' || evt === 'REAGENDAMENTO_ACEITO') {
+                carregarAgendamentos();
+                carregarMetricas();
+            } else if (evt === 'FILA_ATUALIZADA' || evt === 'STATUS_FILA_ALTERADO') {
+                carregarFila();
+                carregarMetricas();
+            }
+        }
+
+        function logoutMedico() {
+            sessionStorage.removeItem('docemed_medico');
+            window.location.href = '/';
+        }
+    </script>
+
+</body>
+</html>
