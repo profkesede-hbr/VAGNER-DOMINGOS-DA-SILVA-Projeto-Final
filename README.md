@@ -49,10 +49,9 @@ O sistema elimina o uso de fichas de papel na coleta de dados de saúde, disponi
 
 ---
 
-## 🩺 Credenciais de Acesso Padrão (Ambiente Médico)
+## 🔒 Controle de Acesso & Segurança
 
-* **Usuário:** `admin` | **Senha:** `admin123`
-* **Usuário:** `medico` | **Senha:** `medico123`
+O acesso à **Área Médica e Administrativa** é estritamente restrito aos profissionais de saúde e gestores autorizados. O cadastro e provisionamento de contas médicas é realizado de forma interna e exclusiva pela administração do sistema, não havendo autocadastro público para profissionais. O autocadastro na plataforma é disponibilizado unicamente para os pacientes.
 
 ---
 
