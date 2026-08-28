@@ -153,9 +153,19 @@ public class AuthService {
             throw new IllegalStateException("Esta conta está desativada no sistema.");
         }
 
-        String redirectUrl = usuario.getPerfil() == PerfilUsuario.MEDICO || usuario.getPerfil() == PerfilUsuario.ADMIN
-                ? "/medico/portal"
-                : "/paciente/portal";
+        String redirectUrl;
+        if (usuario.getPerfil() == PerfilUsuario.MEDICO || usuario.getPerfil() == PerfilUsuario.ADMIN) {
+            redirectUrl = "/medico/portal";
+        } else {
+            if (usuario.getPacienteId() != null) {
+                boolean isReal = pacienteRepository.findById(usuario.getPacienteId())
+                        .map(p -> p.getCpf() != null && !p.getCpf().equals("000.000.000-00") && !p.getCpf().isBlank())
+                        .orElse(false);
+                redirectUrl = isReal ? "/paciente/real-portal" : "/paciente/portal";
+            } else {
+                redirectUrl = "/paciente/portal";
+            }
+        }
 
         return LoginResponseDTO.builder()
                 .id(usuario.getId())

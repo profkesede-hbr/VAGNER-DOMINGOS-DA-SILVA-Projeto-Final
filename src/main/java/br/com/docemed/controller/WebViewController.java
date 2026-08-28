@@ -16,6 +16,11 @@ public class WebViewController {
         return "paciente/login-cadastro";
     }
 
+    @GetMapping("/paciente/login")
+    public String pacienteLogin() {
+        return "paciente/login";
+    }
+
     @GetMapping("/paciente/portal")
     public String pacientePortal() {
         return "paciente/portal";

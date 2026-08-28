@@ -26,13 +26,16 @@
                 </div>
             </a>
             
-            <div style="display: flex; gap: 14px; align-items: center;">
-                <span class="badge badge-confirmed">
-                    <i class="fa-solid fa-circle" style="font-size: 0.55rem;"></i> Sistema Online
-                </span>
-                <a href="/painel-chamada" target="_blank" class="btn btn-outline btn-sm">
-                    <i class="fa-solid fa-tv"></i> Telão da Recepção (TV)
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <a href="/paciente/login" class="btn btn-secondary btn-sm" style="font-weight: 700;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Login do Paciente
                 </a>
+                <a href="/painel-chamada" target="_blank" class="btn btn-outline btn-sm">
+                    <i class="fa-solid fa-tv"></i> Telão TV
+                </a>
+                <span class="badge badge-confirmed">
+                    <i class="fa-solid fa-circle" style="font-size: 0.55rem;"></i> Online
+                </span>
             </div>
         </nav>
     </header>
@@ -48,22 +51,26 @@
                 <span class="gradient-text">Ficha de Avaliação Capilar</span>
             </h1>
             <p style="font-size: 1.15rem; color: var(--text-muted); margin-bottom: 36px;">
-                Plataforma de prontuário eletrônico tricologia com 144 perguntas clínicas, triagem automatizada, agendamento interativo e controle de filas em tempo real.
+                Plataforma de prontuário eletrônico tricologia com 144 perguntas clínicas, triagem automatizada, agendamento interativo, controle de filas em tempo real e receituário digital.
             </p>
 
-            <!-- 3 BOTOES PRINCIPAIS -->
-            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-                <a href="/medico/login" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.02rem;">
+            <!-- 4 BOTÕES DE ACESSO -->
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="/medico/login" class="btn btn-primary" style="padding: 16px 28px; font-size: 1rem;">
                     <i class="fa-solid fa-user-doctor"></i>
-                    <span>Área Médica (Profissional)</span>
+                    <span>Área Médica</span>
                 </a>
-                <a href="/paciente/acesso" class="btn btn-warning" style="padding: 16px 32px; font-size: 1.02rem;">
-                    <i class="fa-solid fa-flask-vial"></i>
-                    <span>Modo de Testes (Fila Integrada)</span>
+                <a href="/paciente/login" class="btn btn-secondary" style="padding: 16px 28px; font-size: 1rem;">
+                    <i class="fa-solid fa-user-check"></i>
+                    <span>Já sou Paciente (Login)</span>
                 </a>
-                <a href="/paciente/real-cadastro" class="btn btn-secondary" style="padding: 16px 32px; font-size: 1.02rem;">
+                <a href="/paciente/real-cadastro" class="btn btn-outline" style="padding: 16px 28px; font-size: 1rem; border-color: var(--secondary); color: var(--secondary);">
                     <i class="fa-solid fa-id-card"></i>
-                    <span>Paciente Real (Cadastro Completo)</span>
+                    <span>Novo Cadastro Real</span>
+                </a>
+                <a href="/paciente/acesso" class="btn btn-warning" style="padding: 16px 28px; font-size: 1rem;">
+                    <i class="fa-solid fa-flask-vial"></i>
+                    <span>Modo de Testes</span>
                 </a>
             </div>
         </div>
@@ -94,9 +101,9 @@
                 <div style="width: 50px; height: 50px; border-radius: 14px; background: rgba(99, 102, 241, 0.15); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 20px;">
                     <i class="fa-solid fa-calendar-check"></i>
                 </div>
-                <h3 style="font-size: 1.3rem; margin-bottom: 12px;">Agendamento & Triagem</h3>
+                <h3 style="font-size: 1.3rem; margin-bottom: 12px;">Prontuário & Receituário</h3>
                 <p style="color: var(--text-muted); font-size: 0.95rem;">
-                    Liberação automática para o médico apenas após o preenchimento da anamnese, com fluxo de confirmação e reagendamento humanizado.
+                    Evolução médica completa com diagnóstico tricoscópico, prescrição digital e impressão direta de receitas para o paciente.
                 </p>
             </div>
         </div>

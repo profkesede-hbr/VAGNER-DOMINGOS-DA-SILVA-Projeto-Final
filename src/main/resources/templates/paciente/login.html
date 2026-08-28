@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doc-eMed — Login do Paciente</title>
+    <link rel="stylesheet" th:href="@{/css/docemed.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container" style="max-width: 480px; padding-top: 60px; padding-bottom: 60px;">
+        
+        <!-- HEADER VOLTAR -->
+        <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+            <a href="/" class="btn btn-outline btn-sm">
+                <i class="fa-solid fa-arrow-left"></i> Início
+            </a>
+            <span class="badge badge-confirmed">
+                <i class="fa-solid fa-user-check"></i> Paciente Cadastrado
+            </span>
+        </div>
+
+        <div class="glass-card" style="padding: 40px;">
+            <!-- CABEÇALHO -->
+            <div style="text-align: center; margin-bottom: 28px;">
+                <div class="nav-logo-icon" style="margin: 0 auto 16px auto; width: 54px; height: 54px; font-size: 1.8rem; background: linear-gradient(135deg, #10b981, #0ea5e9);">
+                    <i class="fa-solid fa-user-circle"></i>
+                </div>
+                <h2 style="font-size: 1.7rem; margin-bottom: 6px;">Login do Paciente</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    Acesse seu prontuário, acompanhe sua consulta, fila e receituários digitais.
+                </p>
+            </div>
+
+            <!-- FORMULÁRIO DE LOGIN -->
+            <form id="formPacienteLogin" onsubmit="handlePacienteLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Usuário de Login</label>
+                    <input type="text" id="pacLogin" class="form-control" placeholder="Digite seu usuário" required autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Senha de Acesso</label>
+                    <input type="password" id="pacSenha" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" id="btnEntrarPaciente" class="btn btn-secondary" style="width: 100%; padding: 14px; margin-top: 10px;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Entrar no Meu Portal
+                </button>
+            </form>
+
+            <div id="statusMsg" style="display: none; margin-top: 20px; padding: 12px; border-radius: var(--radius-sm); font-size: 0.9rem; text-align: center;"></div>
+
+            <!-- LINKS PARA CADASTRO -->
+            <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border-glass); text-align: center; font-size: 0.88rem; color: var(--text-dim);">
+                Ainda não tem cadastro? <br>
+                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
+                    <a href="/paciente/real-cadastro" style="color: var(--secondary); font-weight: 600; text-decoration: none;">
+                        <i class="fa-solid fa-id-card"></i> Cadastro Real
+                    </a>
+                    <span>•</span>
+                    <a href="/paciente/acesso" style="color: #fbbf24; font-weight: 600; text-decoration: none;">
+                        <i class="fa-solid fa-flask"></i> Modo de Teste
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        async function handlePacienteLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnEntrarPaciente');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Autenticando...';
+
+            const payload = {
+                login: document.getElementById('pacLogin').value.trim(),
+                senha: document.getElementById('pacSenha').value
+            };
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) throw new Error('Usuário ou senha incorretos.');
+
+                const data = await res.json();
+                
+                // Armazena sessão tanto como real ou teste
+                sessionStorage.setItem('docemed_user', JSON.stringify(data));
+                sessionStorage.setItem('docemed_real_user', JSON.stringify(data));
+
+                window.location.href = data.redirectUrl || '/paciente/portal';
+            } catch (err) {
+                const msg = document.getElementById('statusMsg');
+                msg.style.display = 'block';
+                msg.style.background = 'rgba(239, 68, 68, 0.15)';
+                msg.style.color = '#fca5a5';
+                msg.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+                msg.textContent = err.message;
+
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Entrar no Meu Portal';
+            }
+        }
+    </script>
+
+</body>
+</html>
