@@ -88,4 +88,8 @@ public class RealtimeNotificationService {
         // Notifica também canais globais (Médico / Telão)
         emitGlobalEvent(eventName, data);
     }
+
+    public void broadcast(String eventName, Object data) {
+        emitGlobalEvent(eventName, data);
+    }
 }

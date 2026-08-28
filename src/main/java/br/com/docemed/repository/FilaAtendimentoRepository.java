@@ -16,4 +16,7 @@ public interface FilaAtendimentoRepository extends JpaRepository<FilaAtendimento
     Optional<FilaAtendimento> findTopByStatusOrderByHorarioChamadaDesc(StatusFila status);
     Optional<FilaAtendimento> findByPacienteIdAndStatus(Long pacienteId, StatusFila status);
     boolean existsByPacienteIdAndStatusIn(Long pacienteId, List<StatusFila> statuses);
+
+    @org.springframework.data.jpa.repository.Query("SELECT MAX(f.posicao) FROM FilaAtendimento f")
+    Integer findMaxPosicao();
 }

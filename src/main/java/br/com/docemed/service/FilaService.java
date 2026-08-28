@@ -183,6 +183,7 @@ public class FilaService {
             case EM_ATENDIMENTO -> "Em Atendimento Clínico";
             case FINALIZADO -> "Atendimento Concluído";
             case AUSENTE -> "Cancelado por Não Comparecimento";
+            case CANCELADO -> "Atendimento Cancelado pela Recepção";
         };
     }
 }

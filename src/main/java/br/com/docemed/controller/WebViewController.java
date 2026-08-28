@@ -46,6 +46,16 @@ public class WebViewController {
         return "medico/portal";
     }
 
+    @GetMapping("/recepcao/login")
+    public String recepcaoLogin() {
+        return "recepcao/login";
+    }
+
+    @GetMapping("/recepcao/portal")
+    public String recepcaoPortal() {
+        return "recepcao/portal";
+    }
+
     @GetMapping("/painel-chamada")
     public String painelChamada() {
         return "tv/painel-chamada";

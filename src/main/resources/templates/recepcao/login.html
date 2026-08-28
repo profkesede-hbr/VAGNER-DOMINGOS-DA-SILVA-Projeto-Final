@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doc-eMed — Acesso da Recepção & Atendimento</title>
+    <link rel="stylesheet" th:href="@{/css/docemed.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container" style="max-width: 480px; padding-top: 60px; padding-bottom: 60px;">
+        
+        <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+            <a href="/" class="btn btn-outline btn-sm">
+                <i class="fa-solid fa-arrow-left"></i> Início
+            </a>
+            <span class="badge badge-called">
+                <i class="fa-solid fa-headset"></i> Recepção & Acolhimento
+            </span>
+        </div>
+
+        <div class="glass-card" style="padding: 40px;">
+            <div style="text-align: center; margin-bottom: 28px;">
+                <div class="nav-logo-icon" style="margin: 0 auto 16px auto; width: 54px; height: 54px; font-size: 1.8rem; background: linear-gradient(135deg, #f59e0b, #d97706);">
+                    <i class="fa-solid fa-clipboard-user"></i>
+                </div>
+                <h2 style="font-size: 1.7rem; margin-bottom: 6px;">Recepção Clínica</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    Portal de acolhimento presencial, cadastro de pacientes, controle de fila e chat interno.
+                </p>
+            </div>
+
+            <form id="formRecepLogin" onsubmit="handleRecepLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Usuário da Recepção</label>
+                    <input type="text" id="recLogin" class="form-control" placeholder="Digite o usuário da recepção" required autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <input type="password" id="recSenha" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+
+                <div style="margin-bottom: 20px; font-size: 0.8rem; color: var(--text-dim); background: rgba(15, 23, 42, 0.6); padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-glass);">
+                    <i class="fa-solid fa-shield-halved" style="color: #f59e0b;"></i> Acesso restrito à equipe de atendimento e acolhimento presencial da clínica.
+                </div>
+
+                <button type="submit" id="btnEntrar" class="btn btn-warning" style="width: 100%; padding: 14px; font-weight: 700;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Acessar Painel da Recepção
+                </button>
+            </form>
+
+            <div id="statusMsg" style="display: none; margin-top: 20px; padding: 12px; border-radius: var(--radius-sm); font-size: 0.9rem; text-align: center;"></div>
+        </div>
+
+    </div>
+
+    <script>
+        async function handleRecepLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnEntrar');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Autenticando...';
+
+            const payload = {
+                login: document.getElementById('recLogin').value.trim(),
+                senha: document.getElementById('recSenha').value
+            };
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) throw new Error('Usuário ou senha incorretos.');
+
+                const data = await res.json();
+                sessionStorage.setItem('docemed_recepcao', JSON.stringify(data));
+                sessionStorage.setItem('docemed_user_session', JSON.stringify(data));
+                window.location.href = '/recepcao/portal';
+            } catch (err) {
+                const msg = document.getElementById('statusMsg');
+                msg.style.display = 'block';
+                msg.style.background = 'rgba(239, 68, 68, 0.15)';
+                msg.style.color = '#fca5a5';
+                msg.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+                msg.textContent = err.message;
+
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Acessar Painel da Recepção';
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -5,5 +5,6 @@ public enum StatusFila {
     CHAMADO,
     EM_ATENDIMENTO,
     FINALIZADO,
-    AUSENTE
+    AUSENTE,
+    CANCELADO
 }

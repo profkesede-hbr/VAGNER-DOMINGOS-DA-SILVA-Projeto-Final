@@ -156,6 +156,8 @@ public class AuthService {
         String redirectUrl;
         if (usuario.getPerfil() == PerfilUsuario.MEDICO || usuario.getPerfil() == PerfilUsuario.ADMIN) {
             redirectUrl = "/medico/portal";
+        } else if (usuario.getPerfil() == PerfilUsuario.RECEPCAO) {
+            redirectUrl = "/recepcao/portal";
         } else {
             if (usuario.getPacienteId() != null) {
                 boolean isReal = pacienteRepository.findById(usuario.getPacienteId())

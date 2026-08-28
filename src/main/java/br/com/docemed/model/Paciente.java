@@ -38,8 +38,8 @@ public class Paciente {
     @Column(length = 20)
     private String rg;
 
-    @Column(length = 10)
-    private String sexo; // Feminino, Masculino, Outro
+    @Column(length = 30)
+    private String sexo; // Feminino, Masculino, Outro, Não informado
 
     @Column(length = 30)
     private String estadoCivil;

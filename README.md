@@ -67,14 +67,16 @@ A plataforma substitui o uso de fichas manuais em papel por uma solução digita
 
 | Módulo | Rota | Público-Alvo | Descrição |
 | :--- | :--- | :--- | :--- |
-| **Página Inicial** | `/` | Geral | Apresentação institucional com navegação direta para os 4 módulos |
+| **Página Inicial** | `/` | Geral | Apresentação institucional com navegação direta para os módulos |
+| **Recepção (Login)** | `/recepcao/login` | Atendimento / Balcão | Acesso seguro e restrito para recepcionistas |
+| **Portal da Recepção** | `/recepcao/portal` | Atendimento / Balcão | Cadastro presencial via CPF, reset de senhas, fila, agenda do dia e chat |
 | **Login do Paciente** | `/paciente/login` | Pacientes Cadastrados | Acesso unificado com redirecionamento inteligente (Real vs Teste) |
 | **Cadastro Paciente Real** | `/paciente/real-cadastro` | Novos Pacientes | Formulário de 4 etapas para abertura oficial de prontuário eletrônico |
 | **Portal do Paciente Real** | `/paciente/real-portal` | Paciente Real | Anamnese completa (144 perguntas) e histórico de prescrições |
 | **Modo de Testes Express** | `/paciente/acesso` | Demonstração | Cadastro rápido e login de teste com telão de recepção embutido na tela |
 | **Portal do Paciente Teste** | `/paciente/portal` | Paciente Teste | Ficha rápida, agendamento interativo e telão integrado com alertas sonoros |
 | **Área Médica (Login)** | `/medico/login` | Médicos / Gestores | Autenticação restrita e segura para o corpo clínico autorizado |
-| **Painel do Médico** | `/medico/portal` | Médicos / Gestores | Dashboard com gráficos, triagem de agendamentos, prontuário e catálogo |
+| **Painel do Médico** | `/medico/portal` | Médicos / Gestores | Dashboard com gráficos, triagem, prontuário, receitas e chat com recepção |
 | **Telão da Recepção (TV)** | `/painel-chamada` | Recepção / Sala de Espera | Telão em tela cheia com sintetizador de áudio para televisores |
 | **Swagger UI** | `/swagger-ui.html` | Desenvolvedores / Auditores | Documentação interativa e console de testes de todos os endpoints REST |
 
@@ -199,9 +201,58 @@ Abaixo são demonstradas as principais telas da aplicação, acompanhadas de sua
 
 ---
 
+## 🔐 Credenciais de Acesso & Perfis Oficiais
+
+Para testes, auditoria e homologação de bancas examinadoras, o sistema disponibiliza as seguintes contas pré-configuradas:
+
+| Perfil | Usuário / Login | Senha | Rota de Acesso | Permissões & Atribuições |
+| :--- | :--- | :--- | :--- | :--- |
+| **Recepção / Balcão** | `recep` | `recep123` | `/recepcao/login` | Cadastro presencial via CPF, envio de e-mails, reset de senhas, inclusão/rechamada na fila, agenda do dia, consulta de receitas e chat com médicos |
+| **Médico (Admin)** | `admin` | `admin123` | `/medico/login` | Prontuário, prescrição digital, gestão de fila com chamadas sonoras, catálogo de 144 perguntas e chat privado |
+| **Médico (Corpo Clínico)** | `medico` | `medico123` | `/medico/login` | Atendimento ambulatorial, triagem de agendamentos, emissão de receitas e chat privado |
+| **Paciente Presencial** | *(CPF do paciente)* | *(Senha gerada)* | `/paciente/login` | Login gerado automaticamente no balcão pela recepção, com envio por e-mail |
+| **Paciente Real** | *(Criado pelo usuário)*| *(Definida pelo usuário)*| `/paciente/login` | Acesso ao portal completo de 144 perguntas e histórico de prescrições |
+| **Paciente de Teste** | `teste` *(ou via cadastro express)* | `123456` | `/paciente/login` | Modo de demonstração rápida |
+
+---
+
+## 🎧 Módulo de Recepção & Atendimento Presencial
+
+Desenvolvido para atender pacientes que comparecem diretamente à clínica física (incluindo clientes sem smartphone ou sem acesso prévio à internet):
+
+1. **Cadastro Presencial de Balcão (Login Automático por CPF):**
+   * O atendente preenche o cadastro completo (dados pessoais, contato, endereço e emergência).
+   * O sistema define automaticamente o **CPF do paciente (apenas dígitos)** como seu **Login Oficial**.
+   * Gera uma senha provisória criptografada e dispara um **e-mail de boas-vindas com as credenciais e link direto** para que o paciente possa acessar o portal e alterar sua senha quando quiser.
+   * Permite incluir o paciente imediatamente na fila de espera do dia com um clique.
+
+2. **Gestão de Cadastros & Suporte ao Paciente:**
+   * Busca instantânea por Nome, CPF ou E-mail.
+   * Edição completa de dados demográficos e contatos de emergência.
+   * **Redefinição de Senha Segura (Reset):** A recepcionista pode resetar a senha de pacientes que esqueceram o acesso, com opção de envio automático de e-mail de confirmação.
+
+3. **Gestão Inteligente da Fila Presencial & Telão TV:**
+   * Inclusão manual de pacientes na fila com seleção de consultório e médico responsável.
+   * **Rechamada Imediata:** Permite rechamar pacientes ausentes ou que precisem retornar ao consultório, disparando alerta sonoro e visual no telão da recepção (`/painel-chamada`).
+   * Remoção e cancelamento ordenado da fila.
+
+4. **Consulta e Impressão de Receituários (Modo Somente Leitura):**
+   * A recepcionista pode visualizar e imprimir segundas vias de receituários médicos para entregar ao paciente, com **blindagem total que impede qualquer alteração clínica no conteúdo prescrito**.
+
+5. **Agenda Ambulatorial do Dia & Marcação Presencial:**
+   * Calendário e lista de consultas confirmadas e pendentes para a data atual.
+   * Agendamento presencial rápido de novas consultas.
+
+6. **💬 Chat Privado 1-para-1 em Tempo Real com o Corpo Clínico:**
+   * Comunicação direta e confidencial entre recepcionistas e médicos.
+   * Lista em tempo real de médicos e recepcionistas conectados (*status online/offline com heartbeat*).
+   * Notificações instantâneas via Server-Sent Events (SSE) e histórico cronológico persistido em banco de dados.
+
+---
+
 ## 🔒 Controle de Acesso & Segurança
 
-O acesso à **Área Médica e Administrativa** é estritamente restrito aos profissionais de saúde e gestores autorizados. O cadastro e provisionamento de contas médicas é realizado de forma interna e exclusiva pela administração do sistema, não havendo autocadastro público para profissionais. O autocadastro na plataforma é disponibilizado unicamente para os pacientes.
+O acesso aos módulos de **Recepção** e **Área Médica** é estritamente autenticado e restrito aos profissionais autorizados. O perfil `RECEPCAO` é direcionado de forma inteligente para `/recepcao/portal`, enquanto o perfil `MEDICO` acessa `/medico/portal`.
 
 ---
 
@@ -235,12 +286,12 @@ O projeto adota Clean Architecture em camadas com comunicação reativa:
                                │ HTTP REST & SSE Streams
 ┌──────────────────────────────▼──────────────────────────────┐
 │                    Spring Boot Controllers                  │
-│   (Auth, Agendamento, Fila, Dashboard, Prontuario, Anamnese)│
+│   (Auth, Recepcao, Chat, Agendamento, Fila, Prontuario)     │
 └──────────────────────────────┬──────────────────────────────┘
                                │ DTOs & Validation Layer
 ┌──────────────────────────────▼──────────────────────────────┐
 │                     Service Layer (Negócio)                 │
-│         (Regras de Triagem, SSE Emitter, Prontuário)        │
+│   (Recepcao, Chat, Triagem, Realtime SSE, Email, Prontuario)│
 └──────────────────────────────┬──────────────────────────────┘
                                │ JPA Repositories
 ┌──────────────────────────────▼──────────────────────────────┐
@@ -253,7 +304,8 @@ O projeto adota Clean Architecture em camadas com comunicação reativa:
 * **Backend:** Java 21 LTS, Spring Boot 4.1.0 (Spring MVC, Spring Data JPA, Validation, DevTools).
 * **Frontend:** Thymeleaf Template Engine, HTML5 Semântico, CSS3 Moderno (Glassmorphism), JavaScript ES6+ Nativo, Chart.js, FontAwesome 6.4.
 * **Banco de Dados:** MariaDB 11.4 (porta dedicada 3307).
-* **Comunicação em Tempo Real:** Server-Sent Events (SSE) via `SseEmitter` Spring.
+* **Comunicação em Tempo Real:** Server-Sent Events (SSE) via `SseEmitter` Spring com suporte a broadcast e canais privados.
+* **Notificações por E-mail:** `EmailNotificacaoService` para envio assíncrono de credenciais provisórias e confirmações.
 * **Documentação de API:** Springdoc OpenAPI / Swagger UI 3.0.
 * **Túnel Público Seguro:** Cloudflare Tunnel (HTTPS criptografado de ponta a ponta).
 
@@ -265,13 +317,14 @@ O sistema conta com um barramento de eventos instantâneos sem necessidade de re
 
 | Evento | Origem | Destino | Efeito Visual / Ação |
 | :--- | :--- | :--- | :--- |
-| `NOVO_AGENDAMENTO` | Paciente | Médico | Atualiza tabela de agendamentos e dispara toast |
+| `NOVO_AGENDAMENTO` | Paciente / Recepção | Médico | Atualiza tabela de agendamentos e dispara toast |
 | `AGENDAMENTO_CONFIRMADO` | Médico | Paciente | Atualiza status da consulta para "Confirmado" |
 | `REAGENDAMENTO_SOLICITADO` | Médico | Paciente | Exibe card de proposta de novo horário com justificativa |
 | `REAGENDAMENTO_ACEITO` | Paciente | Médico | Atualiza consulta remarcada na agenda |
-| `PACIENTE_CHAMADO` | Médico | Paciente & Telão TV | Dispara alerta sonoro, pisca painel e exibe sala de destino |
-| `FILA_ATUALIZADA` | Médico / Sistema | Geral | Recalcula posições e tempos de espera |
-| `NOVO_RECEITUARIO_DISPONIVEL`| Médico | Paciente | Disponibiliza imediatamente o receituário digital para impressão |
+| `PACIENTE_CHAMADO` | Médico / Recepção | Paciente & Telão TV | Dispara alerta sonoro, pisca painel e exibe sala de destino |
+| `FILA_ATUALIZADA` | Médico / Recepção | Geral | Recalcula posições e tempos de espera |
+| `NOVA_MENSAGEM_CHAT` | Médico / Recepção | Destinatário Privado | Entrega mensagem instantânea no modal de chat e atualiza badge |
+| `NOVO_RECEITUARIO_DISPONIVEL`| Médico | Paciente / Recepção | Disponibiliza imediatamente o receituário digital para impressão |
 
 ---
 
@@ -282,7 +335,25 @@ A documentação interativa completa está disponível em `/swagger-ui.html`.
 ### 🔑 Autenticação & Cadastro (`/api/auth`)
 * `POST /api/auth/cadastro-teste`: Cria paciente express e usuário de teste.
 * `POST /api/auth/cadastro-real`: Cria cadastro completo com prontuário oficial.
-* `POST /api/auth/login`: Autentica usuário e retorna perfil e rota inteligente.
+* `POST /api/auth/login`: Autentica usuário e retorna perfil e rota inteligente (`/medico/portal`, `/recepcao/portal`, etc.).
+
+### 🎧 Recepção & Atendimento Presencial (`/api/recepcao`)
+* `POST /api/recepcao/cadastrar-paciente`: Cadastro presencial com CPF como login, envio de e-mail com senha e inclusão opcional na fila.
+* `GET /api/recepcao/pacientes`: Listagem e busca de pacientes por Nome, CPF ou E-mail.
+* `PUT /api/recepcao/pacientes/{id}`: Atualização de dados cadastrais demográficos.
+* `POST /api/recepcao/pacientes/{id}/reset-senha`: Redefinição administrativa de senha de paciente.
+* `POST /api/recepcao/fila/incluir`: Inclusão direta de paciente na fila de espera do dia.
+* `POST /api/recepcao/fila/{filaId}/remover`: Cancelamento e remoção de paciente da fila.
+* `POST /api/recepcao/fila/{filaId}/rechamar`: Disparo de nova chamada com alerta sonoro no telão TV.
+* `GET /api/recepcao/agenda-hoje`: Lista de agendamentos ambulatoriais do dia.
+* `POST /api/recepcao/agendar-presencial`: Agendamento presencial rápido de consulta.
+* `GET /api/recepcao/pacientes/{pacienteId}/receituarios`: Consulta de receitas médicas do paciente (somente leitura).
+
+### 💬 Chat Privado em Tempo Real (`/api/chat`)
+* `POST /api/chat/enviar`: Envio de mensagem privada 1-para-1 com broadcast SSE instantâneo.
+* `GET /api/chat/conversa`: Recuperação do histórico cronológico de conversa privada entre dois usuários.
+* `GET /api/chat/equipe`: Listagem dos membros da equipe (médicos e recepção) com status online/offline em tempo real.
+* `POST /api/chat/heartbeat`: Atualização do status online do usuário conectado.
 
 ### 📅 Agendamentos & Triagem (`/api/agendamentos`)
 * `POST /api/agendamentos`: Solicita novo agendamento (exige anamnese).
@@ -293,7 +364,7 @@ A documentação interativa completa está disponível em `/swagger-ui.html`.
 ### 🚶 Fila de Atendimento (`/api/fila`)
 * `POST /api/fila/adicionar`: Adiciona paciente agendado à fila do dia.
 * `POST /api/fila/chamar`: Dispara chamada sonora e visual para o paciente e telão TV.
-* `POST /api/fila/{id}/status`: Altera status (`EM_ATENDIMENTO`, `FINALIZADO`, `AUSENTE`).
+* `POST /api/fila/{id}/status`: Altera status (`EM_ATENDIMENTO`, `FINALIZADO`, `AUSENTE`, `CANCELADO`).
 * `GET /api/fila/realtime/stream`: Stream SSE para atualização em tempo real.
 
 ### 📋 Prontuário & Receituário Digital (`/api/prontuarios`)

@@ -43,6 +43,16 @@ public class DataLoader implements CommandLineRunner {
                     .ativo(true)
                     .build());
         }
+        if (!usuarioRepository.existsByLogin("recep")) {
+            usuarioRepository.save(br.com.docemed.model.Usuario.builder()
+                    .login("recep")
+                    .senha("recep123")
+                    .nome("Atendimento & Recepção Geral")
+                    .perfil(br.com.docemed.model.PerfilUsuario.RECEPCAO)
+                    .telefoneWhatsapp("(11) 3333-5555")
+                    .ativo(true)
+                    .build());
+        }
 
         if (perguntaRepository.count() < 130) {
             perguntaRepository.deleteAll();
