@@ -92,15 +92,15 @@ Abaixo são demonstradas as principais telas da aplicação, acompanhadas de sua
   <img src="./docs/images/00-landing-page-oficial.png" alt="Landing Page Oficial Doc-eMed" width="95%">
 </div>
 
-* **Barra de Navegação Superior:** Logotipo com identidade visual gradiente, botão de acesso direto **"Login do Paciente"**, link para o **"Telão TV"** e badge de status do sistema online em tempo real.
-* **Seção de Boas-Vindas (Hero):** Título com gradiente dinâmico, identificação oficial do projeto acadêmico IFSP 2025.2 e descrição dos recursos de ponta.
-* **4 Botões de Ação Imediata:**
-  1. 🩺 **Área Médica:** Acesso exclusivo ao corpo clínico e gestores.
-  2. 👤 **Já sou Paciente (Login):** Entrada direta para clientes já cadastrados.
-  3. 💳 **Novo Cadastro Real:** Abertura formal de prontuário eletrônico completo.
-  4. 🧪 **Modo de Testes:** Demonstração expressa com fluxo ágil e telão embutido.
-* **Cards de Recursos & Destaques:** Resumo das 144 perguntas, do controle de filas em tempo real e do módulo de prontuário e receituário digital.
-* **Rodapé com Autoria:** Créditos da equipe de desenvolvedores e professor orientador.
+* **Barra de Navegação Superior:** Logotipo estilizado com identidade visual tricologia, botão de acesso direto **"Login do Paciente"** para clientes cadastrados, atalho para o **"Telão TV"** e badge de status do sistema online em tempo real.
+* **Seção de Boas-Vindas (Hero):** Badge superior com identificação institucional oficial (**`INSTITUTO HARDWARE BR EM CONJUNTO COM IFSP (2025.2)`**), título com gradiente dinâmico e síntese dos recursos de prontuário, triagem e fila virtual.
+* **4 Botões de Acesso Imediato:**
+  1. 🩺 **Área Médica:** Acesso exclusivo ao corpo clínico e gestores com login seguro.
+  2. 👤 **Já sou Paciente (Login):** Entrada direta para pacientes previamente cadastrados.
+  3. 💳 **Novo Cadastro Real:** Formulário oficial em 4 etapas para abertura de prontuário eletrônico completo.
+  4. 🧪 **Modo de Testes:** Demonstração expressa com fluxo ágil e telão de chamadas embutido na tela.
+* **Cards de Recursos & Destaques:** Apresentação das 144 perguntas clínicas oficiais, da fila virtual em tempo real (SSE) e do módulo de evolução médica com receituário digital.
+* **Rodapé Institucional com Identidade Visual:** Logotipo oficial do **Instituto Hardware BR**, autoria dos desenvolvedores e orientação acadêmica do Prof. Kesede R. Julio.
 
 ---
 
