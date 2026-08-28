@@ -37,6 +37,7 @@ Plataforma Web Full Stack desenvolvida em **Java 21 LTS** com **Spring Boot 4.1.
   - [5. Portal do Paciente — Cadastro Rápido (Modo de Teste)](#5--portal-do-paciente--cadastro-rápido-modo-de-teste)
   - [6. Portal do Paciente — Login (Modo de Teste)](#6--portal-do-paciente--login-modo-de-teste)
   - [7. Cadastro de Paciente Real — Prontuário Oficial Completo](#7--cadastro-de-paciente-real--prontuário-oficial-completo)
+  - [8. Telão da Recepção (TV) — Chamada Ambulatorial em Tela Cheia](#8--telão-da-recepção-tv--chamada-ambulatorial-em-tela-cheia)
 - [🔒 Controle de Acesso & Segurança](#-controle-de-acesso--segurança)
 - [📋 Estrutura da Ficha de Avaliação Capilar (144 Perguntas)](#-estrutura-da-ficha-de-avaliação-capilar-144-perguntas)
 - [🏗️ Arquitetura Técnica & Tecnologias](#️-arquitetura-técnica--tecnologias)
@@ -181,6 +182,20 @@ Abaixo são demonstradas as principais telas da aplicação, acompanhadas de sua
 * **Seção 2 — Contato & Emergência:** Celular/WhatsApp, Telefone Fixo, E-mail e Contato de Emergência (Nome e Telefone).
 * **Seção 3 — Endereço Completo:** CEP, Logradouro, Número, Complemento, Bairro, Cidade e Estado (UF).
 * **Seção 4 — Credenciais:** Definição de usuário e senha criptografada para acesso ao portal e histórico de receituários digitais.
+
+---
+
+### 8. 📺 Telão da Recepção (TV) — Chamada Ambulatorial em Tela Cheia
+> **Arquivo:** `docs/images/07-telao-recepcao-tv.png`
+
+<div align="center">
+  <img src="./docs/images/07-telao-recepcao-tv.png" alt="Telão da Recepção TV" width="95%">
+</div>
+
+* **Exibição Hospitalar em Tela Cheia:** Interface otimizada para televisores e monitores de recepção com alto contraste, relógio digital em tempo real e data sincronizada.
+* **Card Central de Chamada Instantânea:** Efeito visual pulsante em neon azul destacando o **Nome do Paciente Chamado**, **Consultório de Atendimento** e **Médico Responsável**.
+* **Alertas Sonoros Automatizados:** Emite toque sonoro característico de chamada médica hospitalar a cada novo acionamento via Server-Sent Events (SSE).
+* **Painel Inferior de Próximos Atendimentos:** Barra informativa com atualização contínua e automática dos pacientes na fila de espera.
 
 ---
 
