@@ -2,17 +2,17 @@
 
 <img src="./docs/images/logo-hardware-br.png" alt="Instituto Hardware BR" width="300px" style="margin-bottom: 20px;">
 
-# 🏥 Doc-eMed — Plataforma de Gestão Clínica & Prontuário Tricológico
+# 🏥 Doc-eMed (v1.1.0) — Plataforma Integrada de Gestão Clínica, Recepção Presencial & Prontuário Tricológico
 
-### Sistema Inteligente de Triagem, Fila Virtual em Tempo Real e Digitalização da Ficha de Avaliação Capilar (144 Questões)
+### Sistema Inteligente de Acolhimento, Triagem Médica, Chat Clínico 1-para-1 em Tempo Real, Fila Virtual Hospitalar e Digitalização da Ficha de Avaliação Capilar (144 Questões)
 
-Plataforma Web Full Stack desenvolvida em **Java 21 LTS** com **Spring Boot 4.1.0**, **Thymeleaf**, **Server-Sent Events (SSE)** em tempo real e banco de dados **MariaDB 11.4** para gestão de pacientes, catálogo dinâmico de perguntas, agendamento de consultas, triagem médica, receituário digital e sistema de filas com suporte a telão na recepção.
+Plataforma Web Full Stack desenvolvida em **Java 21 LTS** com **Spring Boot 4.1.0**, **Thymeleaf**, **Server-Sent Events (SSE)** com keepalive em tempo real e banco de dados **MariaDB 11.4** para gestão de pacientes presenciais e online, triagem ambulatorial, prontuário eletrônico, receituário digital magistral e sistema de filas com suporte a telão na recepção.
 
 [![Java](https://img.shields.io/badge/Java-21%20LTS-orange?style=for-the-badge&logo=openjdk)](https://openjdk.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.0-6DB33F?style=for-the-badge&logo=springboot)](https://spring.io/projects/spring-boot)
 [![MariaDB](https://img.shields.io/badge/MariaDB-11.4-003545?style=for-the-badge&logo=mariadb)](https://mariadb.org/)
 [![Swagger](https://img.shields.io/badge/Swagger-OpenAPI%203.0-85EA2D?style=for-the-badge&logo=swagger)](https://swagger.io/)
-[![Version](https://img.shields.io/badge/Release-v1.0.1-blue?style=for-the-badge)](https://github.com/profkesede-hbr/VAGNER-DOMINGOS-DA-SILVA-Projeto-Final)
+[![Version](https://img.shields.io/badge/Release-v1.1.0-blue?style=for-the-badge)](https://github.com/profkesede-hbr/VAGNER-DOMINGOS-DA-SILVA-Projeto-Final)
 [![Hardware BR](https://img.shields.io/badge/Instituto-Hardware%20BR-purple?style=for-the-badge)](https://hardwarebr.org)
 [![IFSP Campinas](https://img.shields.io/badge/IFSP-Campinas-red?style=for-the-badge)](https://cmp.ifsp.edu.br/)
 
@@ -29,16 +29,18 @@ Plataforma Web Full Stack desenvolvida em **Java 21 LTS** com **Spring Boot 4.1.
 
 - [📖 Sobre o Projeto](#-sobre-o-projeto)
 - [🧭 Módulos e Rotas da Aplicação](#-módulos-e-rotas-da-aplicação)
+- [🎧 Módulo Completo de Recepção & Acolhimento Presencial](#-módulo-completo-de-recepção--acolhimento-presencial)
+- [💬 Chat Privado 1-para-1 em Tempo Real (Médicos ↔ Recepção)](#-chat-privado-1-para-1-em-tempo-real-médicos--recepção)
 - [📸 Demonstração Visual das Interfaces (Screenshots Detalhados)](#-demonstração-visual-das-interfaces-screenshots-detalhados)
   - [1. Landing Page Oficial](#1--landing-page-oficial)
-  - [2. Dashboard Clínico do Médico](#2--dashboard-clínico-do-médico)
-  - [3. Portal do Paciente com Telão & Fila Integrada](#3--portal-do-paciente-com-telão--fila-integrada)
-  - [4. Área Médica — Autenticação Segura & Acesso Restrito](#4--área-médica--autenticação-segura--acesso-restrito)
-  - [5. Portal do Paciente — Cadastro Rápido (Modo de Teste)](#5--portal-do-paciente--cadastro-rápido-modo-de-teste)
-  - [6. Portal do Paciente — Login (Modo de Teste)](#6--portal-do-paciente--login-modo-de-teste)
-  - [7. Cadastro de Paciente Real — Prontuário Oficial Completo](#7--cadastro-de-paciente-real--prontuário-oficial-completo)
-  - [8. Telão da Recepção (TV) — Chamada Ambulatorial em Tela Cheia](#8--telão-da-recepção-tv--chamada-ambulatorial-em-tela-cheia)
-- [🔒 Controle de Acesso & Segurança](#-controle-de-acesso--segurança)
+  - [2. Módulo de Recepção — Gestão de Fila de Espera](#2--módulo-de-recepção--gestão-de-fila-de-espera)
+  - [3. Módulo de Recepção & Médico — Chat Privado em Tempo Real](#3--módulo-de-recepção--médico--chat-privado-em-tempo-real)
+  - [4. Dashboard Clínico do Médico](#4--dashboard-clínico-do-médico)
+  - [5. Telão da Recepção (TV) — Chamada Ambulatorial em Tela Cheia](#5--telão-da-recepção-tv--chamada-ambulatorial-em-tela-cheia)
+  - [6. Portal do Paciente com Fila Integrada](#6--portal-do-paciente-com-fila-integrada)
+  - [7. Área Médica — Autenticação Restrita](#7--área-médica--autenticação-restrita)
+  - [8. Cadastro Completo de Paciente Real (Prontuário Oficial)](#8--cadastro-completo-de-paciente-real-prontuário-oficial)
+- [🔐 Credenciais de Acesso & Perfis Oficiais](#-credenciais-de-acesso--perfis-oficiais)
 - [📋 Estrutura da Ficha de Avaliação Capilar (144 Perguntas)](#-estrutura-da-ficha-de-avaliação-capilar-144-perguntas)
 - [🏗️ Arquitetura Técnica & Tecnologias](#️-arquitetura-técnica--tecnologias)
 - [⚡ Comunicação em Tempo Real (Server-Sent Events)](#-comunicação-em-tempo-real-server-sent-events)
@@ -52,14 +54,12 @@ Plataforma Web Full Stack desenvolvida em **Java 21 LTS** com **Spring Boot 4.1.
 
 ## 📖 Sobre o Projeto
 
-O **Doc-eMed** é um ecossistema completo de prontuário eletrônico, triagem clínica e gestão de fluxo de atendimento especializado em **Terapia Capilar e Tricologia Integrada**, desenvolvido como projeto de conclusão de curso realizado pelo **Instituto Hardware BR** em conjunto com o **Instituto Federal de São Paulo (IFSP — 2025.2)**.
+O **Doc-eMed (v1.1.0)** é um ecossistema completo de gestão clínica, recepção presencial, prontuário eletrônico e fluxo ambulatorial especializado em **Terapia Capilar e Tricologia Integrada**, desenvolvido como projeto de conclusão de curso realizado pelo **Instituto Hardware BR** em conjunto com o **Instituto Federal de São Paulo (IFSP — 2025.2)**.
 
-A plataforma substitui o uso de fichas manuais em papel por uma solução digital auditável, ágil e interativa:
-* **Frontend Nativo Java**: Renderização server-side de alto desempenho com **Thymeleaf**, aliado a um Design System moderno em **Glassmorphism**, responsivo e com microinterações fluidas.
-* **Digitalização Fiel de 144 Perguntas**: Mapeamento integral das 8 páginas da ficha clássica do **SPA Brasil Cursos**, permitindo ao terapeuta capilar e médico registrar diagnósticos tricoscópicos precisos.
-* **Triagem Inteligente**: O agendamento de consultas é vinculado à anamnese prévia, garantindo que o profissional receba o histórico do paciente antes da consulta.
-* **Fila Virtual em Tempo Real (SSE)**: Sistema reativo com chamadas sonoras hospitalares e sincronização entre painéis de recepção e dispositivos dos pacientes.
-* **Prontuário Médico & Prescrição Digital**: Emissão de planos de tratamento em cabine, receituários formatados com orientações *home care* e módulo de impressão direta.
+A plataforma integra os três pilares do atendimento em saúde:
+1. **Recepção & Balcão Presencial:** Cadastro para clientes sem smartphone/internet com login por CPF, envio de e-mail de boas-vindas com senha provisória, rechamada no telão TV, reset administrativo de senhas, consulta de receitas (somente leitura) e chat confidencial.
+2. **Consultório & Corpo Clínico:** Anamnese de 144 questões (SPA Brasil Cursos), prontuário eletrônico com histórico cronológico, emissão de receituários magistrais, controle de fila e chat interno.
+3. **Pacientes & Acolhimento:** Ficha digital prévia, acompanhamento de posição na fila com alertas sonoros e histórico de prescrições.
 
 ---
 
@@ -67,24 +67,64 @@ A plataforma substitui o uso de fichas manuais em papel por uma solução digita
 
 | Módulo | Rota | Público-Alvo | Descrição |
 | :--- | :--- | :--- | :--- |
-| **Página Inicial** | `/` | Geral | Apresentação institucional com navegação direta para os módulos |
-| **Recepção (Login)** | `/recepcao/login` | Atendimento / Balcão | Acesso seguro e restrito para recepcionistas |
-| **Portal da Recepção** | `/recepcao/portal` | Atendimento / Balcão | Cadastro presencial via CPF, reset de senhas, fila, agenda do dia e chat |
-| **Login do Paciente** | `/paciente/login` | Pacientes Cadastrados | Acesso unificado com redirecionamento inteligente (Real vs Teste) |
+| **Página Inicial** | `/` | Geral | Apresentação institucional com navegação direta para todos os módulos |
+| **Recepção (Login)** | `/recepcao/login` | Atendimento / Balcão | Acesso seguro e restrito para recepcionistas (`recep` / `recep123`) |
+| **Portal da Recepção** | `/recepcao/portal` | Atendimento / Balcão | Cadastro presencial via CPF, reset de senhas, fila, agenda do dia, consulta de receitas e chat |
+| **Área Médica (Login)** | `/medico/login` | Médicos / Gestores | Autenticação restrita para o corpo clínico autorizado (`admin` / `admin123`) |
+| **Painel do Médico** | `/medico/portal` | Médicos / Gestores | Dashboard com gráficos, triagem, prontuário, receitas e chat com recepção |
+| **Telão da Recepção (TV)** | `/painel-chamada` | Recepção / Sala de Espera | Telão em tela cheia com sintetizador de áudio para televisores |
+| **Login do Paciente** | `/paciente/login` | Pacientes Cadastrados | Acesso unificado com login por CPF ou usuário |
 | **Cadastro Paciente Real** | `/paciente/real-cadastro` | Novos Pacientes | Formulário de 4 etapas para abertura oficial de prontuário eletrônico |
 | **Portal do Paciente Real** | `/paciente/real-portal` | Paciente Real | Anamnese completa (144 perguntas) e histórico de prescrições |
 | **Modo de Testes Express** | `/paciente/acesso` | Demonstração | Cadastro rápido e login de teste com telão de recepção embutido na tela |
 | **Portal do Paciente Teste** | `/paciente/portal` | Paciente Teste | Ficha rápida, agendamento interativo e telão integrado com alertas sonoros |
-| **Área Médica (Login)** | `/medico/login` | Médicos / Gestores | Autenticação restrita e segura para o corpo clínico autorizado |
-| **Painel do Médico** | `/medico/portal` | Médicos / Gestores | Dashboard com gráficos, triagem, prontuário, receitas e chat com recepção |
-| **Telão da Recepção (TV)** | `/painel-chamada` | Recepção / Sala de Espera | Telão em tela cheia com sintetizador de áudio para televisores |
 | **Swagger UI** | `/swagger-ui.html` | Desenvolvedores / Auditores | Documentação interativa e console de testes de todos os endpoints REST |
+
+---
+
+## 🎧 Módulo Completo de Recepção & Acolhimento Presencial
+
+Desenvolvido para atender pacientes que comparecem diretamente à clínica física (incluindo clientes sem celular ou sem acesso prévio à internet):
+
+1. **📇 Cadastro Presencial de Balcão (Login Oficial por CPF):**
+   - O atendente preenche o cadastro completo (dados pessoais, contato, endereço e emergência).
+   - O sistema define automaticamente o **CPF do paciente (apenas dígitos)** como seu **Login Oficial**.
+   - Gera uma senha provisória criptografada e dispara um **e-mail de boas-vindas com as credenciais e link direto** para que o paciente possa acessar o portal e alterar sua senha quando quiser.
+   - Opção de **inclusão imediata na fila de espera do dia** com um único clique.
+
+2. **🚶 Gestão Inteligente da Fila Presencial & Telão TV:**
+   - Visualização em tempo real de todos os pacientes aguardando atendimento.
+   - **Botão "Rechamar":** Dispara evento SSE `PACIENTE_CHAMADO` com alerta sonoro e visual imediato no Telão da Recepção ([`/painel-chamada`](https://publicly-chem-nursery-chapter.trycloudflare.com/painel-chamada)) para pacientes que perderam a chamada ou que precisam retornar ao consultório.
+   - Remoção, cancelamento ordenado e acompanhamento de status (`AGUARDANDO`, `CHAMADO`, `EM_ATENDIMENTO`, `FINALIZADO`, `AUSENTE`).
+
+3. **👥 Gestão de Pacientes & Redefinição de Senhas (Reset):**
+   - Busca instantânea por Nome, CPF ou E-mail.
+   - Edição de contatos, endereço e responsáveis de emergência.
+   - **Reset de Senha Administrativo:** A recepcionista pode alterar a senha de qualquer paciente que tenha esquecido o acesso, com disparo de notificação por e-mail.
+
+4. **📄 Consulta e Impressão de Receituários (Modo Somente Leitura):**
+   - A recepcionista pode pesquisar e visualizar as receitas médicas emitidas pelo corpo clínico para impressão e entrega ao paciente.
+   - **Blindagem Clínica:** Bloqueio total de edição para a recepção (somente leitura), preservando a integridade das decisões médicas.
+
+5. **📅 Agenda Ambulatorial do Dia:**
+   - Visualização das consultas marcadas para hoje.
+   - Agendamento presencial rápido de novos horários com seleção de médico especialista.
+
+---
+
+## 💬 Chat Privado 1-para-1 em Tempo Real (Médicos ↔ Recepção)
+
+Sistema de comunicação interna seguro, ágil e confidencial entre recepcionistas e médicos:
+- **Conversas Individuais e Privadas:** Selecione qualquer médico ou atendente conectado para iniciar uma conversa direta.
+- **Status Online em Tempo Real:** Indicador visual (verde = online / cinza = visto recentemente) atualizado via heartbeat automático.
+- **Sincronização Dupla (SSE + Fallback 2,5s):** Entrega instantânea de mensagens com barramento de eventos SSE e keepalive a cada 15s, além de sincronização contínua de polling a cada 2,5s para garantir zero perda de mensagens mesmo em caso de oscilação de rede.
+- **Alertas Sonoros & Badges:** Notificação com sinal sonoro hospitalar agradável e contador de mensagens não lidas no topo da página.
 
 ---
 
 ## 📸 Demonstração Visual das Interfaces (Screenshots Detalhados)
 
-Abaixo são demonstradas as principais telas da aplicação, acompanhadas de suas respectivas explicações técnicas e funcionais:
+Abaixo são demonstradas as principais telas da aplicação:
 
 ---
 
@@ -95,170 +135,109 @@ Abaixo são demonstradas as principais telas da aplicação, acompanhadas de sua
   <img src="./docs/images/00-landing-page-oficial.png" alt="Landing Page Oficial Doc-eMed" width="95%">
 </div>
 
-* **Barra de Navegação Superior:** Logotipo estilizado com identidade visual tricologia, botão de acesso direto **"Login do Paciente"** para clientes cadastrados, atalho para o **"Telão TV"** e badge de status do sistema online em tempo real.
-* **Seção de Boas-Vindas (Hero):** Badge superior com identificação institucional oficial (**`INSTITUTO HARDWARE BR EM CONJUNTO COM IFSP (2025.2)`**), título com gradiente dinâmico e síntese dos recursos de prontuário, triagem e fila virtual.
-* **4 Botões de Acesso Imediato:**
-  1. 🩺 **Área Médica:** Acesso exclusivo ao corpo clínico e gestores com login seguro.
-  2. 👤 **Já sou Paciente (Login):** Entrada direta para pacientes previamente cadastrados.
-  3. 💳 **Novo Cadastro Real:** Formulário oficial em 4 etapas para abertura de prontuário eletrônico completo.
-  4. 🧪 **Modo de Testes:** Demonstração expressa com fluxo ágil e telão de chamadas embutido na tela.
-* **Cards de Recursos & Destaques:** Apresentação das 144 perguntas clínicas oficiais, da fila virtual em tempo real (SSE) e do módulo de evolução médica com receituário digital.
-* **Rodapé Institucional com Identidade Visual:** Logotipo oficial do **Instituto Hardware BR**, autoria dos desenvolvedores e orientação acadêmica do Prof. Kesede R. Julio.
+* **Barra de Navegação Superior:** Logotipo estilizado com identidade visual tricologia, botão de acesso direto **"Recepção"**, **"Área Médica"**, **"Login do Paciente"** e **"Telão TV"**.
+* **Seção Hero Institucional:** Identificação oficial (**`INSTITUTO HARDWARE BR EM CONJUNTO COM IFSP (2025.2)`**), título com gradiente dinâmico e síntese dos recursos.
+* **Cards de Acesso:** Acesso à Recepção, Área Médica, Cadastro Real e Modo de Demonstração.
 
 ---
 
-### 2. 🩺 Dashboard Clínico do Médico
+### 2. 🎧 Módulo de Recepção — Gestão de Fila de Espera
+> **Arquivo:** `docs/images/08-recepcao-portal-fila.png`
+
+<div align="center">
+  <img src="./docs/images/08-recepcao-portal-fila.png" alt="Módulo de Recepção - Fila de Espera" width="95%">
+</div>
+
+* **Abas de Navegação:** *Fila de Espera do Dia*, *Novo Cadastro Presencial*, *Gestão de Pacientes & Senhas*, *Agenda do Dia*, *Consulta de Receituários* e *Chat Privado Médicos*.
+* **Tabela de Fila:** Posição, Nome do Paciente, Status Atual, Consultório, Médico Responsável e Ações com botões de **Rechamar** e **Remover**.
+* **Header Informativo:** Identificação da atendente conectada e botão de acesso rápido ao Telão TV e Chat.
+
+---
+
+### 3. 💬 Módulo de Recepção & Médico — Chat Privado em Tempo Real
+> **Arquivo:** `docs/images/09-recepcao-chat-tempo-real.png`
+
+<div align="center">
+  <img src="./docs/images/09-recepcao-chat-tempo-real.png" alt="Chat Privado em Tempo Real Recepção e Médico" width="95%">
+</div>
+
+* **Lista Lateral de Contatos:** Exibe médicos e recepcionistas com foto, status online e consultório.
+* **Janela de Mensagens Privadas:** Histórico cronológico bidirecional com balões diferenciados (laranja para recepção, azul para médico).
+* **Campo de Envio Ágil:** Envio com Enter ou clique no botão de aviãozinho com foco automático.
+
+---
+
+### 4. 🩺 Dashboard Clínico do Médico
 > **Arquivo:** `docs/images/06-medico-dashboard-clinico.png`
 
 <div align="center">
   <img src="./docs/images/06-medico-dashboard-clinico.png" alt="Dashboard Clínico do Médico" width="95%">
 </div>
 
-* **Métricas em Tempo Real (KPIs):** Indicadores consolidados de *Total de Pacientes*, *Agendamentos do Dia*, *Pacientes na Fila de Espera* e *Atendimentos Concluídos*.
-* **Gráficos Analíticos (Chart.js):**
-  * **Incidência de Alopecias (Barras):** Distribuição epidemiológica dos diagnósticos (Androgenética, Areata, Eflúvio Telógeno, Cicatriciais).
-  * **Tipos de Cabelo (Donut):** Distribuição percentual das hastes capilares (Liso, Ondulado, Cacheado, Crespo).
-* **Fila de Espera no Consultório:** Controle interativo com ações de **Chamar Paciente**, **Iniciar Consulta**, **Finalizar**, **Marcar Ausente** e **Abrir Prontuário/Anamnese**.
-* **Solicitações de Consulta & Triagem:** Lista de agendamentos pendentes com opções de **Confirmar**, **Propor Reagendamento com Justificativa** e **Adicionar à Fila do Dia**.
-* **Editor de Perguntas da Anamnese (144 Itens):** Catálogo dinâmico com busca instantânea e ativação/desativação de questões sem necessidade de alterações no código-fonte.
+* **Métricas em Tempo Real (KPIs):** Indicadores de *Total de Pacientes*, *Agendamentos do Dia*, *Pacientes na Fila* e *Atendimentos Concluídos*.
+* **Gráficos Analíticos (Chart.js):** Incidência de Alopecias (Barras) e Tipos de Cabelo (Donut).
+* **Fila no Consultório & Prontuário:** Botões de **Chamar**, **Iniciar Consulta**, **Prontuário** e **Ver Anamnese**.
 
 ---
 
-### 3. 📺 Portal do Paciente com Telão & Fila Integrada
-> **Arquivo:** `docs/images/01-paciente-portal-fila-integrada.png`
-
-<div align="center">
-  <img src="./docs/images/01-paciente-portal-fila-integrada.png" alt="Portal do Paciente com Telão e Fila Integrada" width="95%">
-</div>
-
-* **Painel da Recepção ao Vivo no Topo:** O paciente visualiza na mesma tela o relógio sincronizado da clínica, o nome do paciente chamado no momento, a sala e o médico responsável.
-* **Status Pessoal na Fila:** Indicador visual de posição na fila de espera com animação pulsante em azul quando o médico dispara o chamado (*"É A SUA VEZ!"*).
-* **Passo 1 (Ficha de Anamnese):** Coleta da queixa principal, tipo de fio, oleosidade do couro, histórico de procedimentos químicos e estilo de vida.
-* **Passo 2 (Agendamento de Consulta):** Escolha de data e horário com trava de segurança que exige o preenchimento prévio do Passo 1.
-
----
-
-### 4. 🔒 Área Médica — Autenticação Segura & Acesso Restrito
-> **Arquivo:** `docs/images/02-medico-login-restrito.png`
-
-<div align="center">
-  <img src="./docs/images/02-medico-login-restrito.png" alt="Área Médica - Login Seguro" width="65%">
-</div>
-
-* **Blindagem de Segurança:** Interface limpa, com campos protegidos e sem exposição de senhas pré-preenchidas.
-* **Governança de Acesso:** Provisionamento restrito aos médicos e administradores registrados pela gestão da clínica.
-
----
-
-### 5. 🧪 Portal do Paciente — Cadastro Rápido (Modo de Teste)
-> **Arquivo:** `docs/images/03-paciente-cadastro-teste.png`
-
-<div align="center">
-  <img src="./docs/images/03-paciente-cadastro-teste.png" alt="Cadastro de Paciente Teste" width="65%">
-</div>
-
-* **Onboarding Ágil:** Cadastro rápido com Nome, WhatsApp, Login, Senha, Sexo e Cidade.
-* **Entrada Automática:** Login imediato após o cadastro, redirecionando o paciente diretamente para o portal de triagem e fila.
-
----
-
-### 6. 🔑 Portal do Paciente — Login (Modo de Teste)
-> **Arquivo:** `docs/images/04-paciente-login-teste.png`
-
-<div align="center">
-  <img src="./docs/images/04-paciente-login-teste.png" alt="Login do Paciente Teste" width="65%">
-</div>
-
-* **Acesso Simples para Pacientes de Demonstração:** Permite ao paciente retornar à sessão para acompanhar seu agendamento e chamadas na fila.
-
----
-
-### 7. 📝 Cadastro de Paciente Real — Prontuário Oficial Completo
-> **Arquivo:** `docs/images/05-paciente-cadastro-real-completo.png`
-
-<div align="center">
-  <img src="./docs/images/05-paciente-cadastro-real-completo.png" alt="Cadastro Completo de Paciente Real" width="65%">
-</div>
-
-* **Seção 1 — Identificação:** Nome Completo, CPF (validação única), RG, Data de Nascimento, Sexo, Estado Civil e Profissão.
-* **Seção 2 — Contato & Emergência:** Celular/WhatsApp, Telefone Fixo, E-mail e Contato de Emergência (Nome e Telefone).
-* **Seção 3 — Endereço Completo:** CEP, Logradouro, Número, Complemento, Bairro, Cidade e Estado (UF).
-* **Seção 4 — Credenciais:** Definição de usuário e senha criptografada para acesso ao portal e histórico de receituários digitais.
-
----
-
-### 8. 📺 Telão da Recepção (TV) — Chamada Ambulatorial em Tela Cheia
+### 5. 📺 Telão da Recepção (TV) — Chamada Ambulatorial em Tela Cheia
 > **Arquivo:** `docs/images/07-telao-recepcao-tv.png`
 
 <div align="center">
   <img src="./docs/images/07-telao-recepcao-tv.png" alt="Telão da Recepção TV" width="95%">
 </div>
 
-* **Exibição Hospitalar em Tela Cheia:** Interface otimizada para televisores e monitores de recepção com alto contraste, relógio digital em tempo real e data sincronizada.
-* **Card Central de Chamada Instantânea:** Efeito visual pulsante em neon azul destacando o **Nome do Paciente Chamado**, **Consultório de Atendimento** e **Médico Responsável**.
-* **Alertas Sonoros Automatizados:** Emite toque sonoro característico de chamada médica hospitalar a cada novo acionamento via Server-Sent Events (SSE).
-* **Painel Inferior de Próximos Atendimentos:** Barra informativa com atualização contínua e automática dos pacientes na fila de espera.
+* **Exibição Hospitalar em Tela Cheia:** Interface otimizada para televisores e monitores de recepção com alto contraste e relógio digital sincronizado.
+* **Card Central de Chamada Instantânea:** Efeito visual em neon azul com **Nome do Paciente**, **Consultório** e **Médico**.
+* **Alertas Sonoros Automatizados:** Emite toque sonoro característico de chamada hospitalar a cada acionamento.
+
+---
+
+### 6. 📱 Portal do Paciente com Fila Integrada
+> **Arquivo:** `docs/images/01-paciente-portal-fila-integrada.png`
+
+<div align="center">
+  <img src="./docs/images/01-paciente-portal-fila-integrada.png" alt="Portal do Paciente com Fila Integrada" width="95%">
+</div>
+
+---
+
+### 7. 🔒 Área Médica — Autenticação Restrita
+> **Arquivo:** `docs/images/02-medico-login-restrito.png`
+
+<div align="center">
+  <img src="./docs/images/02-medico-login-restrito.png" alt="Área Médica - Login Seguro" width="65%">
+</div>
+
+---
+
+### 8. 📝 Cadastro Completo de Paciente Real (Prontuário Oficial)
+> **Arquivo:** `docs/images/05-paciente-cadastro-real-completo.png`
+
+<div align="center">
+  <img src="./docs/images/05-paciente-cadastro-real-completo.png" alt="Cadastro Completo de Paciente Real" width="65%">
+</div>
 
 ---
 
 ## 🔐 Credenciais de Acesso & Perfis Oficiais
 
-Para testes, auditoria e homologação de bancas examinadoras, o sistema disponibiliza as seguintes contas pré-configuradas:
+Para testes, homologação e bancas examinadoras, o sistema disponibiliza as contas pré-configuradas:
 
-| Perfil | Usuário / Login | Senha | Rota de Acesso | Permissões & Atribuições |
+| Perfil | Usuário / Login | Senha | Rota de Acesso | Atribuições |
 | :--- | :--- | :--- | :--- | :--- |
-| **Recepção / Balcão** | `recep` | `recep123` | `/recepcao/login` | Cadastro presencial via CPF, envio de e-mails, reset de senhas, inclusão/rechamada na fila, agenda do dia, consulta de receitas e chat com médicos |
-| **Médico (Admin)** | `admin` | `admin123` | `/medico/login` | Prontuário, prescrição digital, gestão de fila com chamadas sonoras, catálogo de 144 perguntas e chat privado |
-| **Médico (Corpo Clínico)** | `medico` | `medico123` | `/medico/login` | Atendimento ambulatorial, triagem de agendamentos, emissão de receitas e chat privado |
-| **Paciente Presencial** | *(CPF do paciente)* | *(Senha gerada)* | `/paciente/login` | Login gerado automaticamente no balcão pela recepção, com envio por e-mail |
-| **Paciente Real** | *(Criado pelo usuário)*| *(Definida pelo usuário)*| `/paciente/login` | Acesso ao portal completo de 144 perguntas e histórico de prescrições |
-| **Paciente de Teste** | `teste` *(ou via cadastro express)* | `123456` | `/paciente/login` | Modo de demonstração rápida |
-
----
-
-## 🎧 Módulo de Recepção & Atendimento Presencial
-
-Desenvolvido para atender pacientes que comparecem diretamente à clínica física (incluindo clientes sem smartphone ou sem acesso prévio à internet):
-
-1. **Cadastro Presencial de Balcão (Login Automático por CPF):**
-   * O atendente preenche o cadastro completo (dados pessoais, contato, endereço e emergência).
-   * O sistema define automaticamente o **CPF do paciente (apenas dígitos)** como seu **Login Oficial**.
-   * Gera uma senha provisória criptografada e dispara um **e-mail de boas-vindas com as credenciais e link direto** para que o paciente possa acessar o portal e alterar sua senha quando quiser.
-   * Permite incluir o paciente imediatamente na fila de espera do dia com um clique.
-
-2. **Gestão de Cadastros & Suporte ao Paciente:**
-   * Busca instantânea por Nome, CPF ou E-mail.
-   * Edição completa de dados demográficos e contatos de emergência.
-   * **Redefinição de Senha Segura (Reset):** A recepcionista pode resetar a senha de pacientes que esqueceram o acesso, com opção de envio automático de e-mail de confirmação.
-
-3. **Gestão Inteligente da Fila Presencial & Telão TV:**
-   * Inclusão manual de pacientes na fila com seleção de consultório e médico responsável.
-   * **Rechamada Imediata:** Permite rechamar pacientes ausentes ou que precisem retornar ao consultório, disparando alerta sonoro e visual no telão da recepção (`/painel-chamada`).
-   * Remoção e cancelamento ordenado da fila.
-
-4. **Consulta e Impressão de Receituários (Modo Somente Leitura):**
-   * A recepcionista pode visualizar e imprimir segundas vias de receituários médicos para entregar ao paciente, com **blindagem total que impede qualquer alteração clínica no conteúdo prescrito**.
-
-5. **Agenda Ambulatorial do Dia & Marcação Presencial:**
-   * Calendário e lista de consultas confirmadas e pendentes para a data atual.
-   * Agendamento presencial rápido de novas consultas.
-
-6. **💬 Chat Privado 1-para-1 em Tempo Real com o Corpo Clínico:**
-   * Comunicação direta e confidencial entre recepcionistas e médicos.
-   * Lista em tempo real de médicos e recepcionistas conectados (*status online/offline com heartbeat*).
-   * Notificações instantâneas via Server-Sent Events (SSE) e histórico cronológico persistido em banco de dados.
-
----
-
-## 🔒 Controle de Acesso & Segurança
-
-O acesso aos módulos de **Recepção** e **Área Médica** é estritamente autenticado e restrito aos profissionais autorizados. O perfil `RECEPCAO` é direcionado de forma inteligente para `/recepcao/portal`, enquanto o perfil `MEDICO` acessa `/medico/portal`.
+| **Recepção / Balcão** | `recep` | `recep123` | [`/recepcao/login`](https://publicly-chem-nursery-chapter.trycloudflare.com/recepcao/login) | Cadastro presencial via CPF, e-mails de boas-vindas, reset de senhas, inclusão/rechamada na fila, agenda do dia, consulta de receitas e chat |
+| **Médico (Admin)** | `admin` | `admin123` | [`/medico/login`](https://publicly-chem-nursery-chapter.trycloudflare.com/medico/login) | Prontuário, prescrição digital, gestão de fila com chamadas sonoras, catálogo de 144 perguntas e chat privado |
+| **Médico (Corpo Clínico)** | `medico` | `medico123` | [`/medico/login`](https://publicly-chem-nursery-chapter.trycloudflare.com/medico/login) | Atendimento ambulatorial, triagem de agendamentos, emissão de receitas e chat privado |
+| **Paciente Presencial** | *(CPF do paciente)* | *(Senha provisória)* | [`/paciente/login`](https://publicly-chem-nursery-chapter.trycloudflare.com/paciente/login) | Login gerado automaticamente no balcão pela recepção com envio por e-mail |
+| **Paciente Real** | *(Criado pelo usuário)*| *(Definida pelo usuário)*| [`/paciente/login`](https://publicly-chem-nursery-chapter.trycloudflare.com/paciente/login) | Acesso ao portal completo de 144 perguntas e histórico de prescrições |
+| **Paciente de Teste** | `teste` *(ou via cadastro express)* | `123456` | [`/paciente/login`](https://publicly-chem-nursery-chapter.trycloudflare.com/paciente/login) | Modo de demonstração rápida |
 
 ---
 
 ## 📋 Estrutura da Ficha de Avaliação Capilar (144 Perguntas)
 
-A anamnese tricologia digitalizada divide-se em 8 seções clínicas:
+A anamnese tricológica digitalizada divide-se em 8 seções clínicas:
 
 ```
 Ficha de Avaliação Capilar (SPA Brasil Cursos — 144 Perguntas)
@@ -283,17 +262,17 @@ O projeto adota Clean Architecture em camadas com comunicação reativa:
 │                 Frontend Web (Thymeleaf UI)                 │
 │         HTML5 • Vanilla CSS Glassmorphism • Chart.js        │
 └──────────────────────────────┬──────────────────────────────┘
-                               │ HTTP REST & SSE Streams
+                                │ HTTP REST & SSE Streams
 ┌──────────────────────────────▼──────────────────────────────┐
 │                    Spring Boot Controllers                  │
 │   (Auth, Recepcao, Chat, Agendamento, Fila, Prontuario)     │
 └──────────────────────────────┬──────────────────────────────┘
-                               │ DTOs & Validation Layer
+                                │ DTOs & Validation Layer
 ┌──────────────────────────────▼──────────────────────────────┐
 │                     Service Layer (Negócio)                 │
 │   (Recepcao, Chat, Triagem, Realtime SSE, Email, Prontuario)│
 └──────────────────────────────┬──────────────────────────────┘
-                               │ JPA Repositories
+                                │ JPA Repositories
 ┌──────────────────────────────▼──────────────────────────────┐
 │                   MariaDB 11.4 Database                     │
 │                  (Instância Porta 3307)                     │
@@ -301,10 +280,10 @@ O projeto adota Clean Architecture em camadas com comunicação reativa:
 ```
 
 ### Tecnologias Utilizadas
-* **Backend:** Java 21 LTS, Spring Boot 4.1.0 (Spring MVC, Spring Data JPA, Validation, DevTools).
+* **Backend:** Java 21 LTS, Spring Boot 4.1.0 (Spring MVC, Spring Data JPA, Validation, Scheduling, DevTools).
 * **Frontend:** Thymeleaf Template Engine, HTML5 Semântico, CSS3 Moderno (Glassmorphism), JavaScript ES6+ Nativo, Chart.js, FontAwesome 6.4.
 * **Banco de Dados:** MariaDB 11.4 (porta dedicada 3307).
-* **Comunicação em Tempo Real:** Server-Sent Events (SSE) via `SseEmitter` Spring com suporte a broadcast e canais privados.
+* **Comunicação em Tempo Real:** Server-Sent Events (SSE) via `SseEmitter` Spring com keepalive a cada 15s e fallback polling a cada 2,5s.
 * **Notificações por E-mail:** `EmailNotificacaoService` para envio assíncrono de credenciais provisórias e confirmações.
 * **Documentação de API:** Springdoc OpenAPI / Swagger UI 3.0.
 * **Túnel Público Seguro:** Cloudflare Tunnel (HTTPS criptografado de ponta a ponta).
@@ -312,8 +291,6 @@ O projeto adota Clean Architecture em camadas com comunicação reativa:
 ---
 
 ## ⚡ Comunicação em Tempo Real (Server-Sent Events)
-
-O sistema conta com um barramento de eventos instantâneos sem necessidade de recarregar páginas:
 
 | Evento | Origem | Destino | Efeito Visual / Ação |
 | :--- | :--- | :--- | :--- |
@@ -323,14 +300,15 @@ O sistema conta com um barramento de eventos instantâneos sem necessidade de re
 | `REAGENDAMENTO_ACEITO` | Paciente | Médico | Atualiza consulta remarcada na agenda |
 | `PACIENTE_CHAMADO` | Médico / Recepção | Paciente & Telão TV | Dispara alerta sonoro, pisca painel e exibe sala de destino |
 | `FILA_ATUALIZADA` | Médico / Recepção | Geral | Recalcula posições e tempos de espera |
-| `NOVA_MENSAGEM_CHAT` | Médico / Recepção | Destinatário Privado | Entrega mensagem instantânea no modal de chat e atualiza badge |
+| `NOVA_MENSAGEM_CHAT` | Médico / Recepção | Destinatário Privado | Entrega mensagem instantânea no chat e atualiza badge |
 | `NOVO_RECEITUARIO_DISPONIVEL`| Médico | Paciente / Recepção | Disponibiliza imediatamente o receituário digital para impressão |
+| `PING` | Servidor | Clientes SSE | Keepalive periódico a cada 15s para manter conexão estável |
 
 ---
 
 ## 📚 Endpoints da API REST (Swagger OpenAPI)
 
-A documentação interativa completa está disponível em `/swagger-ui.html`.
+A documentação interativa completa está disponível em [`/swagger-ui.html`](https://publicly-chem-nursery-chapter.trycloudflare.com/swagger-ui.html).
 
 ### 🔑 Autenticação & Cadastro (`/api/auth`)
 * `POST /api/auth/cadastro-teste`: Cria paciente express e usuário de teste.
@@ -388,7 +366,7 @@ A documentação interativa completa está disponível em `/swagger-ui.html`.
 
 # Ou compilar o pacote JAR de produção
 .\mvnw.cmd clean package -DskipTests
-java -jar target/doc-emed-1.0.1.jar
+java -jar target/doc-emed-1.1.0.jar
 ```
 
 Acesse em seu navegador: **`http://localhost:8080/`**
@@ -399,8 +377,9 @@ Acesse em seu navegador: **`http://localhost:8080/`**
 
 A plataforma está implantada de forma 100% autônoma dentro da VM **Hyper-V (`RageMU-Dev` - `192.168.240.10`)**:
 * **Diretório:** `C:\DocEMed-App`
+* **JAR:** `doc-emed-1.1.0.jar`
 * **Serviço do Windows:** Tarefa Agendada `DocEMed-24x7` executada no boot como `SYSTEM`.
-* **Isolamento Total:** Banco MariaDB na porta **3307** dedicada (os bancos SQL Server 1433 e MySQL 3306 permanecem intocados).
+* **Isolamento Total:** Banco MariaDB na porta **3307** dedicada.
 * **Túnel Cloudflare:** Mantém o acesso público HTTPS ativo de forma permanente e gratuita.
 
 ---

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>br.com.docemed</groupId>
 	<artifactId>doc-emed</artifactId>
-	<version>1.0.1</version>
+	<version>1.1.0</version>
 	<name>Doc-eMed</name>
 	<description>Doc-eMed — Sistema Inteligente de Gestão Clínica e Digitalização da Ficha de Avaliação Capilar</description>
 	<url>https://github.com/profkesede-hbr/VAGNER-DOMINGOS-DA-SILVA-Projeto-Final</url>
