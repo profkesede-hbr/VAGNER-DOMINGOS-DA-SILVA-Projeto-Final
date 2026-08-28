@@ -41,6 +41,9 @@ public class Paciente {
     @Column(length = 10)
     private String sexo; // Feminino, Masculino, Outro
 
+    @Column(length = 30)
+    private String estadoCivil;
+
     @Column(length = 150)
     private String profissao;
 
@@ -58,16 +61,31 @@ public class Paciente {
     @Column(length = 150)
     private String email;
 
+    @Column(name = "contato_emergencia_nome", length = 150)
+    private String contatoEmergenciaNome;
+
+    @Column(name = "contato_emergencia_telefone", length = 30)
+    private String contatoEmergenciaTelefone;
+
     // ─── ENDEREÇO ─────────────────────────────────────────────────────────────
 
     @Column(length = 250)
     private String endereco;
+
+    @Column(length = 20)
+    private String numero;
+
+    @Column(length = 100)
+    private String complemento;
 
     @Column(length = 100)
     private String bairro;
 
     @Column(length = 100)
     private String cidade;
+
+    @Column(length = 10)
+    private String estado;
 
     @Column(length = 10)
     private String cep;

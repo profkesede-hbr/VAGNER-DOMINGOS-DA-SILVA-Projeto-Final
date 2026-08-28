@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doc-eMed — Cadastro Completo de Paciente (Prontuário Real)</title>
+    <link rel="stylesheet" th:href="@{/css/docemed.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container" style="max-width: 860px; padding-top: 40px; padding-bottom: 60px;">
+        
+        <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+            <a href="/" class="btn btn-outline btn-sm">
+                <i class="fa-solid fa-arrow-left"></i> Início
+            </a>
+            <span class="badge badge-confirmed">
+                <i class="fa-solid fa-id-card"></i> Prontuário Oficial
+            </span>
+        </div>
+
+        <div class="glass-card" style="padding: 40px;">
+            <div style="text-align: center; margin-bottom: 32px;">
+                <div class="nav-logo-icon" style="margin: 0 auto 16px auto; width: 52px; height: 52px; font-size: 1.8rem; background: linear-gradient(135deg, #10b981, #059669);">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+                <h2 style="font-size: 1.8rem; margin-bottom: 6px;">Cadastro de Paciente Real</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">
+                    Preencha os dados cadastrais completos para abertura oficial do prontuário eletrônico tricologia.
+                </p>
+            </div>
+
+            <form id="formCadastroReal" onsubmit="handleCadastroReal(event)">
+                
+                <!-- SEÇÃO 1: DADOS PESSOAIS -->
+                <div style="border-bottom: 1px solid var(--border-glass); padding-bottom: 16px; margin-bottom: 24px;">
+                    <h3 style="font-size: 1.15rem; color: var(--primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-user"></i> 1. Dados Pessoais & Identificação
+                    </h3>
+
+                    <div class="form-group">
+                        <label class="form-label">Nome Completo do Paciente *</label>
+                        <input type="text" id="realNome" class="form-control" placeholder="Ex: Dra. Mariana Costa Santos" required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">CPF *</label>
+                            <input type="text" id="realCpf" class="form-control" placeholder="000.000.000-00" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">RG</label>
+                            <input type="text" id="realRg" class="form-control" placeholder="00.000.000-0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Data de Nascimento *</label>
+                            <input type="date" id="realDataNasc" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">Sexo</label>
+                            <select id="realSexo" class="form-control">
+                                <option value="Feminino">Feminino</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Estado Civil</label>
+                            <select id="realEstadoCivil" class="form-control">
+                                <option value="Solteiro(a)">Solteiro(a)</option>
+                                <option value="Casado(a)">Casado(a)</option>
+                                <option value="Divorciado(a)">Divorciado(a)</option>
+                                <option value="Viúvo(a)">Viúvo(a)</option>
+                                <option value="União Estável">União Estável</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Profissão</label>
+                            <input type="text" id="realProfissao" class="form-control" placeholder="Ex: Engenheira de Software">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO 2: CONTATO & EMERGÊNCIA -->
+                <div style="border-bottom: 1px solid var(--border-glass); padding-bottom: 16px; margin-bottom: 24px;">
+                    <h3 style="font-size: 1.15rem; color: var(--secondary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-phone"></i> 2. Contato & Emergência
+                    </h3>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">Celular / WhatsApp *</label>
+                            <input type="text" id="realCelular" class="form-control" placeholder="(11) 99999-8888" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Telefone Fixo</label>
+                            <input type="text" id="realTelefone" class="form-control" placeholder="(11) 3333-4444">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">E-mail *</label>
+                            <input type="email" id="realEmail" class="form-control" placeholder="paciente@dominio.com" required>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">Nome do Contato de Emergência</label>
+                            <input type="text" id="realEmergenciaNome" class="form-control" placeholder="Ex: Carlos Santos (Esposo)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Telefone de Emergência</label>
+                            <input type="text" id="realEmergenciaTel" class="form-control" placeholder="(11) 98888-7777">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO 3: ENDEREÇO COMPLETO -->
+                <div style="border-bottom: 1px solid var(--border-glass); padding-bottom: 16px; margin-bottom: 24px;">
+                    <h3 style="font-size: 1.15rem; color: var(--accent); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-location-dot"></i> 3. Endereço Residencial
+                    </h3>
+
+                    <div style="display: grid; grid-template-columns: 180px 1fr 120px; gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">CEP</label>
+                            <input type="text" id="realCep" class="form-control" placeholder="01001-000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Logradouro / Rua</label>
+                            <input type="text" id="realEndereco" class="form-control" placeholder="Av. Paulista">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Número</label>
+                            <input type="text" id="realNumero" class="form-control" placeholder="1000">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">Complemento</label>
+                            <input type="text" id="realComplemento" class="form-control" placeholder="Apto 42">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Bairro</label>
+                            <input type="text" id="realBairro" class="form-control" placeholder="Bela Vista">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cidade</label>
+                            <input type="text" id="realCidade" class="form-control" value="São Paulo">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Estado (UF)</label>
+                            <input type="text" id="realEstado" class="form-control" value="SP" maxlength="2">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO 4: CREDENCIAIS DE ACESSO -->
+                <div style="margin-bottom: 28px;">
+                    <h3 style="font-size: 1.15rem; color: #fbbf24; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-lock"></i> 4. Criação da Conta de Acesso
+                    </h3>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">Usuário de Login *</label>
+                            <input type="text" id="realLogin" class="form-control" placeholder="ex: mariana.costa" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Senha de Acesso *</label>
+                            <input type="password" id="realSenha" class="form-control" placeholder="••••••••" required>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" id="btnSalvarReal" class="btn btn-secondary" style="width: 100%; padding: 16px; font-size: 1.05rem;">
+                    <i class="fa-solid fa-check"></i> Concluir Cadastro Completo & Abrir Ficha de Anamnese
+                </button>
+            </form>
+
+            <div id="statusMsg" style="display: none; margin-top: 20px; padding: 14px; border-radius: var(--radius-sm); font-size: 0.95rem; text-align: center;"></div>
+        </div>
+
+    </div>
+
+    <script>
+        async function handleCadastroReal(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSalvarReal');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registrando prontuário...';
+
+            const payload = {
+                nome: document.getElementById('realNome').value.trim(),
+                cpf: document.getElementById('realCpf').value.trim(),
+                rg: document.getElementById('realRg').value.trim(),
+                dataNascimento: document.getElementById('realDataNasc').value,
+                sexo: document.getElementById('realSexo').value,
+                estadoCivil: document.getElementById('realEstadoCivil').value,
+                profissao: document.getElementById('realProfissao').value.trim(),
+                telefone: document.getElementById('realTelefone').value.trim(),
+                celularWhatsapp: document.getElementById('realCelular').value.trim(),
+                email: document.getElementById('realEmail').value.trim(),
+                contatoEmergenciaNome: document.getElementById('realEmergenciaNome').value.trim(),
+                contatoEmergenciaTelefone: document.getElementById('realEmergenciaTel').value.trim(),
+                cep: document.getElementById('realCep').value.trim(),
+                endereco: document.getElementById('realEndereco').value.trim(),
+                numero: document.getElementById('realNumero').value.trim(),
+                complemento: document.getElementById('realComplemento').value.trim(),
+                bairro: document.getElementById('realBairro').value.trim(),
+                cidade: document.getElementById('realCidade').value.trim(),
+                estado: document.getElementById('realEstado').value.trim(),
+                login: document.getElementById('realLogin').value.trim(),
+                senha: document.getElementById('realSenha').value
+            };
+
+            try {
+                const res = await fetch('/api/auth/cadastro-real', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    const err = await res.text();
+                    throw new Error(err || 'Falha ao registrar prontuário.');
+                }
+
+                const data = await res.json();
+                sessionStorage.setItem('docemed_real_user', JSON.stringify(data));
+                window.location.href = '/paciente/real-portal';
+            } catch (err) {
+                const msg = document.getElementById('statusMsg');
+                msg.style.display = 'block';
+                msg.style.background = 'rgba(239, 68, 68, 0.15)';
+                msg.style.color = '#fca5a5';
+                msg.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+                msg.textContent = err.message;
+
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Concluir Cadastro Completo & Abrir Ficha de Anamnese';
+            }
+        }
+    </script>
+
+</body>
+</html>

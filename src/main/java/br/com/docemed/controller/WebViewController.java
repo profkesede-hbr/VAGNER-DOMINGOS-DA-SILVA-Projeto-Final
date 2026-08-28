@@ -21,6 +21,16 @@ public class WebViewController {
         return "paciente/portal";
     }
 
+    @GetMapping("/paciente/real-cadastro")
+    public String pacienteRealCadastro() {
+        return "paciente/real-cadastro";
+    }
+
+    @GetMapping("/paciente/real-portal")
+    public String pacienteRealPortal() {
+        return "paciente/real-portal";
+    }
+
     @GetMapping("/medico/login")
     public String medicoLogin() {
         return "medico/login";

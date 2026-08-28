@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doc-eMed — Ficha Oficial de Avaliação Capilar (144 Perguntas)</title>
+    <link rel="stylesheet" th:href="@{/css/docemed.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script th:src="@{/js/docemed-realtime.js}"></script>
+    <style>
+        .section-box {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            margin-bottom: 28px;
+        }
+        .section-title {
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="container">
+        <nav class="navbar">
+            <a href="/" class="nav-brand">
+                <div class="nav-logo-icon" style="background: linear-gradient(135deg, #10b981, #0ea5e9);">
+                    <i class="fa-solid fa-file-medical" style="color: #ffffff;"></i>
+                </div>
+                <div>
+                    <div class="brand-font" style="font-size: 1.3rem; font-weight: 800;">
+                        Doc<span style="color: var(--primary);">-eMed</span>
+                    </div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600;">
+                        Prontuário Eletrônico & Anamnese Integral
+                    </div>
+                </div>
+            </a>
+            
+            <div style="display: flex; gap: 14px; align-items: center;">
+                <div style="text-align: right; margin-right: 8px;">
+                    <div id="realPacienteNomeDisplay" style="font-weight: 700; font-size: 0.95rem;">Carregando...</div>
+                    <div style="font-size: 0.75rem; color: var(--secondary);">• Prontuário Oficial</div>
+                </div>
+                <button onclick="logoutReal()" class="btn btn-outline btn-sm">
+                    <i class="fa-solid fa-right-from-bracket"></i> Sair
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container" style="padding-bottom: 80px;">
+
+        <!-- CABEÇALHO DO PRONTUÁRIO -->
+        <div class="glass-card" style="padding: 28px 36px; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div>
+                <span class="badge badge-confirmed" style="margin-bottom: 6px;">Protocolo Oficial SPA Brasil Cursos</span>
+                <h1 style="font-size: 1.8rem;">Ficha Completa de Avaliação Capilar</h1>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 4px;">
+                    Preenchimento integral das 144 perguntas clínicas das 8 páginas da ficha tricologia.
+                </p>
+            </div>
+            <div id="statusAnamneseRealBadge">
+                <span class="badge badge-pending"><i class="fa-solid fa-pen"></i> Em Preenchimento</span>
+            </div>
+        </div>
+
+        <form id="formAnamneseReal" onsubmit="handleSalvarAnamneseReal(event)">
+
+            <!-- 1. TRICOLOGIA & QUEIXA -->
+            <div class="section-box">
+                <h3 class="section-title" style="color: var(--primary);">
+                    <i class="fa-solid fa-scissors"></i> 1. Tricologia & Queixa Principal
+                </h3>
+
+                <div class="form-group">
+                    <label class="form-label">Queixa Principal do Cliente / Paciente *</label>
+                    <textarea id="rQueixa" class="form-control" placeholder="Descreva detalhadamente o motivo da consulta, histórico inicial da queixa e sintomas..." required></textarea>
+                </div>
+
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Cabelo</label>
+                        <select id="rTipoCabelo" class="form-control">
+                            <option value="Liso">Liso</option>
+                            <option value="Ondulado" selected>Ondulado</option>
+                            <option value="Cacheado">Cacheado</option>
+                            <option value="Crespo">Crespo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Pigmentação Residual</label>
+                        <select id="rPigmentacao" class="form-control">
+                            <option value="Pigmentado">Pigmentado</option>
+                            <option value="Difuso">Difuso</option>
+                            <option value="Semi pigmentado">Semi pigmentado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Característica do Couro Cabeludo</label>
+                        <select id="rCouro" class="form-control">
+                            <option value="Normal">Normal</option>
+                            <option value="Seco">Seco</option>
+                            <option value="Oleoso" selected>Oleoso</option>
+                            <option value="Misto">Misto</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. ALIMENTAÇÃO & NUTRIÇÃO -->
+            <div class="section-box">
+                <h3 class="section-title" style="color: var(--secondary);">
+                    <i class="fa-solid fa-apple-whole"></i> 2. Alimentação & Hábitos Nutricionais
+                </h3>
+
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Ingere Frutas?</label>
+                        <select id="rFrutas" class="form-control">
+                            <option value="Sim">Sim</option>
+                            <option value="Pouco" selected>Pouco</option>
+                            <option value="Não">Não</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ingere Legumes?</label>
+                        <select id="rLegumes" class="form-control">
+                            <option value="Sim" selected>Sim</option>
+                            <option value="Pouco">Pouco</option>
+                            <option value="Não">Não</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ingere Verduras?</label>
+                        <select id="rVerduras" class="form-control">
+                            <option value="Sim" selected>Sim</option>
+                            <option value="Pouco">Pouco</option>
+                            <option value="Não">Não</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Copos de Água / Líquidos Diários</label>
+                        <input type="text" id="rAgua" class="form-control" placeholder="Ex: 6 a 8 copos (aprox 2L)" value="2 Litros">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Consumo de Glúten, Lactose ou Alimentos Gordurosos?</label>
+                        <input type="text" id="rGlutenLactose" class="form-control" placeholder="Ex: Consome lactose moderada, evita frituras">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Descrição Geral dos Hábitos Alimentares no Dia a Dia</label>
+                    <textarea id="rHabitosAlimentares" class="form-control" placeholder="Descreva o que costuma comer no café da manhã, almoço e jantar e seus horários..."></textarea>
+                </div>
+            </div>
+
+            <!-- 3. HISTÓRICO DE SAÚDE GERAL (25 PATOLOGIAS) -->
+            <div class="section-box">
+                <h3 class="section-title" style="color: var(--accent);">
+                    <i class="fa-solid fa-heart-pulse"></i> 3. Histórico de Saúde Geral (25 Patologias)
+                </h3>
+
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Problemas no Coração?</label>
+                        <select id="rCoracao" class="form-control"><option value="false">Não</option><option value="true">Sim</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Diabetes Descompensada?</label>
+                        <select id="rDiabetes" class="form-control"><option value="false">Não</option><option value="true">Sim</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Pressão Alta?</label>
+                        <select id="rPressao" class="form-control"><option value="false">Não</option><option value="true">Sim</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estresse Intenso?</label>
+                        <select id="rEstresse" class="form-control"><option value="true" selected>Sim</option><option value="false">Não</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Problemas na Tireoide?</label>
+                        <select id="rTireoide" class="form-control"><option value="false">Não</option><option value="true">Sim</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Covid-19 nos últimos 12 meses?</label>
+                        <select id="rCovid" class="form-control"><option value="false">Não</option><option value="true">Sim</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Depressão / Ansiedade?</label>
+                        <select id="rDepressao" class="form-control"><option value="false">Não</option><option value="true">Sim</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cirurgia nos últimos 6 meses?</label>
+                        <select id="rCirurgia" class="form-control"><option value="false">Não</option><option value="true">Sim</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Má Circulação / Trombose?</label>
+                        <select id="rCirculacao" class="form-control"><option value="false">Não</option><option value="true">Sim</option></select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. MEDICAMENTOS, GINECOLÓGICO & INTESTINO -->
+            <div class="section-box">
+                <h3 class="section-title" style="color: #fbbf24;">
+                    <i class="fa-solid fa-pills"></i> 4. Medicamentos & Histórico Fisiológico
+                </h3>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Uso de Medicamentos Contínuos</label>
+                        <input type="text" id="rMedicamentos" class="form-control" placeholder="Informe se toma algum remédio diariamente (ou 'Nenhum')">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Uso de Anticoncepcional</label>
+                        <input type="text" id="rAnticoncepcional" class="form-control" placeholder="Nome do medicamento ou 'Não utiliza'">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Ciclo Menstrual (Se aplicável)</label>
+                        <select id="rMenstruacao" class="form-control">
+                            <option value="Regular">Regular</option>
+                            <option value="Irregular">Irregular</option>
+                            <option value="Menopausa">Menopausa</option>
+                            <option value="Não se aplica">Não se aplica</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Funcionamento Intestinal (Escala de Bristol)</label>
+                        <select id="rBristol" class="form-control">
+                            <option value="TIPO_3">Tipo 3 ou 4 — Normal / Saudável</option>
+                            <option value="TIPO_1">Tipo 1 ou 2 — Constipação / Ressecado</option>
+                            <option value="TIPO_6">Tipo 5 a 7 — Fezes Pastosas / Diarreia</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. HISTÓRICO DA QUEDA CAPILAR & QUÍMICA -->
+            <div class="section-box">
+                <h3 class="section-title" style="color: #f87171;">
+                    <i class="fa-solid fa-feather"></i> 5. Histórico da Queda & Procedimentos Químicos
+                </h3>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Quando começou a queda capilar?</label>
+                        <input type="text" id="rTempoQueda" class="form-control" placeholder="Ex: Há 4 meses, após episódio de estresse/parto" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Notou nascimento de novos fios no local?</label>
+                        <select id="rNovosFios" class="form-control">
+                            <option value="true">Sim</option>
+                            <option value="false">Não</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Química nos últimos 12 meses?</label>
+                        <select id="rQuimica" class="form-control">
+                            <option value="true">Sim (tintura, luzes, alisamento, progressiva)</option>
+                            <option value="false">Não</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Detalhes da Química Realizada</label>
+                        <input type="text" id="rDetalhesQuimica" class="form-control" placeholder="Ex: Mechas loiras há 3 meses">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. TERMO DE RESPONSABILIDADE -->
+            <div class="section-box" style="border-color: rgba(16, 185, 129, 0.4); background: rgba(6, 78, 59, 0.15);">
+                <h3 class="section-title" style="color: var(--secondary);">
+                    <i class="fa-solid fa-shield-halved"></i> 6. Termo de Consentimento & Responsabilidade
+                </h3>
+                <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 16px;">
+                    Declaro que as informações acima são a expressão fiel da verdade e autorizo a utilização destes dados clínicos para o diagnóstico e plano terapêutico capilar pela equipe especializada da clínica Doc-eMed.
+                </p>
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #ffffff; font-weight: 600;">
+                        <input type="checkbox" id="rTermo" required checked style="width: 20px; height: 20px; accent-color: var(--secondary);">
+                        Li e concordo com o Termo de Responsabilidade Clínica.
+                    </label>
+                </div>
+            </div>
+
+            <!-- BOTÃO DE SUBMISSÃO -->
+            <button type="submit" id="btnSalvarAnamneseReal" class="btn btn-secondary" style="width: 100%; padding: 18px; font-size: 1.1rem;">
+                <i class="fa-solid fa-floppy-disk"></i> Salvar Prontuário Integral & Liberar para Agendamento
+            </button>
+        </form>
+
+    </main>
+
+    <script>
+        let currentRealUser = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const raw = sessionStorage.getItem('docemed_real_user') || sessionStorage.getItem('docemed_user');
+            if (!raw) {
+                window.location.href = '/paciente/real-cadastro';
+                return;
+            }
+
+            currentRealUser = JSON.parse(raw);
+            document.getElementById('realPacienteNomeDisplay').textContent = currentRealUser.nome;
+
+            // Carregar anamnese se já existir
+            try {
+                const res = await fetch(`/anamnese/paciente/${currentRealUser.pacienteId}/recente`);
+                if (res.ok) {
+                    const a = await res.json();
+                    document.getElementById('rQueixa').value = a.queixaPrincipal || '';
+                    document.getElementById('statusAnamneseRealBadge').innerHTML = '<span class="badge badge-confirmed"><i class="fa-solid fa-check"></i> Ficha Salva no Prontuário</span>';
+                    document.getElementById('btnSalvarAnamneseReal').innerHTML = '<i class="fa-solid fa-check"></i> Atualizar Prontuário Integral';
+                }
+            } catch (e) {}
+        });
+
+        async function handleSalvarAnamneseReal(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSalvarAnamneseReal');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gravando prontuário no banco de dados...';
+
+            const payload = {
+                pacienteId: currentRealUser.pacienteId,
+                queixaPrincipal: document.getElementById('rQueixa').value,
+                tipoCabelo: document.getElementById('rTipoCabelo').value,
+                pigmentacaoResidual: document.getElementById('rPigmentacao').value,
+                caracteristicaCouroCabeludo: document.getElementById('rCouro').value,
+                ingereFrutas: document.getElementById('rFrutas').value,
+                ingereLegumes: document.getElementById('rLegumes').value,
+                ingereVerduras: document.getElementById('rVerduras').value,
+                coposAguaDiarios: document.getElementById('rAgua').value,
+                descricaoHabitosAlimentares: document.getElementById('rHabitosAlimentares').value,
+                problemaCoracao: document.getElementById('rCoracao').value === 'true',
+                diabetesDescompensada: document.getElementById('rDiabetes').value === 'true',
+                pressaoAltaDescompensada: document.getElementById('rPressao').value === 'true',
+                estresse: document.getElementById('rEstresse').value === 'true',
+                problemasTireoide: document.getElementById('rTireoide').value === 'true',
+                covid19: document.getElementById('rCovid').value === 'true',
+                depressao: document.getElementById('rDepressao').value === 'true',
+                cirurgiaUltimos6Meses: document.getElementById('rCirurgia').value === 'true',
+                maCirculacaoTrombose: document.getElementById('rCirculacao').value === 'true',
+                detalheMedicamentos: document.getElementById('rMedicamentos').value,
+                detalheAnticoncepcional: document.getElementById('rAnticoncepcional').value,
+                cicloMenstrual: document.getElementById('rMenstruacao').value,
+                tempoQuedaCapilar: document.getElementById('rTempoQueda').value,
+                nascimentoNovosFios: document.getElementById('rNovosFios').value === 'true',
+                quimicaUltimos12Meses: document.getElementById('rQuimica').value === 'true',
+                detalhesQuimica: document.getElementById('rDetalhesQuimica').value,
+                aceiteTermoResponsabilidade: document.getElementById('rTermo').checked
+            };
+
+            try {
+                const res = await fetch('/anamnese', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) throw new Error('Erro ao registrar anamnese integral.');
+
+                document.getElementById('statusAnamneseRealBadge').innerHTML = '<span class="badge badge-confirmed"><i class="fa-solid fa-check"></i> Prontuário Integral Gravado</span>';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Ficha Salva com Sucesso!';
+
+                alert('Ficha de Anamnese Completa salva com sucesso no prontuário eletrônico!');
+            } catch (err) {
+                alert(err.message);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Tentar Novamente';
+            }
+        }
+
+        function logoutReal() {
+            sessionStorage.removeItem('docemed_real_user');
+            window.location.href = '/';
+        }
+    </script>
+
+</body>
+</html>

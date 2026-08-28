@@ -3,10 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doc-eMed — Portal do Paciente</title>
+    <title>Doc-eMed — Portal do Paciente (Modo Teste Integrado)</title>
     <link rel="stylesheet" th:href="@{/css/docemed.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script th:src="@{/js/docemed-realtime.js}"></script>
+    <style>
+        .embedded-tv-panel {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.12) 0%, rgba(99, 102, 241, 0.18) 100%);
+            border: 2px solid var(--border-glass-highlight);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 0 35px rgba(14, 165, 233, 0.25);
+            transition: all 0.3s ease;
+        }
+        .tv-call-active {
+            border: 3px solid #38bdf8 !important;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.3) 0%, rgba(99, 102, 241, 0.35) 100%) !important;
+            box-shadow: 0 0 50px rgba(14, 165, 233, 0.6) !important;
+            animation: pulse-tv 2s infinite ease-in-out;
+        }
+        @keyframes pulse-tv {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.015); }
+        }
+    </style>
 </head>
 <body>
 
@@ -22,15 +43,18 @@
                         Doc<span style="color: var(--primary);">-eMed</span>
                     </div>
                     <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600;">
-                        Área Exclusiva do Paciente
+                        Modo de Testes — Painel Clínico & Telão Integrado
                     </div>
                 </div>
             </a>
             
             <div style="display: flex; gap: 14px; align-items: center;">
+                <span class="badge badge-pending">
+                    <i class="fa-solid fa-flask"></i> Modo Demonstração
+                </span>
                 <div style="text-align: right; margin-right: 8px;">
                     <div id="pacienteNomeDisplay" style="font-weight: 700; font-size: 0.95rem;">Carregando...</div>
-                    <div style="font-size: 0.75rem; color: var(--secondary);">• Conectado em Tempo Real</div>
+                    <div style="font-size: 0.75rem; color: var(--secondary);">• Sincronizado em Tempo Real</div>
                 </div>
                 <button onclick="logout()" class="btn btn-outline btn-sm">
                     <i class="fa-solid fa-right-from-bracket"></i> Sair
@@ -41,25 +65,58 @@
 
     <main class="container" style="padding-bottom: 60px;">
 
-        <!-- 📢 1. BANNER DE CHAMADA VISUAL EM TEMPO REAL (QUANDO CHAMADO PELO MÉDICO) -->
-        <div id="chamadaBanner" class="call-banner" style="display: none; margin-bottom: 32px;">
-            <div style="font-size: 2.2rem; margin-bottom: 8px;">🔔</div>
-            <h2 id="chamadaTextoPrincipal" style="font-size: 1.8rem; margin-bottom: 8px;" class="gradient-text">
-                VOCÊ FOI CHAMADO PARA ATENDIMENTO!
-            </h2>
-            <p id="chamadaDetalhes" style="font-size: 1.15rem; color: #ffffff; font-weight: 600;">
-                Por favor, dirija-se ao Consultório 01 com o médico responsável.
-            </p>
+        <!-- 📺 TELÃO / PAINEL DE CHAMADA DA FILA EMBUTIDO DIRETAMENTE NA TELA DO CLIENTE TESTE -->
+        <div id="painelTvEmbutido" class="embedded-tv-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); padding-bottom: 16px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="badge badge-called" style="font-size: 0.85rem;">
+                        <i class="fa-solid fa-tv"></i> Telão de Chamada da Recepção (Integrado)
+                    </div>
+                    <span style="font-size: 0.8rem; color: var(--text-dim);">Exibição unificada para modo de teste</span>
+                </div>
+                <div style="display: flex; gap: 16px; align-items: center;">
+                    <div id="relogioIntegrado" style="font-size: 1.3rem; font-weight: 700; font-family: 'Space Grotesk', sans-serif; color: var(--primary);">00:00:00</div>
+                </div>
+            </div>
+
+            <!-- ÁREA DO PACIENTE CHAMADO -->
+            <div style="text-align: center; padding: 20px 0;">
+                <div id="chamadaBadge" class="badge badge-pending" style="margin-bottom: 12px;">
+                    <i class="fa-solid fa-hourglass-half"></i> Aguardando Chamada do Médico
+                </div>
+                <div id="tvPacienteChamadoNome" style="font-size: 2.6rem; font-weight: 800; color: #ffffff; margin-bottom: 6px;">
+                    Nenhum paciente chamado no momento
+                </div>
+                <div id="tvSalaChamada" style="font-size: 1.5rem; font-weight: 700; color: #38bdf8;">
+                    Consultório 01 — Recepção Central
+                </div>
+                <div id="tvMedicoChamado" style="font-size: 1rem; color: var(--text-muted); margin-top: 6px;">
+                    Dr(a). Especialista Tricologista Responsável
+                </div>
+            </div>
+
+            <!-- STATUS PESSOAL NA FILA -->
+            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-glass); border-radius: var(--radius-md); padding: 16px 24px; margin-top: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <div>
+                    <span style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Sua Situação na Fila:</span>
+                    <div id="situacaoFilaPessoal" style="font-weight: 700; font-size: 1.1rem; color: #ffffff; margin-top: 2px;">
+                        Você ainda não está na fila ativa do dia.
+                    </div>
+                </div>
+                <div id="posicaoBadgeContainer">
+                    <span class="badge badge-pending">Sem Posição</span>
+                </div>
+            </div>
         </div>
 
-        <!-- ⚠️ 2. POPUP / ALERTA DE REAGENDAMENTO MÉDICO -->
+        <!-- ⚠️ ALERTA DE REAGENDAMENTO MÉDICO -->
         <div id="reagendamentoCard" class="glass-card" style="display: none; border-color: rgba(139, 92, 246, 0.4); background: rgba(88, 28, 135, 0.2); padding: 24px 32px; margin-bottom: 32px;">
             <div style="display: flex; gap: 20px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
                 <div>
                     <span class="badge badge-rescheduled" style="margin-bottom: 8px;">
                         <i class="fa-solid fa-bell"></i> Alteração de Horário Sugerida pelo Médico
                     </span>
-                    <h3 style="font-size: 1.2rem; margin-bottom: 6px;">Proposta de Novo Horário de Atendimento</h3>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 6px;">Proposta de Remarcação da Consulta</h3>
                     <p id="reagendamentoMensagem" style="color: var(--text-main); font-size: 0.95rem; line-height: 1.5;"></p>
                 </div>
                 <button id="btnAceitarReagendamento" onclick="aceitarNovoHorario()" class="btn btn-secondary">
@@ -68,20 +125,7 @@
             </div>
         </div>
 
-        <!-- STATUS ATUAL DO ATENDIMENTO -->
-        <div class="glass-card" style="padding: 24px 32px; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
-            <div>
-                <div style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Status do seu Agendamento</div>
-                <div id="statusConsultaTexto" style="font-size: 1.2rem; font-weight: 700; color: var(--text-main); margin-top: 4px;">
-                    Verificando agendamentos...
-                </div>
-            </div>
-            <div id="statusConsultaBadge">
-                <span class="badge badge-pending">Pendente</span>
-            </div>
-        </div>
-
-        <!-- GRID PRINCIPAL DE AÇÕES -->
+        <!-- GRID PRINCIPAL DE AÇÕES DE TESTE -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); gap: 32px;">
             
             <!-- CARD 1: FICHA DE ANAMNESE TRICOLÓGICA -->
@@ -97,7 +141,7 @@
                 </div>
 
                 <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
-                    O preenchimento prévio é essencial para o médico avaliar sua queixa clínica e histórico antes do atendimento.
+                    O preenchimento prévio é essencial para o médico avaliar sua queixa clínica antes do atendimento.
                 </p>
 
                 <form id="formAnamnese" onsubmit="handleSalvarAnamnese(event)">
@@ -175,7 +219,7 @@
                 </div>
 
                 <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
-                    Escolha a data e horário preferencial para sua consulta de avaliação capilar com o tricologista.
+                    Escolha a data e horário preferencial para sua consulta com o médico especialista.
                 </p>
 
                 <form id="formAgendamento" onsubmit="handleSalvarAgendamento(event)">
@@ -200,7 +244,7 @@
 
                 <!-- CARD DE RESUMO DO AGENDAMENTO ATUAL -->
                 <div id="resumoAgendamento" style="display: none; margin-top: 24px; padding: 20px; background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-glass); border-radius: var(--radius-md);">
-                    <div style="font-weight: 700; color: var(--primary); margin-bottom: 6px;">Sua Solicitação Atual:</div>
+                    <div style="font-weight: 700; color: var(--primary); margin-bottom: 6px;">Sua Consulta:</div>
                     <div id="resumoDataHora" style="font-size: 0.95rem; color: var(--text-main);"></div>
                     <div id="resumoStatus" style="margin-top: 8px;"></div>
                 </div>
@@ -232,7 +276,10 @@
             d.setHours(14, 0, 0, 0);
             document.getElementById('ageDataHora').value = d.toISOString().slice(0, 16);
 
-            // Inicia SSE Realtime exclusivo para este paciente
+            atualizarRelogio();
+            setInterval(atualizarRelogio, 1000);
+
+            // Inicia SSE Realtime para sincronização global e pessoal
             realtimeClient = new DocEMedRealtime({
                 pacienteId: currentUser.pacienteId,
                 onEvent: handleRealtimeEvent
@@ -240,6 +287,10 @@
 
             await carregarDadosIniciais();
         });
+
+        function atualizarRelogio() {
+            document.getElementById('relogioIntegrado').textContent = new Date().toLocaleTimeString('pt-BR');
+        }
 
         async function carregarDadosIniciais() {
             // 1. Carregar Anamnese existente
@@ -250,28 +301,64 @@
                     anamneseSalvaId = ana.id;
                     document.getElementById('anaQueixa').value = ana.queixaPrincipal || '';
                     document.getElementById('anamneseStatusIcon').innerHTML = '<i class="fa-solid fa-circle-check" style="color: var(--secondary);"></i>';
-                    document.getElementById('btnSalvarAnamnese').innerHTML = '<i class="fa-solid fa-check"></i> Anamnese Já Enviada (Atualizar)';
+                    document.getElementById('btnSalvarAnamnese').innerHTML = '<i class="fa-solid fa-check"></i> Anamnese Já Preenchida (Atualizar)';
                 }
             } catch (e) {}
 
-            // 2. Carregar Agendamento existente
+            // 2. Carregar Agendamento
             try {
                 const resAge = await fetch(`/api/agendamentos/paciente/${currentUser.pacienteId}/recente`);
                 if (resAge.ok) {
                     const age = await resAge.json();
                     agendamentoAtualId = age.id;
                     atualizarVisualAgendamento(age);
-                } else {
-                    document.getElementById('statusConsultaTexto').textContent = 'Nenhuma consulta agendada ainda.';
                 }
             } catch (e) {}
 
-            // 3. Carregar Status na Fila
+            // 3. Carregar Fila Global e Pessoal
+            await carregarFilaIntegrada();
+        }
+
+        async function carregarFilaIntegrada() {
             try {
-                const resFila = await fetch(`/api/fila/paciente/${currentUser.pacienteId}/status`);
+                const resFila = await fetch('/api/fila/ativa');
                 if (resFila.ok) {
                     const fila = await resFila.json();
-                    atualizarVisualFila(fila);
+                    
+                    // Paciente chamado recente
+                    const chamado = fila.find(f => f.status === 'CHAMADO');
+                    const tvPanel = document.getElementById('painelTvEmbutido');
+
+                    if (chamado) {
+                        document.getElementById('tvPacienteChamadoNome').textContent = chamado.pacienteNome;
+                        document.getElementById('tvSalaChamada').textContent = `${chamado.sala}`;
+                        document.getElementById('tvMedicoChamado').textContent = `${chamado.medicoNome}`;
+                        
+                        if (chamado.pacienteId === currentUser.pacienteId) {
+                            tvPanel.classList.add('tv-call-active');
+                            document.getElementById('chamadaBadge').className = 'badge badge-called';
+                            document.getElementById('chamadaBadge').innerHTML = '<i class="fa-solid fa-bullhorn"></i> É A SUA VEZ! DIRIJA-SE À SALA';
+                        } else {
+                            tvPanel.classList.remove('tv-call-active');
+                            document.getElementById('chamadaBadge').className = 'badge badge-confirmed';
+                            document.getElementById('chamadaBadge').innerHTML = '<i class="fa-solid fa-volume-high"></i> Chamada em Andamento';
+                        }
+                    } else {
+                        tvPanel.classList.remove('tv-call-active');
+                        document.getElementById('tvPacienteChamadoNome').textContent = 'Aguardando próxima chamada médica...';
+                        document.getElementById('chamadaBadge').className = 'badge badge-pending';
+                        document.getElementById('chamadaBadge').innerHTML = '<i class="fa-solid fa-hourglass-half"></i> Fila de Espera Ativa';
+                    }
+
+                    // Situação do usuário logado na fila
+                    const meuItem = fila.find(f => f.pacienteId === currentUser.pacienteId);
+                    if (meuItem) {
+                        document.getElementById('situacaoFilaPessoal').textContent = `Você está na fila! Posição: #${meuItem.posicao} — Status: ${meuItem.statusDescricao}`;
+                        document.getElementById('posicaoBadgeContainer').innerHTML = `<span class="badge ${meuItem.status === 'CHAMADO' ? 'badge-called' : 'badge-confirmed'}">Posição #${meuItem.posicao}</span>`;
+                    } else {
+                        document.getElementById('situacaoFilaPessoal').textContent = 'Seu agendamento ainda não foi colocado na fila pelo médico.';
+                        document.getElementById('posicaoBadgeContainer').innerHTML = '<span class="badge badge-pending">Aguardando Entrada</span>';
+                    }
                 }
             } catch (e) {}
         }
@@ -308,7 +395,7 @@
                 document.getElementById('btnSalvarAnamnese').innerHTML = '<i class="fa-solid fa-check"></i> Ficha Salva com Sucesso!';
                 document.getElementById('avisoAnamnesePendente').style.display = 'none';
 
-                realtimeClient.createToastElement('Anamnese Salva', 'Sua ficha foi salva e está vinculada ao prontuário.', '📋');
+                realtimeClient.createToastElement('Anamnese Salva', 'Sua ficha foi salva e vinculada ao prontuário.', '📋');
             } catch (err) {
                 alert(err.message);
                 btn.disabled = false;
@@ -382,49 +469,25 @@
             resumo.style.display = 'block';
             document.getElementById('resumoDataHora').textContent = `Data/Hora: ${age.dataHora.replace('T', ' às ')}`;
             
-            const badge = document.getElementById('statusConsultaBadge');
-            const texto = document.getElementById('statusConsultaTexto');
-
             if (age.status === 'PENDENTE') {
-                badge.innerHTML = '<span class="badge badge-pending">Aguardando Confirmação do Médico</span>';
-                texto.textContent = 'Sua solicitação de agendamento está em análise pela equipe médica.';
+                document.getElementById('resumoStatus').innerHTML = '<span class="badge badge-pending">Aguardando Confirmação Médica</span>';
             } else if (age.status === 'CONFIRMADO') {
-                badge.innerHTML = '<span class="badge badge-confirmed">Confirmada</span>';
-                texto.textContent = 'Sua consulta está confirmada! Aguarde a liberação da fila no dia.';
+                document.getElementById('resumoStatus').innerHTML = '<span class="badge badge-confirmed">Consulta Confirmada</span>';
             } else if (age.status === 'REAGENDADO_MEDICO') {
-                badge.innerHTML = '<span class="badge badge-rescheduled">Reagendamento Sugerido</span>';
-                texto.textContent = 'O médico sugeriu uma alteração de horário para sua consulta.';
-                
+                document.getElementById('resumoStatus').innerHTML = '<span class="badge badge-rescheduled">Reagendamento Sugerido</span>';
                 document.getElementById('reagendamentoCard').style.display = 'block';
-                document.getElementById('reagendamentoMensagem').textContent = `O médico sugeriu alterar para ${age.dataHora.replace('T', ' às ')}. Motivo: ${age.motivoAlteracao || 'Ajuste na agenda ambulatorial'}.`;
-            }
-        }
-
-        function atualizarVisualFila(fila) {
-            if (fila.status === 'CHAMADO') {
-                document.getElementById('chamadaBanner').style.display = 'block';
-                document.getElementById('chamadaDetalhes').textContent = `Por favor, dirija-se ao ${fila.sala} com ${fila.medicoNome}.`;
-            } else {
-                document.getElementById('chamadaBanner').style.display = 'none';
+                document.getElementById('reagendamentoMensagem').textContent = `O médico sugeriu alterar para ${age.dataHora.replace('T', ' às ')}. Motivo: ${age.motivoAlteracao || 'Ajuste na agenda médica'}.`;
             }
         }
 
         function handleRealtimeEvent(evt, data) {
-            if (evt === 'PACIENTE_CHAMADO') {
-                if (data.pacienteId === currentUser.pacienteId) {
-                    document.getElementById('chamadaBanner').style.display = 'block';
-                    document.getElementById('chamadaDetalhes').textContent = `Atenção: Dirija-se ao ${data.sala} com ${data.medicoNome}!`;
-                    document.getElementById('chamadaBanner').scrollIntoView({ behavior: 'smooth' });
-                }
-            } else if (evt === 'AGENDAMENTO_CONFIRMADO') {
-                if (data.pacienteId === currentUser.pacienteId) {
-                    carregarDadosIniciais();
-                }
+            carregarFilaIntegrada();
+            if (evt === 'AGENDAMENTO_CONFIRMADO') {
+                carregarDadosIniciais();
             } else if (evt === 'REAGENDAMENTO_SOLICITADO') {
                 if (data.pacienteId === currentUser.pacienteId) {
                     document.getElementById('reagendamentoCard').style.display = 'block';
                     document.getElementById('reagendamentoMensagem').textContent = data.mensagemHumanizada;
-                    carregarDadosIniciais();
                 }
             }
         }

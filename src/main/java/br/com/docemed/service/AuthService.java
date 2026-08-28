@@ -77,6 +77,70 @@ public class AuthService {
                 .build();
     }
 
+    @Transactional
+    public LoginResponseDTO cadastrarPacienteReal(br.com.docemed.dto.CadastroPacienteRealDTO dto) {
+        if (usuarioRepository.existsByLogin(dto.getLogin())) {
+            throw new IllegalArgumentException("O login '" + dto.getLogin() + "' já está em uso. Por favor, escolha outro.");
+        }
+
+        Paciente paciente = new Paciente();
+        paciente.setNome(dto.getNome().trim());
+        paciente.setCpf(dto.getCpf() != null ? dto.getCpf().trim() : null);
+        paciente.setRg(dto.getRg());
+        paciente.setSexo(dto.getSexo() != null ? dto.getSexo() : "Não informado");
+        paciente.setEstadoCivil(dto.getEstadoCivil());
+        paciente.setProfissao(dto.getProfissao());
+        paciente.setIndicadoPor(dto.getIndicadoPor());
+        paciente.setTelefone(dto.getTelefone());
+        paciente.setCelularWhatsapp(dto.getCelularWhatsapp() != null ? dto.getCelularWhatsapp().trim() : null);
+        paciente.setEmail(dto.getEmail() != null ? dto.getEmail().trim() : null);
+        paciente.setCep(dto.getCep());
+        paciente.setEndereco(dto.getEndereco());
+        paciente.setNumero(dto.getNumero());
+        paciente.setComplemento(dto.getComplemento());
+        paciente.setBairro(dto.getBairro());
+        paciente.setCidade(dto.getCidade());
+        paciente.setEstado(dto.getEstado());
+        paciente.setContatoEmergenciaNome(dto.getContatoEmergenciaNome());
+        paciente.setContatoEmergenciaTelefone(dto.getContatoEmergenciaTelefone());
+        paciente.setConvenio(dto.getConvenio());
+        paciente.setAtivo(true);
+        paciente.setDataCadastro(LocalDateTime.now());
+
+        if (dto.getDataNascimento() != null && !dto.getDataNascimento().isBlank()) {
+            try {
+                paciente.setDataNascimento(LocalDate.parse(dto.getDataNascimento()));
+            } catch (Exception ignored) {
+                paciente.setDataNascimento(LocalDate.of(1995, 1, 1));
+            }
+        }
+
+        paciente = pacienteRepository.save(paciente);
+
+        Usuario usuario = Usuario.builder()
+                .login(dto.getLogin().trim().toLowerCase())
+                .senha(dto.getSenha())
+                .nome(dto.getNome().trim())
+                .perfil(PerfilUsuario.PACIENTE)
+                .pacienteId(paciente.getId())
+                .telefoneWhatsapp(dto.getCelularWhatsapp() != null ? dto.getCelularWhatsapp().trim() : null)
+                .ativo(true)
+                .dataCadastro(LocalDateTime.now())
+                .build();
+
+        usuario = usuarioRepository.save(usuario);
+
+        return LoginResponseDTO.builder()
+                .id(usuario.getId())
+                .login(usuario.getLogin())
+                .nome(usuario.getNome())
+                .perfil(usuario.getPerfil())
+                .pacienteId(paciente.getId())
+                .token("TOKEN_SESSAO_" + usuario.getId())
+                .redirectUrl("/paciente/real-portal")
+                .build();
+    }
+
     public LoginResponseDTO autenticar(LoginDTO dto) {
         Usuario usuario = usuarioRepository.findByLogin(dto.getLogin().trim().toLowerCase())
                 .orElseThrow(() -> new IllegalArgumentException("Usuário ou senha inválidos."));

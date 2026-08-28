@@ -27,6 +27,13 @@ public class AuthApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PostMapping("/cadastro-real")
+    @Operation(summary = "Cadastrar Paciente Real (Completo)", description = "Cria um cadastro com todos os dados pessoais, endereço completo, contato de emergência e credenciais de acesso.")
+    public ResponseEntity<LoginResponseDTO> cadastrarPacienteReal(@Valid @RequestBody br.com.docemed.dto.CadastroPacienteRealDTO dto) {
+        LoginResponseDTO response = authService.cadastrarPacienteReal(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
     @PostMapping("/login")
     @Operation(summary = "Autenticar Usuário", description = "Valida login e senha para acesso de médico ou paciente.")
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginDTO dto) {
