@@ -15,7 +15,7 @@ Plataforma Web desenvolvida em **Java 21** com **Spring Boot**, **Thymeleaf**, *
 
 ---
 
-### 🌐 Link Público Oficial de Apresentação (Acesso Global Gratuito)
+### 🌐 Link Público Oficial de Apresentação (Acesso Global Gratuito 24/7)
 👉 **[https://publicly-chem-nursery-chapter.trycloudflare.com](https://publicly-chem-nursery-chapter.trycloudflare.com)**
 
 </div>
@@ -27,12 +27,84 @@ Plataforma Web desenvolvida em **Java 21** com **Spring Boot**, **Thymeleaf**, *
 O **Doc-eMed** é um sistema completo de prontuário eletrônico e triagem clínica especializado em **Terapia Capilar e Tricologia Integrada**, desenvolvido para o projeto de conclusão de curso do **IFSP (Instituto Federal de São Paulo)**.
 
 O sistema elimina o uso de fichas de papel na coleta de dados de saúde, disponibilizando:
-1. **Frontend Nativo Java (Spring Boot + Thymeleaf + Design System Glassmorphic)** responsivo.
+1. **Frontend Nativo Java (Spring Boot + Thymeleaf + Design System Glassmorphic)** responsivo e moderno.
 2. **Digitalização Integral da Ficha Oficial de Avaliação Capilar (SPA Brasil Cursos)** com **144 perguntas clínicas**.
 3. **Módulo de Agendamentos & Triagem Obrigatória** (só libera solicitação após preenchimento da anamnese).
 4. **Sistema de Filas de Atendimento em Tempo Real (SSE)** com chamadas visuais e sonoras.
-5. **Dashboard Administrativo / Médico** com gráficos analíticos (Chart.js) de patologias e tipos de couro cabeludo.
-6. **Telão Público da Recepção (TV)** para chamada de pacientes na sala de espera.
+5. **Prontuário Médico Completo & Receituário Digital do Paciente** com impressão de receitas e orientações home care.
+6. **Dashboard Administrativo / Médico** com gráficos analíticos (Chart.js) de patologias e tipos de couro cabeludo.
+7. **Telão Público da Recepção (TV)** para chamada de pacientes na sala de espera.
+
+---
+
+## 📸 Demonstração Visual das Interfaces (Screenshots do Sistema)
+
+Abaixo estão apresentadas as principais telas da plataforma com a explicação funcional de cada módulo:
+
+---
+
+### 1. 📺 Portal do Paciente com Telão & Fila em Tempo Real Integrados
+> **Caminho da Imagem:** `docs/images/01-paciente-portal-fila-integrada.png`
+
+<div align="center">
+  <img src="./docs/images/01-paciente-portal-fila-integrada.png" alt="Portal do Paciente com Telão e Fila Integrada" width="90%">
+</div>
+
+* **Painel da Recepção ao Vivo no Topo:** O paciente acompanha em tempo real o relógio sincronizado, a indicação de quem está sendo chamado no momento, o consultório e o médico responsável.
+* **Status Pessoal na Fila:** Card dedicado indicando a posição exata do paciente na fila de espera (*"Aguardando Entrada"*, *"Posição #1"*, *"É a sua vez!"*).
+* **Passo 1 (Ficha de Anamnese Express):** Coleta estruturada das queixas principais, tipo de cabelo, características do couro cabeludo, histórico de químicas e hábitos de vida com termo de responsabilidade.
+* **Passo 2 (Agendamento Inteligente):** Seleção de data/hora preferencial para a consulta com o especialista, protegido por trava lógica que exige o preenchimento prévio da anamnese.
+
+---
+
+### 2. 🔒 Área Médica — Autenticação Segura & Acesso Restrito
+> **Caminho da Imagem:** `docs/images/02-medico-login-restrito.png`
+
+<div align="center">
+  <img src="./docs/images/02-medico-login-restrito.png" alt="Área Médica - Login Seguro" width="60%">
+</div>
+
+* **Blindagem de Acesso:** Interface restrita aos médicos e gestores clínicos autorizados.
+* **Segurança Reforçada:** Sem exibição pública de credenciais ou senhas pré-preenchidas.
+* **Governança Clínica:** O cadastro e provisionamento de novos médicos é realizado exclusivamente pela direção do sistema (sem autocadastro público para profissionais).
+
+---
+
+### 3. 🧪 Portal do Paciente — Cadastro Rápido (Modo de Testes)
+> **Caminho da Imagem:** `docs/images/03-paciente-cadastro-teste.png`
+
+<div align="center">
+  <img src="./docs/images/03-paciente-cadastro-teste.png" alt="Cadastro de Paciente Teste" width="60%">
+</div>
+
+* **Onboarding Ágil para Demonstrações:** Permite cadastrar rapidamente um paciente de teste informando Nome, Celular/WhatsApp, Usuário de Login, Senha, Sexo e Cidade.
+* **Entrada Direta no Fluxo:** Ao concluir o cadastro, o paciente é autenticado automaticamente e direcionado ao preenchimento da anamnese e agendamento da consulta.
+
+---
+
+### 4. 🔑 Portal do Paciente — Login (Modo de Testes)
+> **Caminho da Imagem:** `docs/images/04-paciente-login-teste.png`
+
+<div align="center">
+  <img src="./docs/images/04-paciente-login-teste.png" alt="Login do Paciente Teste" width="60%">
+</div>
+
+* **Aba de Acesso Rápido:** Permite aos pacientes já cadastrados no modo de teste ingressarem diretamente com seu usuário e senha.
+* **Recuperação de Sessão:** Carrega automaticamente a ficha de anamnese salva, status da consulta agendada e posição na fila.
+
+---
+
+### 5. 📝 Cadastro de Paciente Real — Prontuário Oficial Completo
+> **Caminho da Imagem:** `docs/images/05-paciente-cadastro-real-completo.png`
+
+<div align="center">
+  <img src="./docs/images/05-paciente-cadastro-real-completo.png" alt="Cadastro Completo de Paciente Real" width="60%">
+</div>
+
+* **1. Dados Pessoais & Identificação:** Nome Completo, CPF (com validação única), RG, Data de Nascimento, Sexo, Estado Civil e Profissão.
+* **2. Contato & Emergência:** Celular/WhatsApp, Telefone Fixo, E-mail e contato de emergência (Nome e Telefone do responsável).
+* **3. Endereço Residencial:** CEP, Logradouro, Número, Complemento, Bairro, Cidade e Estado.
+* **4. Criação da Conta de Acesso:** Definição do usuário e senha criptografada para acesso ao portal e histórico de receituários digitais.
 
 ---
 
@@ -43,7 +115,7 @@ O sistema elimina o uso de fichas de papel na coleta de dados de saúde, disponi
 | **Página Inicial** | `/` | Apresentação com seleção dos 3 perfis de acesso |
 | **Modo de Testes (Demonstração)** | `/paciente/acesso` | Cadastro simplificado + Anamnese Express + **Telão de Chamada Embutido na Tela** |
 | **Paciente Real (Oficial)** | `/paciente/real-cadastro` | Cadastro completo (identificação, endereço, contato de emergência) + **Ficha de 144 Perguntas** |
-| **Área Médica (Profissional)** | `/medico/login` | Dashboard clínico com gráficos, triagem de agendamentos, remarcação e gestão de fila |
+| **Área Médica (Profissional)** | `/medico/login` | Dashboard clínico com gráficos, triagem de agendamentos, remarcação, prontuário e gestão de fila |
 | **Telão da Recepção (TV)** | `/painel-chamada` | Visualização em tela cheia para televisores de recepção com sino sonoro |
 | **Swagger UI (Docs)** | `/swagger-ui.html` | Documentação interativa de todos os endpoints REST |
 
