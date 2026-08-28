@@ -4,55 +4,50 @@
 
 [INFORMAÇÕES GERAIS]
 Projeto: Doc-eMed (Sistema de Gestão Clínica e Anamnese Tricológica)
-SGBD: MariaDB 11.4 (Instância Exclusiva e Isolada)
-Finalidade: Ambiente de Desenvolvimento e Testes Locais (IFSP 2025.2)
+Ambiente: Máquina Virtual Hyper-V (RageMU-Dev)
+SGBD: MariaDB 11.4 (Instalado e Executando dentro da VM como Serviço Windows)
+Serviço Windows na VM: DocEMed-MariaDB
+Finalidade: Ambiente Isolado e Seguro na VM (IFSP 2025.2)
+
+--------------------------------------------------------------------------------
+[ISOLAMENTO DE PORTAS E BANCOS NA VM (RageMU-Dev: 192.168.240.10)]
+--------------------------------------------------------------------------------
+- Porta 1433: Microsoft SQL Server Enterprise (RageMU — 100% Intocado)
+- Porta 3306: MySQL Server 8.0 (RageMU — 100% Intocado)
+- Porta 3307: MariaDB 11.4 (Doc-eMed — Exclusivo deste projeto)
 
 --------------------------------------------------------------------------------
 [CONEXÃO DA APLICAÇÃO (SPRING BOOT / CLIENTES SQL)]
 --------------------------------------------------------------------------------
-Host: 127.0.0.1 (localhost)
+Host: 192.168.240.10 (IP da VM RageMU-Dev)
 Porta: 3307
 Banco de Dados: docemed
 
 Usuário da Aplicação: docemed_user
 Senha da Aplicação: docemed@2026
+Permissões: Totalmente restrito à base 'docemed' (sem acesso a outros bancos)
+
+Usuário Administrador da Instância MariaDB (Porta 3307): root
+Senha Root da Instância: docemed_root_pass
 
 JDBC URL:
-jdbc:mysql://127.0.0.1:3307/docemed?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=America/Sao_Paulo&allowPublicKeyRetrieval=true
+jdbc:mysql://192.168.240.10:3307/docemed?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=America/Sao_Paulo&allowPublicKeyRetrieval=true
 
 --------------------------------------------------------------------------------
-[ADMINISTRAÇÃO DA INSTÂNCIA (ROOT)]
+[CAMINHOS DENTRO DA MÁQUINA VIRTUAL]
 --------------------------------------------------------------------------------
-Usuário Root: root
-Senha Root: docemed_root_pass
-Porta: 3307
-
---------------------------------------------------------------------------------
-[ARQUIVOS E DIRETÓRIOS NO DISCO]
---------------------------------------------------------------------------------
-Diretório de Dados (DataDir):
-P:\04-INFRAESTRUTURA\Banco-de-Dados\MariaDB-DocEMed\data
-
-Arquivo de Configuração (my.ini):
-P:\04-INFRAESTRUTURA\Banco-de-Dados\MariaDB-DocEMed\data\my.ini
-
-Executável do Servidor:
-D:\MariaDB\11.4\bin\mysqld.exe
-
-Executável do Cliente CLI:
-D:\MariaDB\11.4\bin\mysql.exe
+Diretório do MariaDB: C:\MariaDB-DocEMed
+Diretório de Dados (DataDir): C:\MariaDB-DocEMed\data
+Arquivo de Configuração: C:\MariaDB-DocEMed\my.ini
 
 --------------------------------------------------------------------------------
-[COMANDOS ÚTEIS (POWERSHELL)]
+[COMANDOS ÚTEIS (POWERSHELL NO HOST)]
 --------------------------------------------------------------------------------
-1. Conectar via CLI como docemed_user:
-& "D:\MariaDB\11.4\bin\mysql.exe" -P 3307 -u docemed_user -p"docemed@2026" docemed
+1. Testar conectividade na porta 3307 da VM:
+Test-NetConnection -ComputerName 192.168.240.10 -Port 3307
 
-2. Conectar via CLI como root:
-& "D:\MariaDB\11.4\bin\mysql.exe" -P 3307 -u root -p"docemed_root_pass"
-
-3. Iniciar o servidor MariaDB (caso seja reiniciado):
-& "D:\MariaDB\11.4\bin\mysqld.exe" "--defaults-file=P:\04-INFRAESTRUTURA\Banco-de-Dados\MariaDB-DocEMed\data\my.ini"
+2. Conectar via cliente MariaDB/MySQL do host no MariaDB da VM:
+& "D:\MariaDB\11.4\bin\mysql.exe" -h 192.168.240.10 -P 3307 -u docemed_user -p"docemed@2026" docemed
 
 --------------------------------------------------------------------------------
 [SERVIÇOS CONECTADOS]
