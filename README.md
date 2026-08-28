@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="./docs/images/logo-hardware-br.png" alt="Instituto Hardware BR" width="300px" style="margin-bottom: 20px;">
+
 # 🏥 Doc-eMed — Plataforma de Gestão Clínica & Prontuário Tricológico
 
 ### Sistema Inteligente de Triagem, Fila Virtual em Tempo Real e Digitalização da Ficha de Avaliação Capilar (144 Questões)
@@ -49,7 +51,7 @@ Plataforma Web Full Stack desenvolvida em **Java 21 LTS** com **Spring Boot 4.1.
 
 ## 📖 Sobre o Projeto
 
-O **Doc-eMed** é um ecossistema completo de prontuário eletrônico, triagem clínica e gestão de fluxo de atendimento especializado em **Terapia Capilar e Tricologia Integrada**, desenvolvido como projeto de conclusão de curso realizado pelo **Instituto Hardware BR** em conjunto com o **IFSP Campinas (Instituto Federal de Educação, Ciência e Tecnologia de São Paulo - Câmpus Campinas)**.
+O **Doc-eMed** é um ecossistema completo de prontuário eletrônico, triagem clínica e gestão de fluxo de atendimento especializado em **Terapia Capilar e Tricologia Integrada**, desenvolvido como projeto de conclusão de curso realizado pelo **Instituto Hardware BR** em conjunto com o **Instituto Federal de São Paulo (IFSP — 2025.2)**.
 
 A plataforma substitui o uso de fichas manuais em papel por uma solução digital auditável, ágil e interativa:
 * **Frontend Nativo Java**: Renderização server-side de alto desempenho com **Thymeleaf**, aliado a um Design System moderno em **Glassmorphism**, responsivo e com microinterações fluidas.
@@ -319,14 +321,18 @@ A plataforma está implantada de forma 100% autônoma dentro da VM **Hyper-V (`R
 
 ## 👥 Equipe de Desenvolvimento & Orientação
 
-Projeto desenvolvido para o Projeto Final realizado pelo **Instituto Hardware BR** em conjunto com o **IFSP Campinas (Instituto Federal de São Paulo — Câmpus Campinas - 2025.2)**:
+<div align="center">
+  <img src="./docs/images/logo-hardware-br.png" alt="Instituto Hardware BR" width="220px" style="margin-bottom: 12px;">
+</div>
+
+Projeto desenvolvido para o Projeto Final do **Instituto Hardware BR** em conjunto com o **Instituto Federal de São Paulo (IFSP — 2025.2)**:
 
 * **Vagner Domingos da Silva** — *Desenvolvedor & Arquiteto de Software*
 * **Jorge Wilker Mamede de Andrade** — *Desenvolvedor*
 * **Luis Javier Leon Cardenas** — *Desenvolvedor*
 
 **Orientação Acadêmica:**
-* **Prof. Kesede R. Julio** — *Professor Orientador (Instituto Hardware BR / IFSP Campinas)*
+* **Prof. Kesede R. Julio** — *Professor Orientador (Instituto Hardware BR / IFSP — 2025.2)*
 
 ---
 
