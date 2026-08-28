@@ -11,7 +11,8 @@ Plataforma Web Full Stack desenvolvida em **Java 21 LTS** com **Spring Boot 4.1.
 [![MariaDB](https://img.shields.io/badge/MariaDB-11.4-003545?style=for-the-badge&logo=mariadb)](https://mariadb.org/)
 [![Swagger](https://img.shields.io/badge/Swagger-OpenAPI%203.0-85EA2D?style=for-the-badge&logo=swagger)](https://swagger.io/)
 [![Version](https://img.shields.io/badge/Release-v1.0.1-blue?style=for-the-badge)](https://github.com/profkesede-hbr/VAGNER-DOMINGOS-DA-SILVA-Projeto-Final)
-[![IFSP](https://img.shields.io/badge/IFSP-2025.2-red?style=for-the-badge)](https://www.ifsp.edu.br/)
+[![Hardware BR](https://img.shields.io/badge/Instituto-Hardware%20BR-purple?style=for-the-badge)](https://hardwarebr.org)
+[![IFSP Campinas](https://img.shields.io/badge/IFSP-Campinas-red?style=for-the-badge)](https://cmp.ifsp.edu.br/)
 
 ---
 
@@ -48,7 +49,7 @@ Plataforma Web Full Stack desenvolvida em **Java 21 LTS** com **Spring Boot 4.1.
 
 ## 📖 Sobre o Projeto
 
-O **Doc-eMed** é um ecossistema completo de prontuário eletrônico, triagem clínica e gestão de fluxo de atendimento especializado em **Terapia Capilar e Tricologia Integrada**, desenvolvido como projeto de conclusão de curso do **Instituto Federal de Educação, Ciência e Tecnologia de São Paulo (IFSP)**.
+O **Doc-eMed** é um ecossistema completo de prontuário eletrônico, triagem clínica e gestão de fluxo de atendimento especializado em **Terapia Capilar e Tricologia Integrada**, desenvolvido como projeto de conclusão de curso realizado pelo **Instituto Hardware BR** em conjunto com o **IFSP Campinas (Instituto Federal de Educação, Ciência e Tecnologia de São Paulo - Câmpus Campinas)**.
 
 A plataforma substitui o uso de fichas manuais em papel por uma solução digital auditável, ágil e interativa:
 * **Frontend Nativo Java**: Renderização server-side de alto desempenho com **Thymeleaf**, aliado a um Design System moderno em **Glassmorphism**, responsivo e com microinterações fluidas.
@@ -318,14 +319,14 @@ A plataforma está implantada de forma 100% autônoma dentro da VM **Hyper-V (`R
 
 ## 👥 Equipe de Desenvolvimento & Orientação
 
-Projeto desenvolvido para a disciplina de Projeto Final / Backend Java no **IFSP (Instituto Federal de Educação, Ciência e Tecnologia de São Paulo)**:
+Projeto desenvolvido para o Projeto Final realizado pelo **Instituto Hardware BR** em conjunto com o **IFSP Campinas (Instituto Federal de São Paulo — Câmpus Campinas - 2025.2)**:
 
 * **Vagner Domingos da Silva** — *Desenvolvedor & Arquiteto de Software*
 * **Jorge Wilker Mamede de Andrade** — *Desenvolvedor*
 * **Luis Javier Leon Cardenas** — *Desenvolvedor*
 
 **Orientação Acadêmica:**
-* **Prof. Kesede R. Julio** — *Professor Orientador (IFSP 2025.2)*
+* **Prof. Kesede R. Julio** — *Professor Orientador (Instituto Hardware BR / IFSP Campinas)*
 
 ---
 
