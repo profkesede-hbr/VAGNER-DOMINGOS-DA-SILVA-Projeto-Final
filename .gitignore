@@ -79,6 +79,16 @@ application-local.properties
 application-dev.properties
 
 # ==========================
+# Credenciais e Acesso a Banco de Dados (Privado)
+# ==========================
+dados_acesso_banco.txt
+dados_acesso*.txt
+*credenciais*
+*credential*
+*.credentials
+*.secrets
+
+# ==========================
 # Certificados
 # ==========================
 *.jks
