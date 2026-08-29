@@ -45,6 +45,15 @@ Plataforma Web Full Stack desenvolvida em **Java 21 LTS** com **Spring Boot 4.1.
   - [11. Portal do Paciente — Login (Modo Teste)](#11--portal-do-paciente--login-modo-teste)
 - [🔐 Credenciais de Acesso & Perfis Oficiais](#-credenciais-de-acesso--perfis-oficiais)
 - [📋 Estrutura da Ficha de Avaliação Capilar (144 Perguntas)](#-estrutura-da-ficha-de-avaliação-capilar-144-perguntas)
+- [☕ Funcionamento Técnico & Arquitetura Detalhada do Backend Java](#-funcionamento-técnico--arquitetura-detalhada-do-backend-java)
+  - [1. Padrão Arquitetural em Camadas (Layered Clean Architecture)](#1--padrão-arquitetural-em-camadas-layered-clean-architecture)
+  - [2. Controladores REST & Mapeamento de Rotas (`@RestController`)](#2--controladores-rest--mapeamento-de-rotas-restcontroller)
+  - [3. Camada de Serviços & Lógica de Negócio (`@Service` & `@Transactional`)](#3--camada-de-serviços--lógica-de-negócio-service--transactional)
+  - [4. Persistência de Dados com Spring Data JPA (`@Repository`)](#4--persistência-de-dados-com-spring-data-jpa-repository)
+  - [5. Modelagem de Entidades & Enums de Domínio (`@Entity`)](#5--modelagem-de-entidades--enums-de-domínio-entity)
+  - [6. Barramento Reativo em Tempo Real com Server-Sent Events (`SseEmitter`)](#6--barramento-reativo-em-tempo-real-com-server-sent-events-sseemitter)
+  - [7. Tratamento Global de Exceções & Validações (`@RestControllerAdvice`)](#7--tratamento-global-de-exceções--validações-restcontrolleradvice)
+  - [8. Padrões de Projeto (Design Patterns) Implementados](#8--padrões-de-projeto-design-patterns-implementados)
 - [🏗️ Arquitetura Técnica & Tecnologias](#️-arquitetura-técnica--tecnologias)
 - [⚡ Comunicação em Tempo Real (Server-Sent Events)](#-comunicação-em-tempo-real-server-sent-events)
 - [📚 Endpoints da API REST (Swagger OpenAPI)](#-endpoints-da-api-rest-swagger-openapi)
@@ -297,6 +306,442 @@ Ficha de Avaliação Capilar (SPA Brasil Cursos — 144 Perguntas)
 
 ---
 
+## ☕ Funcionamento Técnico & Arquitetura Detalhada do Backend Java
+
+Como este é um projeto focado em **Engenharia de Software e Desenvolvimento Backend em Java**, toda a estrutura da aplicação foi construída com base em **boas práticas da indústria**, **Clean Architecture**, **Inversão de Controle (IoC)**, **Injeção de Dependências** e **Padrões de Projeto (Design Patterns)** consagrados no ecossistema Spring.
+
+---
+
+### 1. 🏛️ Padrão Arquitetural em Camadas (Layered Clean Architecture)
+
+O fluxo de dados da aplicação segue uma arquitetura em camadas estritamente desacoplada com fluxo unidirecional:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          1. CLIENTES HTTP & BROWSERS                        │
+│             (Thymeleaf UI • Console Swagger OpenAPI • Fetch API • SSE)       │
+└──────────────────────────────────────┬──────────────────────────────────────┘
+                                       │ Requisições HTTP (JSON / Form Data)
+┌──────────────────────────────────────▼──────────────────────────────────────┐
+│                    2. CAMADA DE CONTROLE (REST CONTROLLERS)                 │
+│          Mapeamento de rotas (@RestController), DTOs e Bean Validation      │
+│  [AuthController] [RecepcaoController] [ChatController] [FilaController]    │
+└──────────────────────────────────────┬──────────────────────────────────────┘
+                                       │ DTOs Validados (@Valid)
+┌──────────────────────────────────────▼──────────────────────────────────────┐
+│                    3. CAMADA DE SERVIÇO (BUSINESS LOGIC LAYER)              │
+│       Regras de negócio, transações atômicas (@Transactional) e Event Bus   │
+│  [AuthService] [RecepcaoService] [ChatService] [RealtimeNotificationService] │
+└──────────────────────────────────────┬──────────────────────────────────────┘
+                                       │ Entidades de Domínio (@Entity)
+┌──────────────────────────────────────▼──────────────────────────────────────┐
+│                 4. CAMADA DE ACESSO A DADOS (SPRING DATA JPA)               │
+│               Consultas derivadas, JPQL customizado e Hibernate ORM         │
+│  [UsuarioRepository] [PacienteRepository] [FilaRepository] [ChatRepository] │
+└──────────────────────────────────────┬──────────────────────────────────────┘
+                                       │ SQL Nativo / JDBC Driver
+┌──────────────────────────────────────▼──────────────────────────────────────┐
+│                   5. BANCO DE DADOS RELACIONAL (MARIADB 11.4)               │
+│             Instância dedicada na porta 3307 com integridade referencial    │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+#### Responsabilidade de cada pacote Java (`br.com.docemed.*`):
+* **`br.com.docemed.controller`**: Recebe as requisições HTTP, realiza o bind e validação de payloads (`@RequestBody`, `@Valid`), delega para os serviços e responde com status HTTP semânticos via `ResponseEntity<T>`.
+* **`br.com.docemed.service`**: Encapsula as regras de negócio clínicas e hospitalares, controla as transações de banco (`@Transactional`), orquestra o barramento de eventos SSE e dispara notificações.
+* **`br.com.docemed.repository`**: Interfaces que herdam de `JpaRepository<T, ID>`, provendo CRUD completo, paginação, ordenação e queries JPQL personalizadas.
+* **`br.com.docemed.model`**: Entidades ricas mapeadas para tabelas relacionais com Jakarta Persistence (JPA), contendo anotações `@Entity`, `@Table`, `@Enumerated` e anotações Lombok.
+* **`br.com.docemed.dto`**: *Data Transfer Objects* para transportar dados entre cliente e servidor sem expor detalhes internos da persistência, garantindo imutabilidade e validação via Bean Validation.
+* **`br.com.docemed.exception`**: Tratamento centralizado de exceções (`@RestControllerAdvice`) que intercepta erros e formata respostas JSON amigáveis para o cliente.
+* **`br.com.docemed.config`**: Configurações globais de CORS, documentação Swagger OpenAPI 3.0 e beans utilitários.
+
+---
+
+### 2. 🎮 Controladores REST & Mapeamento de Rotas (`@RestController`)
+
+Os controladores são anotados com `@RestController` e utilizam injeção de dependências por construtor através do `@RequiredArgsConstructor` (Lombok), eliminando o uso de `@Autowired` em campos privados como recomendado pelas melhores práticas do Spring.
+
+#### Exemplo Real: `RecepcaoApiController.java`
+```java
+package br.com.docemed.controller;
+
+import br.com.docemed.dto.*;
+import br.com.docemed.model.FilaAtendimento;
+import br.com.docemed.model.Paciente;
+import br.com.docemed.service.RecepcaoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/recepcao")
+@RequiredArgsConstructor
+@Tag(name = "Recepção & Atendimento Presencial", description = "Endpoints para cadastro presencial, reset de senhas e gestão de fila")
+public class RecepcaoApiController {
+
+    private final RecepcaoService recepcaoService;
+
+    @PostMapping("/cadastrar-paciente")
+    @Operation(summary = "Cadastrar Paciente Presencial", description = "Cria paciente, gera login com CPF e senha provisória.")
+    public ResponseEntity<LoginResponseDTO> cadastrarPacientePresencial(@Valid @RequestBody CadastroPresencialRequestDTO dto) {
+        return ResponseEntity.ok(recepcaoService.cadastrarPacientePresencial(dto));
+    }
+
+    @PostMapping("/fila/incluir")
+    @Operation(summary = "Incluir Paciente na Fila", description = "Adiciona paciente à fila de espera em tempo real.")
+    public ResponseEntity<FilaAtendimento> incluirNaFila(@RequestParam Long pacienteId,
+                                                         @RequestParam(defaultValue = "Consultório 01") String consultorio,
+                                                         @RequestParam(defaultValue = "Dr. Vagner Domingos — Tricologia Integrada") String medicoNome) {
+        return ResponseEntity.ok(recepcaoService.incluirPacienteNaFila(pacienteId, consultorio, medicoNome));
+    }
+
+    @PostMapping("/fila/{id}/rechamar")
+    @Operation(summary = "Rechamar Paciente na Fila", description = "Dispara nova chamada com alerta sonoro e visual no telão TV.")
+    public ResponseEntity<FilaAtendimento> rechamarPaciente(@PathVariable Long id) {
+        return ResponseEntity.ok(recepcaoService.rechamarPaciente(id));
+    }
+
+    @PostMapping("/pacientes/{id}/reset-senha")
+    @Operation(summary = "Resetar Senha do Paciente", description = "Redefine a senha e envia notificação por e-mail.")
+    public ResponseEntity<?> resetarSenha(@PathVariable Long id, @RequestBody ResetSenhaRequestDTO dto) {
+        recepcaoService.resetarSenhaPaciente(id, dto);
+        return ResponseEntity.ok(Map.of("message", "Senha redefinida com sucesso. Notificação enviada por e-mail!"));
+    }
+}
+```
+
+---
+
+### 3. 🧠 Camada de Serviços & Lógica de Negócio (`@Service` & `@Transactional`)
+
+A lógica de negócios é isolada nos `@Service`. As operações de escrita utilizam `@Transactional` para garantir atomicidade, consistência, isolamento e durabilidade (ACID).
+
+#### Exemplo Real: `ChatService.java` (Concorrência Thread-Safe e Broadcast)
+```java
+package br.com.docemed.service;
+
+import br.com.docemed.dto.MensagemChatDTO;
+import br.com.docemed.model.MensagemChat;
+import br.com.docemed.model.PerfilUsuario;
+import br.com.docemed.repository.MensagemChatRepository;
+import br.com.docemed.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+@Service
+@RequiredArgsConstructor
+public class ChatService {
+
+    private final MensagemChatRepository mensagemRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final RealtimeNotificationService realtimeService;
+
+    // Mapa thread-safe para rastreio de atividade em tempo real
+    private final Map<String, LocalDateTime> usuariosAtivosHeartbeat = new ConcurrentHashMap<>();
+
+    public void registrarAtividade(String login) {
+        if (login != null && !login.isBlank()) {
+            usuariosAtivosHeartbeat.put(login.trim().toLowerCase(), LocalDateTime.now());
+        }
+    }
+
+    @Transactional
+    public MensagemChatDTO enviarMensagem(MensagemChatDTO dto) {
+        if (dto.getConteudo() == null || dto.getConteudo().isBlank()) {
+            throw new IllegalArgumentException("O conteúdo da mensagem não pode estar vazio.");
+        }
+
+        String remetente = dto.getRemetenteLogin().trim().toLowerCase();
+        String destinatario = dto.getDestinatarioLogin().trim().toLowerCase();
+
+        registrarAtividade(remetente);
+
+        // Monta e persiste a entidade com Builder Pattern
+        MensagemChat mensagem = MensagemChat.builder()
+                .remetenteLogin(remetente)
+                .remetenteNome(dto.getRemetenteNome())
+                .tipoRemetente(dto.getTipoRemetente() != null ? dto.getTipoRemetente() : PerfilUsuario.RECEPCAO)
+                .destinatarioLogin(destinatario)
+                .destinatarioNome(dto.getDestinatarioNome())
+                .conteudo(dto.getConteudo().trim())
+                .dataEnvio(LocalDateTime.now())
+                .lida(false)
+                .build();
+
+        mensagem = mensagemRepository.save(mensagem);
+        MensagemChatDTO responseDTO = toDTO(mensagem);
+
+        // Notificação reativa instantânea para todos os clientes conectados via SSE
+        realtimeService.broadcast("NOVA_MENSAGEM_CHAT", responseDTO);
+
+        return responseDTO;
+    }
+}
+```
+
+---
+
+### 4. 🗄️ Persistência de Dados com Spring Data JPA (`@Repository`)
+
+O Spring Data JPA gera dinamicamente a implementação das interfaces em tempo de execução via proxy dinâmico, fornecendo métodos prontos (`save`, `findById`, `delete`, `findAll`) e suporte a **queries derivadas por convenção de nomenclatura** e **JPQL tipado com `@Query`**.
+
+#### Exemplo Real: `MensagemChatRepository.java` & `FilaAtendimentoRepository.java`
+```java
+package br.com.docemed.repository;
+
+import br.com.docemed.model.MensagemChat;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import java.util.List;
+
+@Repository
+public interface MensagemChatRepository extends JpaRepository<MensagemChat, Long> {
+
+    // JPQL Customizada para recuperar histórico bidirecional entre dois usuários
+    @Query("SELECT m FROM MensagemChat m WHERE " +
+           "(LOWER(m.remetenteLogin) = LOWER(:u1) AND LOWER(m.destinatarioLogin) = LOWER(:u2)) OR " +
+           "(LOWER(m.remetenteLogin) = LOWER(:u2) AND LOWER(m.destinatarioLogin) = LOWER(:u1)) " +
+           "ORDER BY m.dataEnvio ASC")
+    List<MensagemChat> findConversaPrivada(@Param("u1") String u1, @Param("u2") String u2);
+}
+```
+
+```java
+package br.com.docemed.repository;
+
+import br.com.docemed.model.FilaAtendimento;
+import br.com.docemed.model.StatusFila;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface FilaAtendimentoRepository extends JpaRepository<FilaAtendimento, Long> {
+
+    // Consultas derivadas por convenção de nomenclatura (Query Methods)
+    List<FilaAtendimento> findByStatusOrderByPosicaoAsc(StatusFila status);
+    List<FilaAtendimento> findByStatusInOrderByPosicaoAsc(List<StatusFila> statuses);
+    Optional<FilaAtendimento> findTopByStatusOrderByHorarioChamadaDesc(StatusFila status);
+    boolean existsByPacienteIdAndStatusIn(Long pacienteId, List<StatusFila> statuses);
+
+    @Query("SELECT MAX(f.posicao) FROM FilaAtendimento f")
+    Integer findMaxPosicao();
+}
+```
+
+---
+
+### 5. 📦 Modelagem de Entidades & Enums de Domínio (`@Entity`)
+
+O mapeamento objeto-relacional (ORM) converte as classes Java diretamente para as tabelas relacionais do MariaDB, utilizando enums tipados com `@Enumerated(EnumType.STRING)` para armazenar o valor literal e evitar quebras de compatibilidade em alterações futuras.
+
+#### Exemplo Real: `FilaAtendimento.java` e `StatusFila.java`
+```java
+package br.com.docemed.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "filas_atendimento")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class FilaAtendimento {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "paciente_id", nullable = false)
+    private Long pacienteId;
+
+    @Column(name = "nome_paciente", nullable = false, length = 150)
+    private String nomePaciente;
+
+    @Column(nullable = false)
+    private Integer posicao;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private StatusFila status = StatusFila.AGUARDANDO;
+
+    @Column(name = "horario_entrada", nullable = false)
+    private LocalDateTime horarioEntrada = LocalDateTime.now();
+
+    @Column(name = "horario_chamada")
+    private LocalDateTime horarioChamada;
+
+    @Column(name = "consultorio_destino", length = 50)
+    private String consultorioDestino;
+
+    @Column(name = "medico_responsavel", length = 150)
+    private String medicoResponsavel;
+}
+```
+
+```java
+package br.com.docemed.model;
+
+public enum StatusFila {
+    AGUARDANDO,
+    CHAMADO,
+    EM_ATENDIMENTO,
+    FINALIZADO,
+    AUSENTE,
+    CANCELADO
+}
+```
+
+---
+
+### 6. ⚡ Barramento Reativo em Tempo Real com Server-Sent Events (`SseEmitter`)
+
+O backend utiliza **Server-Sent Events (SSE)** nativo do Spring MVC (`SseEmitter`), mantendo uma conexão HTTP unidirecional persistente e de baixo consumo de recursos entre o servidor e todos os navegadores conectados (médicos, telões TV da recepção e celulares dos pacientes).
+
+#### Exemplo Real: `RealtimeNotificationService.java`
+```java
+package br.com.docemed.service;
+
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+@Service
+public class RealtimeNotificationService {
+
+    // Lista thread-safe de clientes conectados (Médicos, Telão e Recepção)
+    private final List<SseEmitter> globalEmitters = new CopyOnWriteArrayList<>();
+
+    public SseEmitter subscribeGlobal() {
+        SseEmitter emitter = new SseEmitter(0L); // Sem timeout pré-definido
+        globalEmitters.add(emitter);
+
+        // Callbacks assíncronos de ciclo de vida
+        emitter.onCompletion(() -> globalEmitters.remove(emitter));
+        emitter.onTimeout(() -> globalEmitters.remove(emitter));
+        emitter.onError(e -> globalEmitters.remove(emitter));
+
+        try {
+            emitter.send(SseEmitter.event().name("CONNECT").data(Map.of("message", "Conectado ao tempo real Doc-eMed")));
+        } catch (IOException e) {
+            globalEmitters.remove(emitter);
+        }
+
+        return emitter;
+    }
+
+    public void broadcast(String eventName, Object data) {
+        for (SseEmitter emitter : globalEmitters) {
+            try {
+                emitter.send(SseEmitter.event().name(eventName).data(data));
+            } catch (Exception e) {
+                globalEmitters.remove(emitter);
+            }
+        }
+    }
+
+    // Keepalive periódico a cada 15 segundos para evitar que firewalls/proxies fechem a conexão
+    @Scheduled(fixedRate = 15000)
+    public void sendKeepAlive() {
+        broadcast("PING", Map.of("timestamp", System.currentTimeMillis()));
+    }
+}
+```
+
+---
+
+### 7. 🛡️ Tratamento Global de Exceções & Validações (`@RestControllerAdvice`)
+
+Para assegurar respostas limpas, previsíveis e com códigos HTTP semânticos (400, 404, 500), o sistema centraliza o tratamento de erros através do `@RestControllerAdvice`.
+
+#### Exemplo Real: `GlobalExceptionHandler.java`
+```java
+package br.com.docemed.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(RecursoNaoEncontradoException.class)
+    public ResponseEntity<Map<String, Object>> handleRecursoNaoEncontrado(RecursoNaoEncontradoException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroBody(ex.getMessage(), 404));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erroBody(ex.getMessage(), 400));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidacao(MethodArgumentNotValidException ex) {
+        Map<String, String> erros = new HashMap<>();
+        for (FieldError fe : ex.getBindingResult().getFieldErrors()) {
+            erros.put(fe.getField(), fe.getDefaultMessage());
+        }
+        Map<String, Object> body = erroBody("Erro de validação nos campos informados.", 400);
+        body.put("campos", erros);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    private Map<String, Object> erroBody(String mensagem, int status) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now().toString());
+        body.put("status", status);
+        body.put("mensagem", mensagem);
+        return body;
+    }
+}
+```
+
+---
+
+### 8. 🧩 Padrões de Projeto (Design Patterns) Implementados
+
+| Design Pattern | Categoria | Finalidade no Projeto | Onde Encontrar no Código |
+| :--- | :--- | :--- | :--- |
+| **MVC (Model-View-Controller)** | Arquitetural | Separação estrita entre lógica de apresentação, controle e persistência de dados. | `controller/`, `model/`, `templates/` |
+| **DTO (Data Transfer Object)** | Estrutural | Transferência encapsulada e segura de dados sem expor entidades JPA diretamente. | `br.com.docemed.dto.*` |
+| **Repository Pattern** | Comportamental | Abstração do acesso ao banco de dados relacional com desacoplamento de queries. | `br.com.docemed.repository.*` |
+| **Builder Pattern** | Criacional | Construção fluente e segura de objetos complexos e imutáveis com anotações Lombok `@Builder`. | `MensagemChat`, `FilaAtendimento`, `Paciente` |
+| **Observer Pattern** | Comportamental | Publicação e subscrição de eventos assíncronos em tempo real via Server-Sent Events. | `RealtimeNotificationService.java` |
+| **Dependency Injection / IoC** | Estrutural | Inversão de controle gerenciada pelo Spring Container com injeção via construtor. | Todos os `@Service` e `@RestController` |
+| **Front Controller / Controller Advice** | Arquitetural | Interceptação centralizada de exceções e padronização das respostas de erro da API. | `GlobalExceptionHandler.java` |
+| **Strategy / Enum Polymorphism** | Comportamental | Regras de negócio e status clínicos controlados por tipos enumerados com tipagem forte. | `PerfilUsuario`, `StatusFila`, `StatusAgendamento` |
+
+---
+
 ## 🏗️ Arquitetura Técnica & Tecnologias
 
 O projeto adota Clean Architecture em camadas com comunicação reativa:
@@ -330,7 +775,7 @@ O projeto adota Clean Architecture em camadas com comunicação reativa:
 * **Comunicação em Tempo Real:** Server-Sent Events (SSE) via `SseEmitter` Spring com keepalive a cada 15s e fallback polling a cada 2,5s.
 * **Notificações por E-mail:** `EmailNotificacaoService` para envio assíncrono de credenciais provisórias e confirmações.
 * **Documentação de API:** Springdoc OpenAPI / Swagger UI 3.0.
-* **Túnel Público Seguro:** Cloudflare Tunnel (HTTPS criptografado de ponta a ponta).
+* **Túnel Público Seguro:** Ngrok HTTPS com link fixo permanente (`https://slighting-zippy-machinist.ngrok-free.dev`).
 
 ---
 
